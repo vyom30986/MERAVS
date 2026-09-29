@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<header style="position:{{ pos }};top:0;left:0;right:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px var(--pad)">
+  <a href="Home.dc.html" style="min-width:0;display:flex;flex-wrap:wrap;align-items:baseline;column-gap:16px;row-gap:2px;text-decoration:none;color:var(--ink)">
+    <span role="img" aria-label="Meravs" style="display:inline-flex;align-items:flex-end;font-family:'Marcellus',serif;font-size:clamp(17px,4.8vw,21px);line-height:1;letter-spacing:.3em"><span aria-hidden="true">MERA</span><svg aria-hidden="true" viewBox="0 0 40 40" style="width:1.05em;height:1.05em;margin:0 .22em -.12em -.12em;overflow:visible;flex:none"><polygon points="18.6,29.3 21.4,30.7 39,-4" style="fill:var(--brass)"></polygon><polygon points="18.9,31 21.1,29 6,3" style="fill:var(--brass)"></polygon><polygon points="19.3,30 20.7,30 20,39" style="fill:var(--brass)"></polygon><circle cx="20" cy="30" r="2.6" style="fill:var(--ground);stroke:var(--brass);stroke-width:1.2"></circle><circle cx="20" cy="30" r="1" style="fill:var(--seconds)"></circle></svg><span aria-hidden="true">S</span></span>
+    <span style="display:var(--desk-inline);font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--mute)">EST. 2026 · INDIA</span>
+  </a>
+  <nav aria-label="Main" style="display:var(--nav-desk);align-items:center;gap:30px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em">
+    <a href="Collection.dc.html" style="text-decoration:none;color:{{ cCol }};padding:8px 0;border-bottom:1px solid {{ cLine }}" style-hover="color:var(--brass)">COLLECTION</a>
+    <a href="About.dc.html" style="text-decoration:none;color:{{ aCol }};padding:8px 0;border-bottom:1px solid {{ aLine }}" style-hover="color:var(--brass)">ABOUT</a>
+    <a href="FAQ.dc.html" style="text-decoration:none;color:{{ fCol }};padding:8px 0;border-bottom:1px solid {{ fLine }}" style-hover="color:var(--brass)">FAQ</a>
+  </nav>
+  <div style="display:flex;align-items:center;gap:6px;flex:none">
+    <a href="List.dc.html" aria-label="Your notify list" style="display:flex;align-items:center;gap:8px;height:40px;min-width:40px;justify-content:center;padding:0 10px;text-decoration:none;color:var(--ink);font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;border:1px solid var(--line)" style-hover="color:var(--brass)">
+      <span style="display:var(--desk-inline)">LIST</span>
+      <span style="min-width:18px;height:18px;display:grid;place-items:center;border-radius:9px;background:{{ badgeBg }};color:{{ badgeFg }};font-size:10px;letter-spacing:0;padding:0 5px">{{ count }}</span>
+    </a>
+    <button onClick="{{ toggleTheme }}" aria-label="{{ themeAria }}" title="{{ themeAria }}" style="display:flex;align-items:center;gap:10px;height:40px;padding:0 8px;background:transparent;color:var(--ink);border:1px solid;border-image:linear-gradient(var(--lang),var(--brass-lit),var(--line) 55%) 1;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;cursor:pointer" style-hover="color:var(--brass)">
+      <span style="position:relative;width:24px;height:24px;border-radius:50%;border:1px solid var(--brass);overflow:hidden;flex:none;background:var(--ground)">
+        <span style="position:absolute;inset:2px;border-radius:50%;overflow:hidden;transform:rotate({{ phaseRot }}deg);transition:transform .8s cubic-bezier(.6,0,.2,1)">
+          <span style="position:absolute;top:0;bottom:0;left:0;width:50%;background:var(--brass)"></span>
+        </span>
+      </span>
+      <span style="display:var(--desk-inline);min-width:8ch;text-align:left;padding-right:6px">{{ themeName }}</span>
+    </button>
+    <button onClick="{{ openMenu }}" aria-label="Open menu" style="display:var(--nav-mob);flex-direction:column;justify-content:center;align-items:center;gap:6px;width:40px;height:40px;background:transparent;border:1px solid var(--line);cursor:pointer;padding:0">
+      <span style="width:16px;height:1px;background:var(--ink)"></span>
+      <span style="width:16px;height:1px;background:var(--ink)"></span>
+    </button>
+  </div>
+  <sc-if value="{{ open }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;inset:0;z-index:60;background:var(--ground);display:flex;flex-direction:column;padding:16px var(--pad) 32px">
+      <div style="display:flex;justify-content:space-between;align-items:center;height:40px">
+        <span role="img" aria-label="Meravs" style="display:inline-flex;align-items:flex-end;font-family:'Marcellus',serif;font-size:clamp(17px,4.8vw,21px);line-height:1;letter-spacing:.3em"><span aria-hidden="true">MERA</span><svg aria-hidden="true" viewBox="0 0 40 40" style="width:1.05em;height:1.05em;margin:0 .22em -.12em -.12em;overflow:visible;flex:none"><polygon points="18.6,29.3 21.4,30.7 39,-4" style="fill:var(--brass)"></polygon><polygon points="18.9,31 21.1,29 6,3" style="fill:var(--brass)"></polygon><polygon points="19.3,30 20.7,30 20,39" style="fill:var(--brass)"></polygon><circle cx="20" cy="30" r="2.6" style="fill:var(--ground);stroke:var(--brass);stroke-width:1.2"></circle><circle cx="20" cy="30" r="1" style="fill:var(--seconds)"></circle></svg><span aria-hidden="true">S</span></span>
+        <button onClick="{{ closeMenu }}" aria-label="Close menu" style="width:40px;height:40px;background:transparent;border:1px solid var(--line);color:var(--ink);font-family:'JetBrains Mono',monospace;font-size:16px;cursor:pointer;white-space:nowrap">×</button>
+      </div>
+      <nav aria-label="Mobile" style="display:flex;flex-direction:column;margin-top:48px">
+        <a href="Home.dc.html" style="font-family:'Marcellus',serif;font-size:38px;line-height:1;text-decoration:none;color:var(--ink);padding:16px 0;border-bottom:1px solid var(--line)">Home</a>
+        <a href="Collection.dc.html" style="font-family:'Marcellus',serif;font-size:38px;line-height:1;text-decoration:none;color:var(--ink);padding:16px 0;border-bottom:1px solid var(--line)">Collection</a>
+        <a href="About.dc.html" style="font-family:'Marcellus',serif;font-size:38px;line-height:1;text-decoration:none;color:var(--ink);padding:16px 0;border-bottom:1px solid var(--line)">About</a>
+        <a href="FAQ.dc.html" style="font-family:'Marcellus',serif;font-size:38px;line-height:1;text-decoration:none;color:var(--ink);padding:16px 0;border-bottom:1px solid var(--line)">FAQ &amp; contact</a>
+        <a href="List.dc.html" style="font-family:'Marcellus',serif;font-size:38px;line-height:1;text-decoration:none;color:var(--ink);padding:16px 0;border-bottom:1px solid var(--line)">Your list</a>
+      </nav>
+      <div style="margin-top:auto;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--mute)">EST. 2026 · INDIA</div>
+    </div>
+  </sc-if>
+</header>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;100%&quot;,&quot;height&quot;:80},&quot;overlay&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;active&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;&quot;,&quot;collection&quot;,&quot;about&quot;,&quot;faq&quot;],&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = { open: false, theme: null, count: 0 };
+
+  componentDidMount() {
+    try { const t = localStorage.getItem('meravs-theme'); if (t) { document.documentElement.setAttribute('data-theme', t); this.setState({ theme: t }); } } catch (_) {}
+    this.reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    import('./inventory.js').then(inv => {
+      if (this.dead) return;
+      this.setState({ count: inv.getList().length });
+      this.off = inv.onListChange(l => this.setState({ count: l.length }));
+    });
+    this.bindLight();
+  }
+  componentWillUnmount() { this.dead = true; this.off && this.off(); }
+
+  bindLight() {
+    if (window.__meravsLightBound) return;
+    window.__meravsLightBound = true;
+    const L = window.MERAVS_LIGHT || (window.MERAVS_LIGHT = { x: .3, y: .2, tx: .3, ty: .2 });
+    const s = document.documentElement.style;
+    const write = () => {
+      s.setProperty('--lx', L.x.toFixed(4)); s.setProperty('--ly', L.y.toFixed(4));
+      s.setProperty('--lang', (Math.atan2(0.5 - L.x, -(0.5 - L.y)) * 180 / Math.PI).toFixed(1) + 'deg');
+    };
+    let raf = null, last = performance.now();
+    const loop = now => {
+      raf = null;
+      const dt = Math.min(0.05, (now - last) / 1000); last = now;
+      if (Math.abs(L.tx - L.x) + Math.abs(L.ty - L.y) > 0.0005) {
+        const k = 1 - Math.exp(-dt * 6); L.x += (L.tx - L.x) * k; L.y += (L.ty - L.y) * k; write();
+        raf = requestAnimationFrame(loop);
+      }
+    };
+    const kick = () => { if (!raf) { last = performance.now(); raf = requestAnimationFrame(loop); } };
+    window.__meravsKickLight = kick;
+    addEventListener('pointermove', e => { if (e.pointerType === 'mouse') { L.tx = e.clientX / innerWidth; L.ty = e.clientY / innerHeight; kick(); } }, { passive: true });
+    addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') kick(); }, { passive: true });
+    addEventListener('pointerup', kick, { passive: true });
+    write();
+  }
+
+  effTheme() { return this.state.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); }
+
+  toggleTheme = e => {
+    const order = ['light', 'dark', 'navy'];
+    const next = order[(order.indexOf(this.effTheme()) + 1) % 3];
+    const apply = () => { document.documentElement.setAttribute('data-theme', next); try { localStorage.setItem('meravs-theme', next); } catch (_) {} };
+    this.setState({ theme: next });
+    if (!document.startViewTransition || this.reduce) { apply(); return; }
+    const r = e.currentTarget.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2;
+    const rad = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+    const t = document.startViewTransition(apply);
+    t.ready.then(() => document.documentElement.animate(
+      { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${rad}px at ${x}px ${y}px)`] },
+      { duration: 750, easing: 'cubic-bezier(.6,0,.2,1)', pseudoElement: '::view-transition-new(root)' }
+    )).catch(() => {});
+  };
+
+  renderVals() {
+    const theme = this.effTheme(), a = this.props.active || '';
+    const NAMES = { light: 'DAY', dark: 'NIGHT', navy: 'MIDNIGHT' }, NEXT = { light: 'Night', dark: 'Midnight', navy: 'Day' };
+    const col = k => a === k ? 'var(--brass)' : 'var(--ink)';
+    const line = k => a === k ? 'var(--brass)' : 'transparent';
+    return {
+      pos: this.props.overlay ? 'absolute' : 'relative',
+      cCol: col('collection'), aCol: col('about'), fCol: col('faq'),
+      cLine: line('collection'), aLine: line('about'), fLine: line('faq'),
+      count: this.state.count,
+      badgeBg: this.state.count ? 'var(--brass)' : 'transparent',
+      badgeFg: this.state.count ? 'var(--ground)' : 'var(--mute)',
+      phaseRot: { light: 0, dark: 180, navy: 270 }[theme] ?? 0, themeName: NAMES[theme] || 'DAY',
+      themeAria: `Colour theme: ${(NAMES[theme] || 'DAY').toLowerCase()}. Switch to ${NEXT[theme] || 'Night'}`,
+      toggleTheme: this.toggleTheme,
+      open: this.state.open,
+      openMenu: () => { this.setState({ open: true }); document.documentElement.style.overflow = 'hidden'; },
+      closeMenu: () => { this.setState({ open: false }); document.documentElement.style.overflow = ''; },
+    };
+  }
+}
+</script>
+</body>
+</html>

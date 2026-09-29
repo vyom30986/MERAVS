@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<svg viewBox="0 0 200 200" role="img" aria-label="{{ label }}" style="width:100%;height:100%;display:block;overflow:visible">
+  <defs>
+    <radialGradient id="{{ gid }}" cx="50%" cy="50%" r="55%">
+      <stop offset="0%" style="stop-color:{{ d0 }}"></stop>
+      <stop offset="60%" style="stop-color:{{ d1 }}"></stop>
+      <stop offset="100%" style="stop-color:{{ d2 }}"></stop>
+    </radialGradient>
+    <linearGradient id="{{ hid }}" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:.55"></stop>
+      <stop offset="45%" style="stop-color:#FFFFFF;stop-opacity:0"></stop>
+      <stop offset="100%" style="stop-color:#000000;stop-opacity:.3"></stop>
+    </linearGradient>
+    <clipPath id="{{ cid }}"><path d="{{ dialD }}"></path></clipPath>
+    <pattern id="{{ pid }}" width="{{ pw }}" height="{{ ph }}" patternUnits="userSpaceOnUse">
+      <rect x="0" y="0" width="{{ prw }}" height="{{ prh }}" style="fill:rgba(0,0,0,.08)"></rect>
+    </pattern>
+  </defs>
+  <path d="{{ caseD }}" style="fill:{{ metal }}"></path>
+  <path d="{{ caseD }}" style="fill:{{ hiUrl }}"></path>
+  <path d="{{ bezelD }}" style="fill:{{ accent }}"></path>
+  <path d="{{ bezelD }}" style="fill:{{ hiUrl }};opacity:.8"></path>
+  <sc-if value="{{ fluted }}" hint-placeholder-val="{{ false }}">
+    <circle cx="100" cy="100" r="{{ fluteR }}" style="fill:none;stroke:rgba(0,0,0,.3);stroke-width:{{ fluteW }};stroke-dasharray:1.1 1.3"></circle>
+  </sc-if>
+  <path d="{{ dialD }}" style="fill:{{ fillUrl }};stroke:rgba(0,0,0,.3);stroke-width:.8"></path>
+  <sc-if value="{{ stripes }}" hint-placeholder-val="{{ false }}">
+    <path d="{{ dialD }}" style="fill:{{ patUrl }}"></path>
+  </sc-if>
+  <sc-if value="{{ waves }}" hint-placeholder-val="{{ false }}">
+    <path d="{{ wavesD }}" clip-path="{{ clipUrl }}" style="fill:none;stroke:rgba(255,255,255,.14);stroke-width:.55"></path>
+  </sc-if>
+  <sc-for list="{{ marks }}" as="k" hint-placeholder-count="0">
+    <path d="{{ k.d }}" style="fill:{{ k.fill }};stroke:{{ k.stroke }};stroke-width:{{ k.sw }};opacity:{{ k.op }}"></path>
+  </sc-for>
+  <sc-for list="{{ texts }}" as="t" hint-placeholder-count="0">
+    <text x="{{ t.x }}" y="{{ t.y }}" style="font-family:{{ t.font }};font-size:{{ t.size }}px;font-weight:{{ t.weight }};letter-spacing:{{ t.ls }}px;fill:{{ t.fill }};text-anchor:middle;dominant-baseline:central">{{ t.text }}</text>
+  </sc-for>
+  <g ref="{{ hRef }}" style="transform-origin:100px 100px;transform:rotate(305deg)"><polygon points="{{ hourPts }}" style="fill:{{ hand }}"></polygon></g>
+  <g ref="{{ mRef }}" style="transform-origin:100px 100px;transform:rotate(60deg)"><polygon points="{{ minPts }}" style="fill:{{ hand }}"></polygon></g>
+  <sc-if value="{{ seconds }}" hint-placeholder-val="{{ true }}">
+    <g ref="{{ sRef }}" style="transform-origin:100px 100px;transform:rotate(180deg)"><polygon points="{{ secPts }}" style="fill:{{ secColor }}"></polygon></g>
+  </sc-if>
+  <circle cx="100" cy="100" r="{{ hubR }}" style="fill:{{ hand }}"></circle>
+  <sc-if value="{{ seconds }}" hint-placeholder-val="{{ true }}">
+    <circle cx="100" cy="100" r="1.4" style="fill:{{ secColor }}"></circle>
+  </sc-if>
+</svg>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:240,&quot;height&quot;:240},&quot;model&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;object&quot;},&quot;live&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;label&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = { W: null };
+  hRef = React.createRef(); mRef = React.createRef(); sRef = React.createRef();
+  uid = Math.random().toString(36).slice(2, 8);
+
+  componentDidMount() { import('./watchshape.js').then(W => { if (!this.dead) this.setState({ W }, () => this.sync()); }); }
+  componentDidUpdate(p) { if (p.live !== this.props.live) this.sync(); }
+  componentWillUnmount() { this.dead = true; cancelAnimationFrame(this.raf); clearInterval(this.iv); }
+
+  sync() {
+    cancelAnimationFrame(this.raf); clearInterval(this.iv);
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const tick = () => {
+      const ist = (Date.now() + 19800000) % 86400000;
+      let s = (ist % 60000) / 1000; if (reduce) s = Math.floor(s);
+      const m = Math.floor(ist / 60000) % 60, h = Math.floor(ist / 3600000) % 12;
+      const set = (r, a) => { if (r.current) r.current.style.transform = 'rotate(' + a.toFixed(2) + 'deg)'; };
+      set(this.hRef, (h + m / 60 + s / 3600) * 30); set(this.mRef, (m + s / 60) * 6); set(this.sRef, s * 6);
+    };
+    if (!this.props.live) { const set = (r, a) => { if (r.current) r.current.style.transform = 'rotate(' + a + 'deg)'; }; set(this.hRef, 305); set(this.mRef, 60); set(this.sRef, 180); return; }
+    tick();
+    if (reduce) this.iv = setInterval(tick, 1000);
+    else { const loop = () => { if (!this.props.live) return; if (!document.hidden) tick(); this.raf = requestAnimationFrame(loop); }; loop(); }
+  }
+
+  renderVals() {
+    const W = this.state.W, m = this.props.model || {};
+    const base = { hRef: this.hRef, mRef: this.mRef, sRef: this.sRef, label: this.props.label || (m.name ? m.name + ' dial' : 'Meravs dial'), marks: [], texts: [], seconds: false };
+    if (!W) return base;
+    const sp = W.spec(m), D = sp.D;
+    const S = 96 / Math.max(sp.caseA, sp.caseB) * (sp.shape === 'round' ? 1 : 0.98);
+    const X = v => (100 + v * S).toFixed(2), Y = v => (100 - v * S).toFixed(2);
+    const poly = pts => 'M' + pts.map(([x, y]) => X(x) + ' ' + Y(y)).join(' L') + ' Z';
+    const circ = (cx, cy, r) => { const R = (r * S).toFixed(2); return 'M' + (100 + cx * S - r * S).toFixed(2) + ' ' + Y(cy) + ' a' + R + ' ' + R + ' 0 1 0 ' + (2 * r * S).toFixed(2) + ' 0 a' + R + ' ' + R + ' 0 1 0 ' + (-2 * r * S).toFixed(2) + ' 0 Z'; };
+    const dialO = W.outline(sp.dialA, sp.dialB, sp.dialN, sp.dialPinch, 120);
+    const caseO = W.outline(sp.caseA, sp.caseB, sp.caseN, sp.casePinch, 120);
+    let bezelD;
+    if (sp.bezel === 'round') bezelD = circ(0, 0, Math.min(19.45 * sp.bezelScale, sp.caseA - 0.4));
+    else bezelD = poly(caseO.map(([x, y]) => [x * 0.9, y * 0.9]));
+    const groups = {};
+    const add = (d, fill, stroke, sw, op) => { const k = [fill, stroke, sw, op].join('|'); (groups[k] = groups[k] || { d: '', fill: fill || 'none', stroke: stroke || 'none', sw: ((sw || 0) * S).toFixed(2), op: op ?? 1 }).d += d; };
+    const texts = [];
+    sp.prims.forEach(p => {
+      if (p.t === 'bar') add(poly(W.barPoly(p)), p.fill, p.stroke, p.sw, p.op);
+      else if (p.t === 'poly') add(poly(p.pts), p.fill, p.stroke, p.sw, p.op);
+      else if (p.t === 'dot') add(circ(p.x, p.y, p.r), p.fill, p.stroke, p.sw, p.op);
+      else if (p.t === 'ring') add(poly(dialO.map(([x, y]) => [x * p.f, y * p.f])), p.fill, p.stroke, p.sw, p.op);
+      else if (p.t === 'text') texts.push({ text: p.text, x: X(p.x), y: Y(p.y), size: (p.size * S).toFixed(2), ls: (p.size * S * p.track).toFixed(2), font: "'" + p.font + "', serif", weight: p.weight, fill: p.fill });
+    });
+    const pts = arr => arr.map(([x, y]) => X(x) + ',' + Y(y)).join(' ');
+    let wavesD = ''; if (sp.waves) { const ox = 100 - sp.texHalf * 0.25 * S, oy = 100 + sp.texHalf * 1.15 * S; for (let r = 4; r < sp.texHalf * 2.6 * S; r += 1.3 * S * sp.texHalf / 16.6 * 0.95) wavesD += 'M' + (ox - r).toFixed(1) + ' ' + oy.toFixed(1) + ' a' + r.toFixed(1) + ' ' + r.toFixed(1) + ' 0 1 0 ' + (2 * r).toFixed(1) + ' 0 a' + r.toFixed(1) + ' ' + r.toFixed(1) + ' 0 1 0 ' + (-2 * r).toFixed(1) + ' 0 '; }
+    const cid = 'dc' + this.uid;
+    const gid = 'dg' + this.uid, hid = 'dh' + this.uid, pid = 'dp' + this.uid;
+    const v = sp.stripes === 'v';
+    return {
+      ...base,
+      gid, hid, pid, fillUrl: 'url(#' + gid + ')', hiUrl: 'url(#' + hid + ')', patUrl: 'url(#' + pid + ')',
+      d0: D.d0, d1: D.d1, d2: D.d2,
+      pw: v ? 1.5 : 200, ph: v ? 200 : 1.7, prw: v ? 0.55 : 200, prh: v ? 200 : 0.6,
+      stripes: !!sp.stripes, waves: !!sp.waves, wavesD, cid, clipUrl: 'url(#' + cid + ')',
+      metal: W.METAL2D[sp.metal] || W.METAL2D.gold, accent: W.METAL2D[sp.accent] || W.METAL2D.gold,
+      hand: W.METAL2D[sp.hand] || W.METAL2D.gold,
+      caseD: sp.shape === 'round' ? circ(0, 0, sp.caseA) : poly(caseO),
+      bezelD, dialD: poly(dialO),
+      fluted: sp.bezelType === 'fluted', fluteR: ((sp.dialA + 19.45) / 2 * S).toFixed(2), fluteW: ((19.45 - sp.dialA - 0.4) * S).toFixed(2),
+      marks: Object.values(groups), texts,
+      hourPts: pts(sp.hands.hour), minPts: pts(sp.hands.min), secPts: pts(sp.hands.sec),
+      seconds: sp.seconds, secColor: sp.secColor, hubR: ((sp.handStyle === 'slim' ? 0.7 : 1.25) * S).toFixed(2),
+    };
+  }
+}
+</script>
+</body>
+</html>

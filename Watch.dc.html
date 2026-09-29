@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Karla:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Cormorant+Garamond:wght@500;600&family=Pinyon+Script&display=swap">
+<script>try{var t=localStorage.getItem('meravs-theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+<style>
+:root{--ground:#E9ECF0;--ink:#101C2B;--mute:#546274;--brass:#8A6D1F;--brass-lit:#A8842B;--line:#C6CED8;--dial:#101C2B;--dial-rim:#2B3B4E;--dial-ink:#EFE7D4;--seconds:#D2543F;--btn-bg:#101C2B;--btn-fg:#E9ECF0;--glow:#F7F8FA;--shade:#D5DBE3;--rings:.55;--tex-op:1;--wm-op:.9;--tick-op:.9;color-scheme:light;
+--lx:.3;--ly:.2;--lang:146deg;--rule-attach:scroll;
+--pad:clamp(20px,5.2vw,72px);--nav-desk:none;--nav-mob:flex;--desk-inline:none;--desk-block:none;
+--stage-cols:minmax(0,1fr);--canvas-col:1;--copy-col:1;--canvas-h:100svh;--copy-pt:0px;--pin-h:260svh;--copy-row:2;--gl-h:58%;--readout-b:42%;--desk-flex:none;--mob-flex:flex;--hero-min:auto;--hero-pt:28px;--caption-top:calc(54svh + 28px);--explode-h:auto;--canvas-pos:sticky;--caption-pos:static;--dial-size:min(70vw,42svh);
+--pd-cols:minmax(0,1fr);--pd-pos:relative;--pd-canvas-h:62svh;--pd-info-col:1;--pd-info-row:2;--pd-info-min:auto;--pd-dial:min(64vw,44svh);}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ground:#15070B;--ink:#F2E8DA;--mute:#B89C94;--brass:#C9A55C;--brass-lit:#E6C98E;--line:#3A1A21;--dial:#2A0E15;--dial-rim:#4C232B;--dial-ink:#EFE7D4;--seconds:#D2543F;--btn-bg:#C9A55C;--btn-fg:#15070B;--glow:#34111A;--shade:#060203;--rings:.45;--tex-op:0;--wm-op:.35;--tick-op:.5;color-scheme:dark;}}
+:root[data-theme="navy"]{--ground:#080F1A;--ink:#E8E9EC;--mute:#8595A8;--brass:#C9A55C;--brass-lit:#E0C288;--line:#1E2C3D;--dial:#0E1C2E;--dial-rim:#33465C;--dial-ink:#EFE7D4;--seconds:#D2543F;--btn-bg:#C9A55C;--btn-fg:#080F1A;--glow:#12203A;--shade:#03070D;--rings:.4;--tex-op:0;--wm-op:.35;--tick-op:.5;color-scheme:dark;}
+:root[data-theme="dark"]{--ground:#15070B;--ink:#F2E8DA;--mute:#B89C94;--brass:#C9A55C;--brass-lit:#E6C98E;--line:#3A1A21;--dial:#2A0E15;--dial-rim:#4C232B;--dial-ink:#EFE7D4;--seconds:#D2543F;--btn-bg:#C9A55C;--btn-fg:#15070B;--glow:#34111A;--shade:#060203;--rings:.45;--tex-op:0;--wm-op:.35;--tick-op:.5;color-scheme:dark;}
+@media (min-width:900px){:root{--nav-desk:flex;--nav-mob:none;--desk-inline:inline;--desk-block:block;--stage-cols:minmax(0,5fr) minmax(0,6fr);--canvas-col:2;--canvas-h:100svh;--copy-pt:0px;--pin-h:0px;--copy-row:1;--gl-h:100%;--readout-b:0px;--desk-flex:flex;--mob-flex:none;--hero-min:100svh;--hero-pt:120px;--caption-top:38svh;--explode-h:220svh;--canvas-pos:sticky;--caption-pos:sticky;--dial-size:min(34vw,60svh);--pd-cols:minmax(0,6fr) minmax(0,5fr);--pd-pos:sticky;--pd-canvas-h:calc(100svh - 72px);--pd-info-col:2;--pd-info-row:1;--pd-info-min:calc(100svh - 72px);--pd-dial:min(32vw,56svh);}}
+@media (hover:hover) and (pointer:fine){:root{--rule-attach:fixed}}
+*,*::before,*::after{box-sizing:border-box}
+html{overscroll-behavior-y:none}
+html,body{margin:0;background:var(--ground);color:var(--ink)}
+body{font-family:'Karla',sans-serif;-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
+a{color:var(--ink)}a:hover{color:var(--brass)}
+::selection{background:var(--brass);color:var(--ground)}
+::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
+::view-transition-new(root){z-index:2}
+</style>
+</helmet>
+<div style="position:relative;overflow-x:clip;background:var(--ground);color:var(--ink);min-height:100vh">
+  <div aria-hidden="true" style="position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(120vmax 90vmax at calc(var(--lx)*100%) calc(var(--ly)*100%),var(--glow) 0%,transparent 55%),linear-gradient(180deg,transparent 40%,var(--shade) 160%)"></div>
+  <dc-import name="SiteHeader" active="collection" hint-size="100%,72px"></dc-import>
+  <div style="position:relative;z-index:1;display:grid;grid-template-columns:var(--pd-cols)">
+    <div ref="{{ wrapRef }}" style="grid-column:1;grid-row:1;position:var(--pd-pos);top:0;align-self:start;height:var(--pd-canvas-h);background:radial-gradient(circle at 50% 47%,var(--glow) 0%,var(--ground) 52%,var(--shade) 140%);touch-action:pan-y;cursor:grab;user-select:none;overflow:hidden">
+      <div aria-hidden="true" style="position:absolute;inset:0;opacity:var(--rings);background:repeating-radial-gradient(circle at 50% 47%,transparent 0 9px,var(--line) 9px 10px);-webkit-mask-image:radial-gradient(circle at 50% 47%,transparent 22%,#000 34%,transparent 62%);mask-image:radial-gradient(circle at 50% 47%,transparent 22%,#000 34%,transparent 62%)"></div>
+      <div ref="{{ svgRef }}" style="position:absolute;inset:0;display:grid;place-items:center;transition:opacity .7s ease">
+        <div style="width:var(--pd-dial);height:var(--pd-dial)">
+          <dc-import name="Dial" live="{{ dialLive }}" model="{{ model }}" hint-size="100%,100%"></dc-import>
+        </div>
+      </div>
+      <canvas ref="{{ canvasRef }}" style="position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;transition:opacity .7s ease"></canvas>
+      <div ref="{{ labelsRef }}" aria-hidden="true" style="position:absolute;inset:0;pointer-events:none">
+        <div data-part="crystal" style="position:absolute;left:0;top:0;opacity:0;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;line-height:14px;color:var(--ink);will-change:transform"><span data-t="" style="display:flex;gap:8px"><span style="color:var(--brass)">01</span><span>CRYSTAL</span></span><span data-l="" style="height:1px;width:20px;background:var(--mute);opacity:.6"></span><span style="width:5px;height:5px;border-radius:50%;background:var(--brass);flex:none"></span></div>
+        <div data-part="bezel" style="position:absolute;left:0;top:0;opacity:0;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;line-height:14px;color:var(--ink);will-change:transform"><span data-t="" style="display:flex;gap:8px"><span style="color:var(--brass)">02</span><span>BEZEL</span></span><span data-l="" style="height:1px;width:20px;background:var(--mute);opacity:.6"></span><span style="width:5px;height:5px;border-radius:50%;background:var(--brass);flex:none"></span></div>
+        <div data-part="hands" style="position:absolute;left:0;top:0;opacity:0;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;line-height:14px;color:var(--ink);will-change:transform"><span data-t="" style="display:flex;gap:8px"><span style="color:var(--brass)">03</span><span>HANDS</span></span><span data-l="" style="height:1px;width:20px;background:var(--mute);opacity:.6"></span><span style="width:5px;height:5px;border-radius:50%;background:var(--brass);flex:none"></span></div>
+        <div data-part="dial" style="position:absolute;left:0;top:0;opacity:0;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;line-height:14px;color:var(--ink);will-change:transform"><span data-t="" style="display:flex;gap:8px"><span style="color:var(--brass)">04</span><span>DIAL</span></span><span data-l="" style="height:1px;width:20px;background:var(--mute);opacity:.6"></span><span style="width:5px;height:5px;border-radius:50%;background:var(--brass);flex:none"></span></div>
+        <div data-part="case" style="position:absolute;left:0;top:0;opacity:0;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;line-height:14px;color:var(--ink);will-change:transform"><span data-t="" style="display:flex;gap:8px"><span style="color:var(--brass)">05</span><span>CASE</span></span><span data-l="" style="height:1px;width:20px;background:var(--mute);opacity:.6"></span><span style="width:5px;height:5px;border-radius:50%;background:var(--brass);flex:none"></span></div>
+        <div data-part="caseback" style="position:absolute;left:0;top:0;opacity:0;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;line-height:14px;color:var(--ink);will-change:transform"><span data-t="" style="display:flex;gap:8px"><span style="color:var(--brass)">06</span><span>CASEBACK</span></span><span data-l="" style="height:1px;width:20px;background:var(--mute);opacity:.6"></span><span style="width:5px;height:5px;border-radius:50%;background:var(--brass);flex:none"></span></div>
+        <div data-part="bracelet" style="position:absolute;left:0;top:0;opacity:0;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;line-height:14px;color:var(--ink);will-change:transform"><span data-t="" style="display:flex;gap:8px"><span style="color:var(--brass)">07</span><span>BRACELET</span></span><span data-l="" style="height:1px;width:20px;background:var(--mute);opacity:.6"></span><span style="width:5px;height:5px;border-radius:50%;background:var(--brass);flex:none"></span></div>
+        <div data-part="movement" style="position:absolute;left:0;top:0;opacity:0;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;line-height:14px;color:var(--ink);will-change:transform"><span data-t="" style="display:flex;gap:8px"><span style="color:var(--brass)">08</span><span>MOVEMENT</span></span><span data-l="" style="height:1px;width:20px;background:var(--mute);opacity:.6"></span><span style="width:5px;height:5px;border-radius:50%;background:var(--brass);flex:none"></span></div>
+      </div>
+      
+      <div style="position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;gap:12px;padding:14px var(--pad);font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:var(--mute);pointer-events:none;align-items:center">
+        <span ref="{{ readoutRef }}" style="font-variant-numeric:tabular-nums">IST --:--:--</span>
+        <sc-if value="{{ gl }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ toggleLayers }}" aria-pressed="{{ layersOn }}" style="pointer-events:auto;display:flex;align-items:center;gap:10px;height:40px;padding:0 14px;background:{{ layBg }};color:{{ layFg }};border:1px solid;border-image:linear-gradient(var(--lang),var(--brass-lit),var(--line) 55%) 1;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;white-space:nowrap;cursor:pointer">
+          <span aria-hidden="true" style="display:flex;flex-direction:column;gap:3px"><span style="width:14px;height:1px;background:currentColor;margin-left:{{ l1 }}"></span><span style="width:14px;height:1px;background:currentColor"></span><span style="width:14px;height:1px;background:currentColor;margin-left:{{ l3 }}"></span></span>{{ layersLabel }}
+        </button>
+      </sc-if>
+      </div>
+    </div>
+
+    <section data-screen-label="Watch detail" style="grid-column:var(--pd-info-col);grid-row:var(--pd-info-row);min-width:0;padding:clamp(28px,5vw,72px) var(--pad) clamp(56px,7vw,96px);display:flex;flex-direction:column;justify-content:center;min-height:var(--pd-info-min)">
+      <div style="max-width:520px;display:flex;flex-direction:column">
+        <nav aria-label="Breadcrumb" style="display:flex;gap:10px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--mute)">
+          <a href="Collection.dc.html" style="color:var(--mute);text-decoration:none" style-hover="color:var(--brass)">COLLECTION</a><span>/</span><span style="color:var(--brass)">REF. {{ refNo }}</span>
+        </nav>
+        <h1 style="font-family:'Marcellus',serif;font-weight:400;font-size:clamp(40px,4.6vw,68px);line-height:1.04;margin:18px 0 12px">{{ name }}</h1>
+        <p style="margin:0;font-size:17px;line-height:1.55;color:var(--mute)">{{ desc }}</p>
+        <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin:32px 0 20px;padding:18px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:clamp(22px,2.2vw,28px);letter-spacing:.02em">{{ price }}</span>
+          <span style="display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:{{ statusCol }}"><span style="width:6px;height:6px;border-radius:50%;background:{{ statusCol }}"></span>{{ statusLabel }}</span>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:12px">
+          <sc-if value="{{ canOrder }}" hint-placeholder-val="{{ true }}">
+            <a href="{{ orderHref }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:12px;min-height:54px;padding:0 22px;white-space:nowrap;background:var(--btn-bg);color:var(--btn-fg);border:1px solid;border-image:linear-gradient(var(--lang),var(--brass-lit),var(--brass) 45%,transparent 90%) 1;font-weight:600;font-size:16px;text-decoration:none" style-hover="color:var(--btn-fg);filter:brightness(1.12)">Order on WhatsApp<span aria-hidden="true" style="font-family:'JetBrains Mono',monospace">→</span></a>
+          </sc-if>
+          <sc-if value="{{ isOut }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ toggle }}" aria-pressed="{{ onList }}" style="display:inline-flex;align-items:center;gap:12px;min-height:54px;padding:0 22px;white-space:nowrap;background:var(--btn-bg);color:var(--btn-fg);border:1px solid;border-image:linear-gradient(var(--lang),var(--brass-lit),var(--brass) 45%,transparent 90%) 1;font-family:'Karla',sans-serif;font-weight:600;font-size:16px;cursor:pointer;white-space:nowrap">{{ notifyLabel }}</button>
+          </sc-if>
+          <a href="{{ askHref }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;min-height:54px;padding:0 22px;white-space:nowrap;color:var(--ink);border:1px solid;border-image:linear-gradient(var(--lang),var(--brass-lit),var(--line) 55%) 1;font-weight:500;font-size:16px;text-decoration:none" style-hover="color:var(--brass)">Ask on WhatsApp</a>
+        </div>
+        <p style="margin:14px 0 0;font-size:14px;line-height:1.5;color:var(--mute)">{{ orderNote }}</p>
+        <dl style="display:grid;grid-template-columns:auto 1fr;gap:12px 28px;margin:40px 0 0;font-size:15.5px">
+          <dt style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--mute);padding-top:3px">DIAL</dt><dd style="margin:0">{{ dialName }}</dd>
+          <dt style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--mute);padding-top:3px">CASE TONE</dt><dd style="margin:0">{{ metalName }}</dd>
+          <dt style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--mute);padding-top:3px">CASE SIZE</dt><dd style="margin:0">{{ sizeLabel }}</dd>
+          <dt style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--mute);padding-top:3px">DETAILS</dt><dd style="margin:0;color:var(--mute)">Full specifications are published at launch.</dd>
+        </dl>
+        <sc-if value="{{ hasPhoto }}" hint-placeholder-val="{{ false }}">
+          <figure style="margin:44px 0 0;display:flex;flex-direction:column;gap:12px">
+            <figcaption style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--mute)">THE ACTUAL WATCH</figcaption>
+            <img src="{{ photo }}" alt="{{ photoAlt }}" loading="lazy" style="display:block;width:100%;max-width:{{ photoMax }};aspect-ratio:{{ photoAspect }};object-fit:cover;object-position:50% 45%;border:1px solid var(--line)">
+          </figure>
+        </sc-if>
+        <div style="margin-top:44px">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--mute);margin-bottom:14px">OTHER REFERENCES</div>
+          <div style="display:flex;flex-wrap:wrap;gap:10px">
+            <sc-for list="{{ others }}" as="o" hint-placeholder-count="6">
+              <button onClick="{{ o.pick }}" aria-label="{{ o.name }}" aria-current="{{ o.current }}" style="width:52px;height:52px;padding:5px;background:transparent;border:1px solid {{ o.border }};cursor:pointer">
+                <dc-import name="Dial" model="{{ o.model }}" hint-size="100%,100%"></dc-import>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <dc-import name="SiteFooter" hint-size="100%,260px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { inv: null, ref: '01', list: [], gl: false, layers: false };
+  wrapRef = React.createRef(); canvasRef = React.createRef(); svgRef = React.createRef(); readoutRef = React.createRef(); labelsRef = React.createRef();
+
+  componentDidMount() {
+    const ref = new URLSearchParams(location.search).get('ref') || '01';
+    Promise.all([import('./inventory.js'), import('./watch3d.js')]).then(([inv, w]) => {
+      if (this.dead) return;
+      const m = inv.findModel(ref);
+      this.setState({ inv, ref: m.ref, list: inv.getList() });
+      this.off = inv.onListChange(list => this.setState({ list }));
+      this.watch = new w.MeravsWatch({
+        wrap: this.wrapRef.current, canvas: this.canvasRef.current, svgWrap: this.svgRef.current,
+        readout: this.readoutRef.current, labels: this.labelsRef.current, model: m, yaw: -0.35, onReady: gl => this.setState({ gl }),
+      });
+    });
+  }
+  componentWillUnmount() { this.dead = true; this.off && this.off(); this.watch && this.watch.destroy(); }
+
+  pick(ref) {
+    const inv = this.state.inv; if (!inv) return;
+    const m = inv.findModel(ref);
+    this.setState({ ref });
+    this.watch && this.watch.setModel(m);
+    try { history.replaceState(null, '', `?ref=${ref}`); } catch (_) {}
+    document.title = `${m.name} · Meravs`;
+  }
+
+  renderVals() {
+    const inv = this.state.inv;
+    const m = inv ? inv.findModel(this.state.ref) : null;
+    const onList = m ? this.state.list.includes(m.ref) : false;
+    const out = m && m.status === 'out';
+    return {
+      wrapRef: this.wrapRef, canvasRef: this.canvasRef, svgRef: this.svgRef, readoutRef: this.readoutRef, labelsRef: this.labelsRef, gl: this.state.gl, dialLive: !this.state.gl,
+      layersOn: this.state.layers, layersLabel: this.state.layers ? 'ASSEMBLE' : 'VIEW LAYERS',
+      layBg: this.state.layers ? 'var(--btn-bg)' : 'var(--ground)', layFg: this.state.layers ? 'var(--btn-fg)' : 'var(--ink)',
+      l1: this.state.layers ? '-4px' : '0px', l3: this.state.layers ? '4px' : '0px',
+      toggleLayers: () => { const on = !this.state.layers; this.setState({ layers: on }); this.watch && this.watch.setExplode(on); },
+      model: m || undefined,
+      refNo: m ? m.ref : '', name: m ? m.name : '', desc: m ? inv.describe(m) : '',
+      price: m ? inv.formatPrice(m.price) : '',
+      statusLabel: out ? 'SOLD OUT' : 'IN STOCK', statusCol: out ? 'var(--mute)' : 'var(--brass)',
+      hasPhoto: !!(m && m.photo), photoAspect: (m && m.photoAspect) || '3/4', photoMax: m && m.photoAspect ? '480px' : '360px', photo: m && m.photo ? m.photo : undefined, photoAlt: m ? `Photograph of ${m.name}` : '',
+      dialName: m ? m.dialName : '', metalName: m ? inv.METAL[m.metal].label : '', sizeLabel: m ? `${m.size}mm` : '',
+      onList,
+      notifyLabel: onList ? 'On your list' : 'Notify me if it returns',
+      canOrder: !!m && !out, isOut: !!out, orderHref: m ? inv.orderLink(m) : undefined,
+      orderNote: out ? 'Sold out. We will message you on WhatsApp if it comes back.' : 'Tapping the button opens WhatsApp with this watch and its price filled in. We confirm payment and delivery there.',
+      toggle: () => m && inv.toggleInList(m.ref),
+      askHref: m ? inv.waLink(`Hi Meravs — I have a question about ${m.name} (${inv.describe(m)}).`) : '#',
+      others: inv ? inv.MODELS.map(o => ({
+        model: o, name: o.name, current: o.ref === this.state.ref ? 'true' : 'false',
+        border: o.ref === this.state.ref ? 'var(--brass)' : 'var(--line)',
+        pick: () => this.pick(o.ref),
+      })) : [],
+    };
+  }
+}
+</script>
+</body>
+</html>

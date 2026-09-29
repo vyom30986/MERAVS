@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Karla:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Cormorant+Garamond:wght@500;600&family=Pinyon+Script&display=swap">
+<script>try{var t=localStorage.getItem('meravs-theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+<style>
+:root{--ground:#E9ECF0;--ink:#101C2B;--mute:#546274;--brass:#8A6D1F;--brass-lit:#A8842B;--line:#C6CED8;--dial:#101C2B;--dial-rim:#2B3B4E;--dial-ink:#EFE7D4;--seconds:#D2543F;--btn-bg:#101C2B;--btn-fg:#E9ECF0;--glow:#F7F8FA;--shade:#D5DBE3;--rings:.55;--tex-op:1;--wm-op:.9;--tick-op:.9;color-scheme:light;
+--lx:.3;--ly:.2;--lang:146deg;--rule-attach:scroll;
+--pad:clamp(20px,5.2vw,72px);--nav-desk:none;--nav-mob:flex;--desk-inline:none;--desk-block:none;
+--stage-cols:minmax(0,1fr);--canvas-col:1;--copy-col:1;--canvas-h:100svh;--copy-pt:0px;--pin-h:260svh;--copy-row:2;--gl-h:58%;--readout-b:42%;--desk-flex:none;--mob-flex:flex;--hero-min:auto;--hero-pt:28px;--caption-top:calc(54svh + 28px);--explode-h:auto;--canvas-pos:sticky;--caption-pos:static;--dial-size:min(70vw,42svh);
+--pd-cols:minmax(0,1fr);--pd-pos:relative;--pd-canvas-h:62svh;--pd-info-col:1;--pd-info-row:2;--pd-info-min:auto;--pd-dial:min(64vw,44svh);}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ground:#15070B;--ink:#F2E8DA;--mute:#B89C94;--brass:#C9A55C;--brass-lit:#E6C98E;--line:#3A1A21;--dial:#2A0E15;--dial-rim:#4C232B;--dial-ink:#EFE7D4;--seconds:#D2543F;--btn-bg:#C9A55C;--btn-fg:#15070B;--glow:#34111A;--shade:#060203;--rings:.45;--tex-op:0;--wm-op:.35;--tick-op:.5;color-scheme:dark;}}
+:root[data-theme="navy"]{--ground:#080F1A;--ink:#E8E9EC;--mute:#8595A8;--brass:#C9A55C;--brass-lit:#E0C288;--line:#1E2C3D;--dial:#0E1C2E;--dial-rim:#33465C;--dial-ink:#EFE7D4;--seconds:#D2543F;--btn-bg:#C9A55C;--btn-fg:#080F1A;--glow:#12203A;--shade:#03070D;--rings:.4;--tex-op:0;--wm-op:.35;--tick-op:.5;color-scheme:dark;}
+:root[data-theme="dark"]{--ground:#15070B;--ink:#F2E8DA;--mute:#B89C94;--brass:#C9A55C;--brass-lit:#E6C98E;--line:#3A1A21;--dial:#2A0E15;--dial-rim:#4C232B;--dial-ink:#EFE7D4;--seconds:#D2543F;--btn-bg:#C9A55C;--btn-fg:#15070B;--glow:#34111A;--shade:#060203;--rings:.45;--tex-op:0;--wm-op:.35;--tick-op:.5;color-scheme:dark;}
+@media (min-width:900px){:root{--nav-desk:flex;--nav-mob:none;--desk-inline:inline;--desk-block:block;--stage-cols:minmax(0,5fr) minmax(0,6fr);--canvas-col:2;--canvas-h:100svh;--copy-pt:0px;--pin-h:0px;--copy-row:1;--gl-h:100%;--readout-b:0px;--desk-flex:flex;--mob-flex:none;--hero-min:100svh;--hero-pt:120px;--caption-top:38svh;--explode-h:220svh;--canvas-pos:sticky;--caption-pos:sticky;--dial-size:min(34vw,60svh);--pd-cols:minmax(0,6fr) minmax(0,5fr);--pd-pos:sticky;--pd-canvas-h:calc(100svh - 72px);--pd-info-col:2;--pd-info-row:1;--pd-info-min:calc(100svh - 72px);--pd-dial:min(32vw,56svh);}}
+@media (hover:hover) and (pointer:fine){:root{--rule-attach:fixed}}
+*,*::before,*::after{box-sizing:border-box}
+html{overscroll-behavior-y:none}
+html,body{margin:0;background:var(--ground);color:var(--ink)}
+body{font-family:'Karla',sans-serif;-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
+a{color:var(--ink)}a:hover{color:var(--brass)}
+::selection{background:var(--brass);color:var(--ground)}
+::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
+::view-transition-new(root){z-index:2}
+</style>
+</helmet>
+<div style="position:relative;overflow-x:clip;background:var(--ground);color:var(--ink);min-height:100vh">
+  <div aria-hidden="true" style="position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(120vmax 90vmax at calc(var(--lx)*100%) calc(var(--ly)*100%),var(--glow) 0%,transparent 55%),linear-gradient(180deg,transparent 40%,var(--shade) 160%)"></div>
+  <dc-import name="SiteHeader" active="about" hint-size="100%,72px"></dc-import>
+  <main style="position:relative;z-index:1">
+    <section data-screen-label="About hero" style="display:flex;flex-direction:column;align-items:center;text-align:center;padding:clamp(56px,10vw,140px) var(--pad) clamp(56px,8vw,112px)">
+      <div role="img" aria-label="Meravs" style="display:inline-flex;align-items:flex-end;font-family:'Marcellus',serif;font-size:clamp(46px,9vw,124px);letter-spacing:.12em;line-height:1;padding:.5em 0">
+        <span aria-hidden="true">MERA</span>
+        <span aria-hidden="true" style="position:relative;display:inline-block;width:1.05em;height:1em;margin:0 .12em 0 -.02em">
+          <svg viewBox="0 0 100 100" style="position:absolute;left:50%;top:50%;width:2.3em;height:2.3em;transform:translate(-50%,-56%);overflow:visible">
+            <path d="M15.53 21.07 A45 45 0 0 1 84.47 21.07" style="fill:none;stroke:var(--brass);stroke-width:.9"></path>
+            <path d="M84.47 78.93 A45 45 0 0 1 15.53 78.93" style="fill:none;stroke:var(--brass);stroke-width:.9"></path>
+            <line x1="50" y1="6" x2="50" y2="11" style="stroke:var(--brass);stroke-width:.9"></line>
+            <line x1="50" y1="89" x2="50" y2="94" style="stroke:var(--brass);stroke-width:.9"></line>
+          </svg>
+          <svg viewBox="0 0 40 40" style="position:absolute;inset:0;width:100%;height:100%;overflow:visible">
+            <polygon points="18.6,29.3 21.4,30.7 39,-4" style="fill:var(--brass)"></polygon>
+            <polygon points="18.9,31 21.1,29 6,3" style="fill:var(--brass)"></polygon>
+            <polygon points="19.3,30 20.7,30 20,39" style="fill:var(--brass)"></polygon>
+            <circle cx="20" cy="30" r="2.6" style="fill:var(--ground);stroke:var(--brass);stroke-width:1.2"></circle>
+            <circle cx="20" cy="30" r="1" style="fill:var(--seconds)"></circle>
+          </svg>
+        </span>
+        <span aria-hidden="true">S</span>
+      </div>
+      <div style="margin-top:28px;font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.16em;color:var(--brass)">EST. 2026 · INDIA</div>
+      <p style="margin:28px 0 0;max-width:40ch;font-size:clamp(17px,1.4vw,20px);line-height:1.6;color:var(--mute);text-wrap:pretty">Meravs is a new watch label out of {{ city }}. The first collection is short on purpose — a few dials, chosen carefully, priced without the theatre.</p>
+    </section>
+
+    <section data-screen-label="Story" style="padding:0 var(--pad) clamp(64px,9vw,128px)">
+      <div style="height:1px;background-image:linear-gradient(90deg,var(--line) 0,var(--line) calc(var(--lx)*100vw - 30vw),var(--brass-lit) calc(var(--lx)*100vw),var(--line) calc(var(--lx)*100vw + 30vw),var(--line) 100vw);background-attachment:var(--rule-attach)"></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:clamp(40px,5vw,72px);padding-top:clamp(40px,5vw,64px)">
+        <article style="display:flex;flex-direction:column;gap:14px">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--brass)">THE LETTERS</div>
+          <h2 style="font-family:'Marcellus',serif;font-weight:400;font-size:clamp(26px,2.4vw,34px);line-height:1.12;margin:0">Cut from Roman capitals</h2>
+          <p style="margin:0;font-size:16.5px;line-height:1.65;color:var(--mute);max-width:38ch;text-wrap:pretty">The name is set in Marcellus, a typeface drawn from Roman inscriptional capitals. That is why the dial carries Roman numerals: the wordmark and the hours come from the same source.</p>
+        </article>
+        <article style="display:flex;flex-direction:column;gap:14px">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--brass)">THE COLOURS</div>
+          <h2 style="font-family:'Marcellus',serif;font-weight:400;font-size:clamp(26px,2.4vw,34px);line-height:1.12;margin:0">Taken from the first two watches</h2>
+          <p style="margin:0;font-size:16.5px;line-height:1.65;color:var(--mute);max-width:38ch;text-wrap:pretty">Navy by day and burgundy by night, with gold throughout. The navy and gold come from a blue sunburst dial and a gold case, the two watches the brand starts with.</p>
+        </article>
+        <article style="display:flex;flex-direction:column;gap:14px">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--brass)">THE PRICE</div>
+          <h2 style="font-family:'Marcellus',serif;font-weight:400;font-size:clamp(26px,2.4vw,34px);line-height:1.12;margin:0">One price, printed plainly</h2>
+          <p style="margin:0;font-size:16.5px;line-height:1.65;color:var(--mute);max-width:38ch;text-wrap:pretty">No struck-through MRP, no permanent sale, no discount that was never a discount.</p>
+        </article>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:clamp(48px,6vw,80px)">
+        <a href="Collection.dc.html" style="display:inline-flex;align-items:center;gap:14px;min-height:54px;padding:0 22px;white-space:nowrap;background:var(--btn-bg);color:var(--btn-fg);border:1px solid;border-image:linear-gradient(var(--lang),var(--brass-lit),var(--brass) 45%,transparent 90%) 1;font-weight:600;font-size:16px;text-decoration:none" style-hover="color:var(--btn-fg);filter:brightness(1.12)">See the collection<span aria-hidden="true" style="font-family:'JetBrains Mono',monospace">→</span></a>
+        <a href="{{ waHref }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;min-height:54px;padding:0 22px;white-space:nowrap;color:var(--ink);border:1px solid;border-image:linear-gradient(var(--lang),var(--brass-lit),var(--line) 55%) 1;font-weight:500;font-size:16px;text-decoration:none" style-hover="color:var(--brass)">Join the list on WhatsApp</a>
+      </div>
+    </section>
+  </main>
+  <dc-import name="SiteFooter" hint-size="100%,260px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { site: null, wa: undefined };
+  componentDidMount() { import('./inventory.js').then(inv => this.setState({ site: inv.SITE, wa: inv.joinLink() })); }
+  renderVals() { return { city: this.state.site ? this.state.site.city : '', waHref: this.state.wa }; }
+}
+</script>
+</body>
+</html>

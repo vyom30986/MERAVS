@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<article style="display:flex;flex-direction:column;gap:14px;min-width:0">
+  <a href="{{ href }}" aria-label="{{ name }}" style="display:block;position:relative;aspect-ratio:1/1;background:radial-gradient(circle at 50% 47%,var(--glow) 0%,var(--ground) 58%,var(--shade) 150%);text-decoration:none;overflow:hidden;border:1px solid var(--line)" style-hover="border-color:var(--brass)">
+    <div aria-hidden="true" style="position:absolute;inset:0;opacity:var(--rings);background:repeating-radial-gradient(circle at 50% 50%,transparent 0 7px,var(--line) 7px 8px);-webkit-mask-image:radial-gradient(circle at 50% 50%,transparent 26%,#000 38%,transparent 66%);mask-image:radial-gradient(circle at 50% 50%,transparent 26%,#000 38%,transparent 66%)"></div>
+    <div style="position:absolute;inset:19%">
+      <dc-import name="Dial" model="{{ model }}" hint-size="100%,100%"></dc-import>
+    </div>
+    <span style="position:absolute;top:12px;left:12px;display:flex;align-items:center;gap:7px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.16em;color:{{ statusCol }}">
+      <span style="width:6px;height:6px;border-radius:50%;background:{{ statusCol }}"></span>{{ statusLabel }}
+    </span>
+  </a>
+  <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--mute)">
+    <span>REF. {{ refNo }}</span>
+    <span style="color:var(--ink);font-size:13px;letter-spacing:.04em">{{ price }}</span>
+  </div>
+  <a href="{{ href }}" style="text-decoration:none;color:var(--ink)" style-hover="color:var(--brass)">
+    <h3 style="font-family:'Marcellus',serif;font-weight:400;font-size:24px;line-height:1.15;margin:0">{{ name }}</h3>
+  </a>
+  <p style="margin:-6px 0 0;font-size:15px;line-height:1.5;color:var(--mute)">{{ desc }}</p>
+  <sc-if value="{{ showNotify }}" hint-placeholder-val="{{ true }}">
+    <sc-if value="{{ canOrder }}" hint-placeholder-val="{{ true }}">
+      <a href="{{ orderHref }}" target="_blank" rel="noopener" style="align-self:flex-start;display:flex;align-items:center;gap:10px;height:44px;padding:0 16px;background:var(--btn-bg);color:var(--btn-fg);border:1px solid;border-image:linear-gradient(var(--lang),var(--brass-lit),var(--brass) 45%,transparent 90%) 1;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;text-decoration:none;white-space:nowrap" style-hover="color:var(--btn-fg);filter:brightness(1.12)">ORDER ON WHATSAPP<span aria-hidden="true">→</span></a>
+    </sc-if>
+    <sc-if value="{{ isOut }}" hint-placeholder-val="{{ false }}">
+    <button onClick="{{ toggle }}" aria-pressed="{{ onList }}" style="align-self:flex-start;display:flex;align-items:center;gap:10px;height:44px;padding:0 16px;background:{{ btnBg }};color:{{ btnFg }};border:1px solid;border-image:linear-gradient(var(--lang),var(--brass-lit),var(--line) 55%) 1;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;cursor:pointer;white-space:nowrap">{{ notifyLabel }}</button>
+    </sc-if>
+  </sc-if>
+</article>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:320,&quot;height&quot;:520},&quot;model&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;object&quot;},&quot;notify&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  state = { inv: null, list: [] };
+  componentDidMount() {
+    import('./inventory.js').then(inv => {
+      if (this.dead) return;
+      this.setState({ inv, list: inv.getList() });
+      this.off = inv.onListChange(list => this.setState({ list }));
+    });
+  }
+  componentWillUnmount() { this.dead = true; this.off && this.off(); }
+  renderVals() {
+    const m = this.props.model || {}, inv = this.state.inv;
+    const onList = this.state.list.includes(m.ref);
+    const out = m.status === 'out';
+    return {
+      model: m, name: m.name, refNo: m.ref, href: `Watch.dc.html?ref=${m.ref}`,
+      price: inv && m.price ? inv.formatPrice(m.price) : '',
+      desc: inv && m.ref ? inv.describe(m) : '',
+      statusLabel: out ? 'SOLD OUT' : 'IN STOCK',
+      statusCol: out ? 'var(--mute)' : 'var(--brass)',
+      showNotify: this.props.notify ?? true,
+      onList,
+      notifyLabel: onList ? 'ON YOUR LIST' : 'NOTIFY IF IT RETURNS',
+      canOrder: !out, isOut: out, orderHref: inv && m.ref ? inv.orderLink(m) : undefined,
+      btnBg: onList ? 'var(--btn-bg)' : 'transparent',
+      btnFg: onList ? 'var(--btn-fg)' : 'var(--ink)',
+      toggle: () => inv && inv.toggleInList(m.ref),
+    };
+  }
+}
+</script>
+</body>
+</html>

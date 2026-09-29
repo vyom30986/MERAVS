@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<footer style="position:relative;z-index:3;padding:0 var(--pad) 40px">
+  <div style="height:1px;background-image:linear-gradient(90deg,var(--line) 0,var(--line) calc(var(--lx)*100vw - 30vw),var(--brass-lit) calc(var(--lx)*100vw),var(--line) calc(var(--lx)*100vw + 30vw),var(--line) 100vw);background-attachment:var(--rule-attach)"></div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:36px;padding-top:40px">
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <span role="img" aria-label="Meravs" style="display:inline-flex;align-items:flex-end;font-family:'Marcellus',serif;font-size:22px;line-height:1;letter-spacing:.3em"><span aria-hidden="true">MERA</span><svg aria-hidden="true" viewBox="0 0 40 40" style="width:1.05em;height:1.05em;margin:0 .22em -.12em -.12em;overflow:visible;flex:none"><polygon points="18.6,29.3 21.4,30.7 39,-4" style="fill:var(--brass)"></polygon><polygon points="18.9,31 21.1,29 6,3" style="fill:var(--brass)"></polygon><polygon points="19.3,30 20.7,30 20,39" style="fill:var(--brass)"></polygon><circle cx="20" cy="30" r="2.6" style="fill:var(--ground);stroke:var(--brass);stroke-width:1.2"></circle><circle cx="20" cy="30" r="1" style="fill:var(--seconds)"></circle></svg><span aria-hidden="true">S</span></span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--mute)">SHIPPED FROM INDIA</span>
+    </div>
+    <nav aria-label="Footer" style="display:flex;flex-direction:column;gap:12px;font-size:15.5px">
+      <a href="Collection.dc.html" style="text-decoration:none;color:var(--ink)" style-hover="color:var(--brass)">Collection</a>
+      <a href="About.dc.html" style="text-decoration:none;color:var(--ink)" style-hover="color:var(--brass)">About</a>
+      <a href="FAQ.dc.html" style="text-decoration:none;color:var(--ink)" style-hover="color:var(--brass)">FAQ &amp; contact</a>
+      <a href="List.dc.html" style="text-decoration:none;color:var(--ink)" style-hover="color:var(--brass)">Your list</a>
+    </nav>
+    <div style="display:flex;flex-direction:column;gap:12px;font-size:15.5px">
+      <a href="{{ waHref }}" target="_blank" rel="noopener" style="text-decoration:none;color:var(--ink)" style-hover="color:var(--brass)">WhatsApp list</a>
+      <a href="{{ igHref }}" target="_blank" rel="noopener" style="text-decoration:none;color:var(--ink)" style-hover="color:var(--brass)">Instagram {{ handle }}</a>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--mute)">EMAIL</span>
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px">
+        <span ref="{{ emailRef }}" style="font-family:'JetBrains Mono',monospace;font-size:14px;user-select:all;overflow-wrap:anywhere">{{ email }}</span>
+        <button onClick="{{ onCopy }}" style="height:40px;padding:0 14px;background:transparent;color:var(--ink);border:1px solid;border-image:linear-gradient(var(--lang),var(--brass-lit),var(--line) 55%) 1;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;cursor:pointer;min-width:84px">{{ copyLabel }}</button>
+      </div>
+    </div>
+  </div>
+</footer>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;100%&quot;,&quot;height&quot;:260}}">
+class Component extends DCLogic {
+  state = { copied: false, site: null, links: {} };
+  emailRef = React.createRef();
+  componentDidMount() {
+    import('./inventory.js').then(inv => this.setState({ site: inv.SITE, links: { wa: inv.joinLink(), ig: inv.igLink() } }));
+  }
+  onCopy = async () => {
+    const text = this.state.site ? this.state.site.email : '';
+    let ok = false;
+    try { await navigator.clipboard.writeText(text); ok = true; } catch (_) {}
+    if (!ok && this.emailRef.current) {
+      const r = document.createRange(); r.selectNodeContents(this.emailRef.current);
+      const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r);
+      try { document.execCommand('copy'); } catch (_) {}
+    }
+    this.setState({ copied: true });
+    clearTimeout(this.t); this.t = setTimeout(() => this.setState({ copied: false }), 1800);
+  };
+  renderVals() {
+    const s = this.state.site || {};
+    return {
+      emailRef: this.emailRef, email: s.email || '', handle: s.handle || '',
+      waHref: this.state.links.wa, igHref: this.state.links.ig,
+      copyLabel: this.state.copied ? 'COPIED' : 'COPY', onCopy: this.onCopy,
+    };
+  }
+}
+</script>
+</body>
+</html>
