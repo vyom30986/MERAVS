@@ -91,7 +91,7 @@ class Component extends DCLogic {
       status: m.status === 'out' ? 'SOLD OUT' : 'IN STOCK',
       remove: () => inv.toggleInList(m.ref),
     }));
-    const text = 'Hi Meravs — I'd like to ask about these:\n' + models.map(m => `• ${m.name} (${inv.describe(m)})`).join('\n');
+    const text = "Hi Meravs — I'd like to ask about these:\n" + models.map(m => `• ${m.name} (${inv.describe(m)})`).join('\n');
     return {
       items, hasItems: items.length > 0, isEmpty: !!inv && items.length === 0,
       countLabel: String(items.length).padStart(2, '0'),
