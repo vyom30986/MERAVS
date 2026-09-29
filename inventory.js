@@ -6,7 +6,7 @@ export const SITE = {
   city: 'Gurugram',
   whatsapp: '916386609425',
   handle: '@meravs.official',
-  email: '[EMAIL]',
+  email: 'Meravsfounders@gmail.com',
 };
 
 // dial: d0 centre, d1 mid, d2 edge, ink numerals, idx indices, sheen sunburst tint
