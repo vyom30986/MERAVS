@@ -29,7 +29,7 @@ export const MODELS = [
     photo: 'ref-04.png', photoAspect: '4/3', shape: 'cushion', hands: 'baton', caseFinish: 'polished',
     bracelet: { centerW: 8.4, outerW: 4.4, outerX: 6.8, centerFinish: 'brushed', outerFinish: 'polished', pitch: 5.2 },
     dial: { d0: '#8E9196', d1: '#71747A', d2: '#4B4E53', ink: '#F4F5F6', idx: '#D8322E', sheen: '#D4D8DE', numerals: 'dots', wordY: 0.3, sub: { text: 'Quartz', font: 'script', y: -0.34, size: 0.15 } } },
-  { ref: '05', gender: 'women', name: 'Reference 05', dialName: 'Blue wave', note: 'Gold bangle with crystal shoulders', metal: 'gold', size: 20, price: 3450, status: 'in', // real product · size + price SAMPLE, confirm
+  { ref: '05', gender: 'women', name: 'Blue Bi-Drop', dialName: 'Blue wave', note: 'Gold bangle with crystal shoulders', metal: 'gold', size: 20, price: 3450, status: 'in', // real product · size + price SAMPLE, confirm
     photo: 'ref-05.png', shape: 'eye', hands: 'slim', seconds: false, caseFinish: 'polished',
     bracelet: { center: 'metal', scale: 0.8, pitch: 1.6, centerW: 7.2, outerW: 0.01, outerX: 0, centerFinish: 'polished', gems: 5 },
     dial: { d0: '#3048B0', d1: '#23358C', d2: '#141F5C', ink: '#E9D9A8', idx: '#D9BC7C', sheen: '#9FB0F0', style: 'waves', numerals: 'eye', font: 'serif', wordY: -0.3 } },
