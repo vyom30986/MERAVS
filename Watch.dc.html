@@ -90,12 +90,12 @@ a{color:var(--ink)}a:hover{color:var(--brass)}
           </sc-if>
           <a href="{{ askHref }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;min-height:54px;padding:0 22px;white-space:nowrap;color:var(--ink);border:1px solid;border-image:linear-gradient(var(--lang),var(--brass-lit),var(--line) 55%) 1;font-weight:500;font-size:16px;text-decoration:none" style-hover="color:var(--brass)">Ask on WhatsApp</a>
         </div>
-        <p style="margin:14px 0 0;font-size:14px;line-height:1.5;color:var(--mute)">{{ orderNote }}</p>
+        <p style="margin:14px 0 0;font-family:var(--body);font-style:italic;font-size:14.5px;line-height:1.55;color:var(--mute)">{{ orderNote }}</p>
         <dl style="display:grid;grid-template-columns:auto 1fr;gap:12px 28px;margin:40px 0 0;font-size:15.5px">
           <dt style="font-family:var(--label);font-size:12.5px;letter-spacing:.045em;color:var(--mute);padding-top:3px">Dial</dt><dd style="margin:0">{{ dialName }}</dd>
           <dt style="font-family:var(--label);font-size:12.5px;letter-spacing:.045em;color:var(--mute);padding-top:3px">Case tone</dt><dd style="margin:0">{{ metalName }}</dd>
           <dt style="font-family:var(--label);font-size:12.5px;letter-spacing:.045em;color:var(--mute);padding-top:3px">Case size</dt><dd style="margin:0">{{ sizeLabel }}</dd>
-          <dt style="font-family:var(--label);font-size:12.5px;letter-spacing:.045em;color:var(--mute);padding-top:3px">Details</dt><dd style="margin:0;color:var(--mute)">Full specifications are published at launch.</dd>
+          <dt style="font-family:var(--label);font-size:12.5px;letter-spacing:.045em;color:var(--mute);padding-top:3px">Details</dt><dd style="margin:0;font-style:italic;color:var(--mute)">Full specifications are published at launch.</dd>
         </dl>
         <sc-if value="{{ hasPhoto }}" hint-placeholder-val="{{ false }}">
           <figure style="margin:44px 0 0;display:flex;flex-direction:column;gap:12px">
