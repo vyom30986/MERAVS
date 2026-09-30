@@ -11,7 +11,7 @@ date: 2026-09-29T00:00:00Z
 ## Screen map
 | Screen | Repo files |
 |---|---|
-| Home | Home.dc.html |
+| Home | index.html |
 | Collection | Collection.dc.html, WatchCard.dc.html |
 | Watch detail | Watch.dc.html, watch3d.js, watchshape.js |
 | About | About.dc.html |
