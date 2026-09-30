@@ -72,16 +72,22 @@ export async function verifyPassword(password, stored) {
   let salt, expected;
   try { salt = b64urlToBytes(parts[2]); expected = b64urlToBytes(parts[3]); } catch (_) { return false; }
 
-  try {
-    const key = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveBits']);
-    const bits = await crypto.subtle.deriveBits(
-      { name: 'PBKDF2', salt, iterations, hash: 'SHA-256' }, key, expected.length * 8
-    );
-    return timingSafeEqual(new Uint8Array(bits), expected);
-  } catch (_) {
-    return false;
-  }
+  // Deliberately NOT wrapped in a catch. A Workers CPU-limit abort inside
+  // deriveBits used to be swallowed here and surfaced as "wrong password",
+  // which is indistinguishable from a real rejection and cost hours to find.
+  // Let it throw; the caller reports it as a server fault, not a bad password.
+  // Keep iterations within the CPU budget - see ITERATION_CEILING below.
+  const key = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveBits']);
+  const bits = await crypto.subtle.deriveBits(
+    { name: 'PBKDF2', salt, iterations, hash: 'SHA-256' }, key, expected.length * 8
+  );
+  return timingSafeEqual(new Uint8Array(bits), expected);
 }
+
+// A Worker gets ~10ms of CPU. PBKDF2-SHA256 costs roughly 0.2ms per thousand
+// iterations, so anything past ~40k risks being killed mid-derivation. OWASP
+// would like 210k; that is a number for a server with a real CPU budget.
+export const ITERATION_CEILING = 40000;
 
 /* ---------- session cookie ---------- */
 

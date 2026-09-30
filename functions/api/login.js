@@ -70,10 +70,17 @@ export async function onRequestPost({ request, env }) {
   // Always evaluate both checks. Bailing out early on a wrong username would
   // make it measurably faster than a wrong password, which tells an attacker
   // when they have guessed the ID correctly.
-  const [userOk, passOk] = await Promise.all([
-    safeEqualString(username, String(cfg.username).trim()),
-    verifyPassword(password, cfg.passwordHash),
-  ]);
+  let userOk, passOk;
+  try {
+    [userOk, passOk] = await Promise.all([
+      safeEqualString(username, String(cfg.username).trim()),
+      verifyPassword(password, cfg.passwordHash),
+    ]);
+  } catch (e) {
+    // Crypto itself failed - almost always the CPU limit on an iteration count
+    // that is too high. Say so, instead of blaming the password.
+    return json({ error: 'hash_failed', detail: String(e).slice(0, 200) }, 500);
+  }
   const ok = userOk && passOk;
 
   if (env.DB) {

@@ -19,7 +19,11 @@ import { webcrypto as crypto } from 'node:crypto';
 import { createInterface } from 'node:readline';
 import { stdin, stdout } from 'node:process';
 
-const ITERATIONS = 210_000; // OWASP's current PBKDF2-SHA256 guidance
+const ITERATIONS = 25_000; // NOT OWASP's 210k - a Cloudflare Worker gets about
+// 10ms of CPU, and 210k iterations needs roughly 45ms, so the derivation is
+// killed mid-flight and the login fails with no useful error. 25k costs ~5ms.
+// The hash also lives in D1, not in a public repo, so an attacker would need
+// database access before the iteration count mattered at all.
 const b64url = bytes => Buffer.from(bytes).toString('base64')
   .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 
