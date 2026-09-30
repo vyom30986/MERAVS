@@ -21,6 +21,10 @@ const ipOf = request =>
   'unknown';
 
 export async function onRequestGet({ request, env }) {
+  const cfgEarly = await adminConfig(env);
+  if (cfgEarly.authMode === 'open') {
+    return json({ admin: true, via: 'open', who: 'open access', openMode: true });
+  }
   const viaAccess = await verifyAccess(request, env);
   if (viaAccess) return json({ admin: true, via: 'access', who: viaAccess });
   const viaSession = await verifySession(request, env);

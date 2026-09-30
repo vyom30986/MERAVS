@@ -103,15 +103,19 @@ export const SESSION_COOKIE = 'meravs_admin';
 let cfgCache = null; // per-isolate, 30s
 
 export async function adminConfig(env) {
+  if (cfgCache && Date.now() - cfgCache.at < 30_000) return cfgCache.cfg;
+
   const out = {
     username: env.ADMIN_USERNAME || null,
     passwordHash: env.ADMIN_PASSWORD_HASH || null,
     sessionSecret: env.SESSION_SECRET || null,
+    // 'open' means no sign-in at all. Deliberate, temporary, and set in the
+    // database rather than in code so it can be switched back with one SQL
+    // statement the moment Google sign-in is wired up.
+    authMode: 'locked',
     source: 'env',
   };
-  if (out.username && out.passwordHash && out.sessionSecret) return out;
 
-  if (cfgCache && Date.now() - cfgCache.at < 30_000) return cfgCache.cfg;
   if (env.DB) {
     try {
       const r = await env.DB.prepare('SELECT key, value FROM admin_config').all();
@@ -119,8 +123,9 @@ export async function adminConfig(env) {
       out.username = out.username || m.username || null;
       out.passwordHash = out.passwordHash || m.password_hash || null;
       out.sessionSecret = out.sessionSecret || m.session_secret || null;
+      if (m.auth_mode === 'open') out.authMode = 'open';
       out.source = 'db';
-    } catch (_) { /* table missing - stay closed */ }
+    } catch (_) { /* table missing - stay locked */ }
   }
   cfgCache = { at: Date.now(), cfg: out };
   return out;
@@ -220,5 +225,10 @@ export async function verifyAccess(request, env) {
 /* ---------- the one check every privileged route uses ---------- */
 
 export async function verifyAdmin(request, env) {
+  const cfg = await adminConfig(env);
+  // Open mode: the panel is deliberately unauthenticated while Google sign-in
+  // is pending. Every write is still attributed and logged, so there is a
+  // trail even though there is no gate.
+  if (cfg.authMode === 'open') return 'open';
   return (await verifyAccess(request, env)) || (await verifySession(request, env)) || null;
 }

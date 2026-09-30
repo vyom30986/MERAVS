@@ -293,6 +293,19 @@ async function boot() {
   try { d = await (await fetch('/api/login')).json(); }
   catch (e) { $('#gate').hidden = false; note('#gateNote', 'bad', '<b>Cannot reach the API.</b> ' + esc(e.message)); return; }
 
+  if (d.openMode) {
+    $('#shell').hidden = false;
+    $('#who').textContent = 'no sign-in required';
+    $('#out').style.display = 'none';
+    openBanner();
+    try { W = await import('/watchshape.js'); } catch (_) {}
+    try { await document.fonts.ready; } catch (_) {}
+    buildNav();
+    await Promise.all([loadInventory(), loadEvents()]);
+    renderOverview();
+    return;
+  }
+
   if (!d.admin) {
     $('#gate').hidden = false;
     if (!d.passwordLoginAvailable) {
@@ -314,6 +327,18 @@ async function boot() {
 }
 
 function note(sel, kind, html) { const n = $(sel); n.hidden = false; n.className = 'note ' + kind; n.innerHTML = html; }
+
+// A banner on every view, not one easy-to-miss line, because the panel being
+// open to anyone is a temporary state that must not quietly become permanent.
+function openBanner() {
+  ['overview', 'watches', 'site', 'activity'].forEach(k => {
+    const s = $('#v-' + k); if (!s) return;
+    const d = document.createElement('div');
+    d.className = 'note bad';
+    d.innerHTML = '<b>No sign-in.</b> Anyone who reaches this URL can change prices, delete watches and read your visitors\' locations. Every change is logged with an IP under Activity. Switch back on with one SQL statement once Google sign-in is wired up.';
+    s.insertBefore(d, s.firstChild);
+  });
+}
 
 /* show / hide the password, so a typo is something you can see rather than guess at */
 const EYE_OPEN = '<path d="M1.5 12S5 5.5 12 5.5 22.5 12 22.5 12 19 18.5 12 18.5 1.5 12 1.5 12Z"/><circle cx="12" cy="12" r="3.2"/>';

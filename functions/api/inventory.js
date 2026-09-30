@@ -9,6 +9,25 @@
 
 import { json, verifyAdmin } from '../_lib.js';
 
+// With the panel unauthenticated, a record of every change is the only thing
+// standing between "someone edited a price" and "nobody knows what happened".
+async function audit(env, request, who, what, ref) {
+  if (!env.DB) return;
+  const cf = request.cf || {};
+  try {
+    await env.DB.prepare(
+      `INSERT INTO events (created_at, kind, ref, email, country, city, referrer, path, user_agent)
+       VALUES (datetime('now'), 'admin_write', ?, ?, ?, ?, ?, ?, ?)`
+    ).bind(
+      ref || null, who || null,
+      (cf.country || '').slice(0, 8) || null,
+      (cf.city || '').slice(0, 64) || null,
+      (request.headers.get('cf-connecting-ip') || '').slice(0, 64) || null,
+      what, (request.headers.get('user-agent') || '').slice(0, 300) || null
+    ).run();
+  } catch (_) { /* never fail a save because the audit row failed */ }
+}
+
 // D1 keeps the flat fields as columns and the renderer's nested config in `design`.
 // Recombine into the single object watchshape.js and the pages already consume.
 function rowToModel(row) {
@@ -63,6 +82,7 @@ export async function onRequestPut({ request, env }) {
     await env.DB.batch(entries.map(([k, v]) =>
       env.DB.prepare('INSERT OR REPLACE INTO site (key,value) VALUES (?,?)').bind(k, v)
     ));
+    await audit(env, request, email, 'site:' + entries.map(e => e[0]).join(','), null);
     return json({ ok: true, wrote: 'site', by: email, keys: entries.map(e => e[0]) });
   }
 
@@ -94,6 +114,7 @@ export async function onRequestPut({ request, env }) {
       m.dialName || null, m.note || null, m.tone || null, String(m.metal || 'steel'),
       size, price, status, m.photo || null, m.photoAspect || null, JSON.stringify(design)
     ).run();
+    await audit(env, request, email, 'model:' + String(m.name || ''), m.ref);
     return json({ ok: true, wrote: 'model', ref: m.ref, by: email });
   } catch (e) {
     return json({ error: 'write_failed', detail: String(e) }, 500);
@@ -107,5 +128,6 @@ export async function onRequestDelete({ request, env }) {
   const ref = new URL(request.url).searchParams.get('ref');
   if (!ref) return json({ error: 'missing_ref' }, 400);
   await env.DB.prepare('DELETE FROM models WHERE ref = ?').bind(ref).run();
+  await audit(env, request, email, 'delete', ref);
   return json({ ok: true, deleted: ref, by: email });
 }
