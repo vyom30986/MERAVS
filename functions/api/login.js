@@ -8,7 +8,7 @@
 
 import {
   json, verifyPassword, safeEqualString, verifyAdmin, verifyAccess, verifySession,
-  makeSession, sessionCookie,
+  makeSession, sessionCookie, adminConfig,
 } from '../_lib.js';
 
 const WINDOW_MIN = 15;     // throttle window
@@ -25,18 +25,20 @@ export async function onRequestGet({ request, env }) {
   if (viaAccess) return json({ admin: true, via: 'access', who: viaAccess });
   const viaSession = await verifySession(request, env);
   if (viaSession) return json({ admin: true, via: 'session', who: viaSession });
+  const cfg = await adminConfig(env);
   return json({
     admin: false,
     via: null,
     // Tell the panel which login routes are actually usable, so it can show
     // the right thing instead of a form that cannot possibly work.
-    passwordLoginAvailable: Boolean(env.ADMIN_USERNAME && env.ADMIN_PASSWORD_HASH && env.SESSION_SECRET),
+    passwordLoginAvailable: Boolean(cfg.username && cfg.passwordHash && cfg.sessionSecret),
     accessConfigured: Boolean(env.ACCESS_TEAM_DOMAIN && env.ACCESS_AUD),
   });
 }
 
 export async function onRequestPost({ request, env }) {
-  if (!env.ADMIN_USERNAME || !env.ADMIN_PASSWORD_HASH || !env.SESSION_SECRET) {
+  const cfg = await adminConfig(env);
+  if (!cfg.username || !cfg.passwordHash || !cfg.sessionSecret) {
     return json({ error: 'login_not_configured' }, 503);
   }
 
@@ -69,8 +71,8 @@ export async function onRequestPost({ request, env }) {
   // make it measurably faster than a wrong password, which tells an attacker
   // when they have guessed the ID correctly.
   const [userOk, passOk] = await Promise.all([
-    safeEqualString(username, String(env.ADMIN_USERNAME).trim()),
-    verifyPassword(password, env.ADMIN_PASSWORD_HASH),
+    safeEqualString(username, String(cfg.username).trim()),
+    verifyPassword(password, cfg.passwordHash),
   ]);
   const ok = userOk && passOk;
 

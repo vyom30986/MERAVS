@@ -87,15 +87,49 @@ export async function verifyPassword(password, stored) {
 
 export const SESSION_COOKIE = 'meravs_admin';
 
+/* ---------- where the admin credentials live ----------
+   Cloudflare environment secrets win when they are set. When they are not,
+   fall back to the admin_config table in D1, which is reachable only through
+   a bound Function and is never served by any public route. That fallback is
+   what lets the panel work without a trip to the dashboard; setting the env
+   secrets later silently takes over with no code change.                   */
+
+let cfgCache = null; // per-isolate, 30s
+
+export async function adminConfig(env) {
+  const out = {
+    username: env.ADMIN_USERNAME || null,
+    passwordHash: env.ADMIN_PASSWORD_HASH || null,
+    sessionSecret: env.SESSION_SECRET || null,
+    source: 'env',
+  };
+  if (out.username && out.passwordHash && out.sessionSecret) return out;
+
+  if (cfgCache && Date.now() - cfgCache.at < 30_000) return cfgCache.cfg;
+  if (env.DB) {
+    try {
+      const r = await env.DB.prepare('SELECT key, value FROM admin_config').all();
+      const m = Object.fromEntries((r.results || []).map(x => [x.key, x.value]));
+      out.username = out.username || m.username || null;
+      out.passwordHash = out.passwordHash || m.password_hash || null;
+      out.sessionSecret = out.sessionSecret || m.session_secret || null;
+      out.source = 'db';
+    } catch (_) { /* table missing - stay closed */ }
+  }
+  cfgCache = { at: Date.now(), cfg: out };
+  return out;
+}
+
 const hmacKey = secret =>
   crypto.subtle.importKey('raw', enc.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign', 'verify']);
 
 export async function makeSession(env, sub, ttlSeconds = 60 * 60 * 12) {
-  if (!env.SESSION_SECRET) return null;
+  const { sessionSecret } = await adminConfig(env);
+  if (!sessionSecret) return null;
   const payload = bytesToB64url(enc.encode(JSON.stringify({
     sub, exp: Math.floor(Date.now() / 1000) + ttlSeconds,
   })));
-  const sig = new Uint8Array(await crypto.subtle.sign('HMAC', await hmacKey(env.SESSION_SECRET), enc.encode(payload)));
+  const sig = new Uint8Array(await crypto.subtle.sign('HMAC', await hmacKey(sessionSecret), enc.encode(payload)));
   return `${payload}.${bytesToB64url(sig)}`;
 }
 
@@ -106,15 +140,16 @@ export function sessionCookie(value, maxAge) {
 }
 
 export async function verifySession(request, env) {
-  if (!env.SESSION_SECRET) return null;
   const raw = (request.headers.get('cookie') || '').match(new RegExp(`${SESSION_COOKIE}=([^;]+)`));
   if (!raw) return null;
+  const { sessionSecret } = await adminConfig(env);
+  if (!sessionSecret) return null;
   const [payload, sig] = raw[1].split('.');
   if (!payload || !sig) return null;
 
   try {
     const ok = await crypto.subtle.verify(
-      'HMAC', await hmacKey(env.SESSION_SECRET), b64urlToBytes(sig), enc.encode(payload)
+      'HMAC', await hmacKey(sessionSecret), b64urlToBytes(sig), enc.encode(payload)
     );
     if (!ok) return null;
     const data = b64urlToJSON(payload);
