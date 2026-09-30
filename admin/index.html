@@ -79,6 +79,17 @@
 
 <div class="banner" id="banner" hidden></div>
 
+<div class="card" id="loginCard" hidden><div class="body" style="border-top:0;padding-top:18px">
+  <h2 style="font-family:var(--display);font-weight:400;font-size:20px;margin:0">Sign in</h2>
+  <p class="hint">Checked on the server against a PBKDF2 hash. Nothing on this page can be read to get past it.</p>
+  <form id="loginForm" style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-top:14px">
+    <label style="flex:1;min-width:220px">Password
+      <input type="password" id="pw" autocomplete="current-password" required></label>
+    <button class="btn" type="submit" id="loginBtn">Sign in</button>
+  </form>
+  <p class="msg" id="loginMsg" style="margin-top:12px"></p>
+</div></div>
+
 <nav role="tablist">
   <button role="tab" aria-selected="true"  data-tab="watches">Watches</button>
   <button role="tab" aria-selected="false" data-tab="site">Site settings</button>
@@ -120,32 +131,62 @@ document.querySelectorAll('nav button').forEach(b => b.onclick = () => {
   if (b.dataset.tab === 'activity') loadEvents();
 });
 
-/* ---- access probe ----
-   A GET on the admin-only events endpoint tells us whether Cloudflare Access is
-   configured and we are through it. Writes fail closed, so surface that plainly
-   rather than letting someone fill a form that cannot save. */
+/* ---- who am I ----
+   /api/login reports whether we are authenticated and which login routes are
+   actually usable, so the page shows the right thing instead of a form that
+   cannot possibly work. Writes fail closed regardless of what this page does. */
 async function probe() {
   try {
-    const r = await fetch('/api/events?limit=1');
-    if (r.ok) {
-      const d = await r.json();
+    const r = await fetch('/api/login');
+    const d = await r.json();
+
+    if (d.admin) {
       canWrite = true;
-      $('#who').textContent = d.viewer || 'signed in';
-      banner('ok', '<b>Access verified.</b> Changes you save here go live on the site within about a minute.');
+      $('#who').innerHTML = `${esc(d.who || 'signed in')} · <a href="#" id="out">sign out</a>`;
+      $('#out').onclick = async e => {
+        e.preventDefault();
+        await fetch('/api/login', { method: 'DELETE' });
+        location.reload();
+      };
+      $('#loginCard').hidden = true;
+      banner('ok', `<b>Signed in via ${esc(d.via)}.</b> Changes you save here go live on the site within about a minute.`);
       return;
     }
-    if (r.status === 403) {
-      banner('bad', '<b>Read-only.</b> Cloudflare Access is not configured yet, so every write is refused — by design, so nobody can edit prices while this page is unprotected. Set up an Access application over <code>/admin*</code> <em>only</em> — never over <code>/api/*</code>, which would block the public catalogue and the tracking beacon — then set <code>ACCESS_TEAM_DOMAIN</code> and <code>ACCESS_AUD</code> on the Pages project. The API reads your Access cookie to authorise writes.');
-      $('#who').textContent = 'not authenticated';
-      return;
+
+    $('#who').textContent = 'not signed in';
+    if (d.passwordLoginAvailable) {
+      $('#loginCard').hidden = false;
+      banner('bad', '<b>Read-only until you sign in.</b> Every write is refused without a verified session.');
+    } else {
+      banner('bad', '<b>Read-only — login is not configured.</b> Run <code>node tools/hash-password.mjs</code>, then add <code>ADMIN_PASSWORD_HASH</code> and <code>SESSION_SECRET</code> as encrypted Secrets on the Pages project and redeploy. Until then nothing can write, including anyone who finds this page.');
     }
-    banner('bad', `<b>API returned ${r.status}.</b> The D1 binding named <code>DB</code> is probably missing from the Pages project settings.`);
-    $('#who').textContent = 'api error';
   } catch (e) {
     banner('bad', '<b>Could not reach the API.</b> ' + esc(e.message));
     $('#who').textContent = 'offline';
   }
 }
+
+$('#loginForm').onsubmit = async e => {
+  e.preventDefault();
+  const msg = $('#loginMsg'), btn = $('#loginBtn');
+  btn.disabled = true; msg.className = 'msg'; msg.textContent = 'checking…';
+  try {
+    const r = await fetch('/api/login', {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ password: $('#pw').value }),
+    });
+    const d = await r.json();
+    if (r.ok) { msg.className = 'msg ok'; msg.textContent = 'signed in'; location.reload(); return; }
+    msg.className = 'msg bad';
+    msg.textContent = d.error === 'too_many_attempts'
+      ? `Too many attempts. Wait ${d.retryAfterMinutes} minutes.`
+      : d.error === 'login_not_configured'
+        ? 'Login is not configured on the server yet.'
+        : 'Wrong password.';
+  } catch (err) { msg.className = 'msg bad'; msg.textContent = err.message; }
+  btn.disabled = false;
+  $('#pw').value = '';
+};
 function banner(kind, html) {
   const b = $('#banner'); b.hidden = false; b.className = 'banner ' + (kind === 'ok' ? 'ok' : ''); b.innerHTML = html;
 }

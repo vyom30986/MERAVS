@@ -1,21 +1,24 @@
 // Shared helpers for the Meravs Pages Functions.
 // Files under functions/ whose name starts with _ are not routed.
+//
+// Two ways to prove you are the admin, both verified server-side:
+//   1. A Cloudflare Access JWT  (preferred, once Zero Trust is enabled)
+//   2. An HMAC-signed session cookie issued by /api/login
+// Both fail closed. If neither is configured, nothing can write.
 
-export const json = (body, status = 200, cache = 'no-store') =>
+export const json = (body, status = 200, cache = 'no-store', extraHeaders = {}) =>
   new Response(JSON.stringify(body), {
     status,
     headers: {
       'content-type': 'application/json; charset=utf-8',
       'cache-control': status === 200 ? cache : 'no-store',
+      ...extraHeaders,
     },
   });
 
-/* ---------- Cloudflare Access verification ----------
-   Fails closed. Returns the verified email, or null meaning refuse.
-   Null is returned when Access is not configured at all, so no write path
-   is ever open by default.                                              */
+/* ---------- byte helpers ---------- */
 
-function b64urlToBytes(s) {
+export function b64urlToBytes(s) {
   const pad = s.length % 4 ? '='.repeat(4 - (s.length % 4)) : '';
   const bin = atob(s.replace(/-/g, '+').replace(/_/g, '/') + pad);
   const out = new Uint8Array(bin.length);
@@ -23,7 +26,92 @@ function b64urlToBytes(s) {
   return out;
 }
 
+export function bytesToB64url(bytes) {
+  let s = '';
+  for (const b of bytes) s += String.fromCharCode(b);
+  return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+const enc = new TextEncoder();
 const b64urlToJSON = s => JSON.parse(new TextDecoder().decode(b64urlToBytes(s)));
+
+// Compare without leaking how many bytes matched.
+function timingSafeEqual(a, b) {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a[i] ^ b[i];
+  return diff === 0;
+}
+
+/* ---------- password ----------
+   Stored as: pbkdf2$<iterations>$<saltB64url>$<hashB64url>
+   Generated locally by tools/hash-password.mjs so the plaintext password
+   never travels anywhere and is never known to this codebase.            */
+
+export async function verifyPassword(password, stored) {
+  if (typeof stored !== 'string') return false;
+  const parts = stored.split('$');
+  if (parts.length !== 4 || parts[0] !== 'pbkdf2') return false;
+  const iterations = parseInt(parts[1], 10);
+  if (!Number.isFinite(iterations) || iterations < 10000) return false;
+
+  let salt, expected;
+  try { salt = b64urlToBytes(parts[2]); expected = b64urlToBytes(parts[3]); } catch (_) { return false; }
+
+  try {
+    const key = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveBits']);
+    const bits = await crypto.subtle.deriveBits(
+      { name: 'PBKDF2', salt, iterations, hash: 'SHA-256' }, key, expected.length * 8
+    );
+    return timingSafeEqual(new Uint8Array(bits), expected);
+  } catch (_) {
+    return false;
+  }
+}
+
+/* ---------- session cookie ---------- */
+
+export const SESSION_COOKIE = 'meravs_admin';
+
+const hmacKey = secret =>
+  crypto.subtle.importKey('raw', enc.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign', 'verify']);
+
+export async function makeSession(env, sub, ttlSeconds = 60 * 60 * 12) {
+  if (!env.SESSION_SECRET) return null;
+  const payload = bytesToB64url(enc.encode(JSON.stringify({
+    sub, exp: Math.floor(Date.now() / 1000) + ttlSeconds,
+  })));
+  const sig = new Uint8Array(await crypto.subtle.sign('HMAC', await hmacKey(env.SESSION_SECRET), enc.encode(payload)));
+  return `${payload}.${bytesToB64url(sig)}`;
+}
+
+export function sessionCookie(value, maxAge) {
+  // httpOnly keeps it out of reach of any script on the page; Secure means
+  // HTTPS only; Strict means it is never sent from another site's context.
+  return `${SESSION_COOKIE}=${value}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${maxAge}`;
+}
+
+export async function verifySession(request, env) {
+  if (!env.SESSION_SECRET) return null;
+  const raw = (request.headers.get('cookie') || '').match(new RegExp(`${SESSION_COOKIE}=([^;]+)`));
+  if (!raw) return null;
+  const [payload, sig] = raw[1].split('.');
+  if (!payload || !sig) return null;
+
+  try {
+    const ok = await crypto.subtle.verify(
+      'HMAC', await hmacKey(env.SESSION_SECRET), b64urlToBytes(sig), enc.encode(payload)
+    );
+    if (!ok) return null;
+    const data = b64urlToJSON(payload);
+    if (!data.exp || data.exp * 1000 < Date.now()) return null;
+    return data.sub || 'admin';
+  } catch (_) {
+    return null;
+  }
+}
+
+/* ---------- Cloudflare Access ---------- */
 
 let certsCache = null; // per-isolate, one hour
 
@@ -66,10 +154,16 @@ export async function verifyAccess(request, env) {
       'jwk', jwk, { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' }, false, ['verify']
     );
     const ok = await crypto.subtle.verify(
-      'RSASSA-PKCS1-v1_5', key, b64urlToBytes(s), new TextEncoder().encode(`${h}.${p}`)
+      'RSASSA-PKCS1-v1_5', key, b64urlToBytes(s), enc.encode(`${h}.${p}`)
     );
     return ok ? (payload.email || 'unknown') : null;
   } catch (_) {
     return null;
   }
+}
+
+/* ---------- the one check every privileged route uses ---------- */
+
+export async function verifyAdmin(request, env) {
+  return (await verifyAccess(request, env)) || (await verifySession(request, env)) || null;
 }

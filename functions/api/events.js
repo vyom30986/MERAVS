@@ -6,10 +6,10 @@
 //   ?limit=200   how many raw rows (max 500)
 //   ?kind=waitlist   filter to one kind
 
-import { json, verifyAccess } from '../_lib.js';
+import { json, verifyAdmin } from '../_lib.js';
 
 export async function onRequestGet({ request, env }) {
-  const email = await verifyAccess(request, env);
+  const email = await verifyAdmin(request, env);
   if (!email) return json({ error: 'forbidden' }, 403);
   if (!env.DB) return json({ error: 'no_database' }, 503);
 

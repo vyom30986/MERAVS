@@ -7,7 +7,7 @@
 // that verifies against the team's published keys. With ACCESS_TEAM_DOMAIN or
 // ACCESS_AUD unset, nothing can write - including us.
 
-import { json, verifyAccess } from '../_lib.js';
+import { json, verifyAdmin } from '../_lib.js';
 
 // D1 keeps the flat fields as columns and the renderer's nested config in `design`.
 // Recombine into the single object watchshape.js and the pages already consume.
@@ -50,7 +50,7 @@ export async function onRequestGet({ env }) {
 }
 
 export async function onRequestPut({ request, env }) {
-  const email = await verifyAccess(request, env);
+  const email = await verifyAdmin(request, env);
   if (!email) return json({ error: 'forbidden' }, 403);
   if (!env.DB) return json({ error: 'no_database' }, 503);
 
@@ -101,7 +101,7 @@ export async function onRequestPut({ request, env }) {
 }
 
 export async function onRequestDelete({ request, env }) {
-  const email = await verifyAccess(request, env);
+  const email = await verifyAdmin(request, env);
   if (!email) return json({ error: 'forbidden' }, 403);
   if (!env.DB) return json({ error: 'no_database' }, 503);
   const ref = new URL(request.url).searchParams.get('ref');
