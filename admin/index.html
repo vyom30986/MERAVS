@@ -337,8 +337,12 @@ $('#loginForm').onsubmit = async e => {
     const d = await r.json();
     if (r.ok) { location.reload(); return; }
     msg.className = 'msg bad';
-    msg.textContent = d.error === 'too_many_attempts' ? `Too many attempts. Wait ${d.retryAfterMinutes} minutes.`
-      : d.error === 'login_not_configured' ? 'Login is not configured on the server.' : 'Wrong ID or password.';
+    msg.textContent =
+      d.error === 'too_many_attempts' ? `Too many attempts. Wait ${d.retryAfterMinutes} minutes.`
+      : d.error === 'login_not_configured' ? 'Login is not configured on the server.'
+      : d.error === 'hash_failed' ? 'The server could not check the password. This is a fault on our side, not your password.'
+      : 'Wrong ID or password.' + (typeof d.attemptsRemaining === 'number'
+          ? ` ${d.attemptsRemaining} ${d.attemptsRemaining === 1 ? 'try' : 'tries'} left before a ${d.windowMinutes}-minute lockout.` : '');
   } catch (err) { msg.className = 'msg bad'; msg.textContent = err.message; }
   btn.disabled = false; $('#pw').value = '';
 };

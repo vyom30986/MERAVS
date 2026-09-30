@@ -76,6 +76,14 @@ export async function onRequestPost({ request, env }) {
       safeEqualString(username, String(cfg.username).trim()),
       verifyPassword(password, cfg.passwordHash),
     ]);
+    // Passwords are not trimmed by default, because whitespace in one may be
+    // deliberate. But a trailing space on a pasted passphrase is a clipboard
+    // artifact every single time, and rejecting it gives the user no way to
+    // see what went wrong. So try the trimmed form as a second chance, only
+    // when the two actually differ.
+    if (!passOk && password !== password.trim()) {
+      passOk = await verifyPassword(password.trim(), cfg.passwordHash);
+    }
   } catch (e) {
     // Crypto itself failed - almost always the CPU limit on an iteration count
     // that is too high. Say so, instead of blaming the password.
@@ -92,9 +100,22 @@ export async function onRequestPost({ request, env }) {
   }
 
   if (!ok) {
-    // Constant-ish response time and no hint about why it failed.
+    // Constant-ish response time, and still no hint about WHICH field was
+    // wrong. But do say how many tries are left - being locked out with no
+    // warning is worse than useless, and the count leaks nothing an attacker
+    // could not measure by counting their own requests.
     await new Promise(r => setTimeout(r, 400));
-    return json({ error: 'invalid' }, 401);
+    let left = null;
+    if (env.DB) {
+      try {
+        const r = await env.DB.prepare(
+          `SELECT COUNT(*) n FROM login_attempts
+           WHERE ip = ? AND ok = 0 AND created_at >= datetime('now', ?)`
+        ).bind(ip, `-${WINDOW_MIN} minutes`).first();
+        left = Math.max(0, MAX_FAILURES - ((r && r.n) || 0));
+      } catch (_) {}
+    }
+    return json({ error: 'invalid', attemptsRemaining: left, windowMinutes: WINDOW_MIN }, 401);
   }
 
   const token = await makeSession(env, 'admin', TTL);
