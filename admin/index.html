@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Meravs admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Karla:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --ground:#0B1320; --panel:#111C2C; --ink:#E8E9EC; --mute:#8595A8;
+    --brass:#C9A55C; --line:#22334A; --ok:#4FA97B; --bad:#D2543F;
+    --body:'Karla',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+    --display:'Marcellus',Georgia,serif;
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5}
+  .wrap{max-width:1040px;margin:0 auto;padding-inline:20px;padding-block:24px 64px}
+  header{display:flex;flex-wrap:wrap;gap:12px;align-items:baseline;justify-content:space-between;
+    padding-bottom:16px;border-bottom:1px solid var(--line);margin-bottom:20px}
+  h1{font-family:var(--display);font-weight:400;font-size:22px;letter-spacing:.3em;margin:0}
+  .who{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--mute)}
+  .banner{border:1px solid var(--line);border-left:3px solid var(--bad);background:var(--panel);
+    padding:14px 16px;margin-bottom:22px;font-size:14px}
+  .banner.ok{border-left-color:var(--ok)}
+  .banner b{color:var(--ink)}
+  nav{display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap}
+  nav button{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    background:transparent;color:var(--mute);border:1px solid var(--line);padding:9px 14px;cursor:pointer}
+  nav button[aria-selected="true"]{color:var(--ground);background:var(--brass);border-color:var(--brass)}
+  section[hidden]{display:none}
+  .card{border:1px solid var(--line);background:var(--panel);margin-bottom:12px}
+  .card > summary{list-style:none;cursor:pointer;padding:14px 16px;display:flex;gap:14px;
+    align-items:center;flex-wrap:wrap}
+  .card > summary::-webkit-details-marker{display:none}
+  .ref{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--brass);flex:none}
+  .nm{font-family:var(--display);font-size:18px;flex:1;min-width:140px}
+  .pill{font-family:var(--mono);font-size:10px;letter-spacing:.12em;padding:4px 8px;border:1px solid var(--line);color:var(--mute)}
+  .pill.in{color:var(--ok);border-color:var(--ok)}
+  .pill.out{color:var(--bad);border-color:var(--bad)}
+  .body{padding:0 16px 16px;border-top:1px solid var(--line)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:14px;margin-top:16px}
+  label{display:flex;flex-direction:column;gap:6px;font-family:var(--mono);font-size:10px;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+  input,select,textarea{font-family:var(--body);font-size:15px;background:var(--ground);color:var(--ink);
+    border:1px solid var(--line);padding:9px 10px;width:100%;min-width:0}
+  textarea{font-family:var(--mono);font-size:12px;line-height:1.55;resize:vertical}
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--brass);outline-offset:1px}
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:16px}
+  .btn{font-family:var(--body);font-weight:600;font-size:14px;background:var(--brass);color:#0B1320;
+    border:1px solid var(--brass);padding:10px 18px;cursor:pointer}
+  .btn.ghost{background:transparent;color:var(--ink);border-color:var(--line);font-weight:500}
+  .btn[disabled]{opacity:.45;cursor:not-allowed}
+  .msg{font-family:var(--mono);font-size:11px;letter-spacing:.1em}
+  .msg.ok{color:var(--ok)} .msg.bad{color:var(--bad)}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+  td{font-variant-numeric:tabular-nums}
+  .scroll{overflow-x:auto}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:12px;margin-bottom:20px}
+  .stat{border:1px solid var(--line);background:var(--panel);padding:14px 16px}
+  .stat .n{font-family:var(--display);font-size:30px;line-height:1}
+  .stat .k{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin-top:6px}
+  .hint{font-size:13px;color:var(--mute);margin-top:6px}
+  a{color:var(--brass)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>MERAVS</h1>
+  <span class="who" id="who">checking access…</span>
+</header>
+
+<div class="banner" id="banner" hidden></div>
+
+<nav role="tablist">
+  <button role="tab" aria-selected="true"  data-tab="watches">Watches</button>
+  <button role="tab" aria-selected="false" data-tab="site">Site settings</button>
+  <button role="tab" aria-selected="false" data-tab="activity">Activity</button>
+</nav>
+
+<section id="watches"><p class="hint">Loading…</p></section>
+
+<section id="site" hidden>
+  <div class="card"><div class="body" style="border-top:0;padding-top:16px">
+    <div class="grid" id="siteGrid"></div>
+    <div class="row">
+      <button class="btn" id="saveSite">Save settings</button>
+      <span class="msg" id="siteMsg"></span>
+    </div>
+  </div></div>
+</section>
+
+<section id="activity" hidden>
+  <div class="stats" id="stats"></div>
+  <div class="card"><div class="body" style="border-top:0;padding-top:16px">
+    <div class="scroll"><table id="events"><tbody><tr><td class="hint">Loading…</td></tr></tbody></table></div>
+  </div></div>
+</section>
+
+</div>
+
+<script type="module">
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const FLAT = ['ref','gender','name','dialName','note','tone','metal','size','price','status','photo','photoAspect','sort_order'];
+
+let canWrite = false;
+
+/* ---- tabs ---- */
+document.querySelectorAll('nav button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('nav button').forEach(x => x.setAttribute('aria-selected', String(x === b)));
+  ['watches','site','activity'].forEach(id => { $('#' + id).hidden = id !== b.dataset.tab; });
+  if (b.dataset.tab === 'activity') loadEvents();
+});
+
+/* ---- access probe ----
+   A GET on the admin-only events endpoint tells us whether Cloudflare Access is
+   configured and we are through it. Writes fail closed, so surface that plainly
+   rather than letting someone fill a form that cannot save. */
+async function probe() {
+  try {
+    const r = await fetch('/api/events?limit=1');
+    if (r.ok) {
+      const d = await r.json();
+      canWrite = true;
+      $('#who').textContent = d.viewer || 'signed in';
+      banner('ok', '<b>Access verified.</b> Changes you save here go live on the site within about a minute.');
+      return;
+    }
+    if (r.status === 403) {
+      banner('bad', '<b>Read-only.</b> Cloudflare Access is not configured yet, so every write is refused — by design, so nobody can edit prices while this page is unprotected. Set up an Access application over <code>/admin*</code> and <code>/api/*</code>, then set the <code>ACCESS_TEAM_DOMAIN</code> and <code>ACCESS_AUD</code> variables on the Pages project.');
+      $('#who').textContent = 'not authenticated';
+      return;
+    }
+    banner('bad', `<b>API returned ${r.status}.</b> The D1 binding named <code>DB</code> is probably missing from the Pages project settings.`);
+    $('#who').textContent = 'api error';
+  } catch (e) {
+    banner('bad', '<b>Could not reach the API.</b> ' + esc(e.message));
+    $('#who').textContent = 'offline';
+  }
+}
+function banner(kind, html) {
+  const b = $('#banner'); b.hidden = false; b.className = 'banner ' + (kind === 'ok' ? 'ok' : ''); b.innerHTML = html;
+}
+
+/* ---- watches ---- */
+async function loadInventory() {
+  const r = await fetch('/api/inventory');
+  if (!r.ok) { $('#watches').innerHTML = `<p class="hint">Inventory API returned ${r.status}.</p>`; return; }
+  const { models, site } = await r.json();
+  renderWatches(models);
+  renderSite(site);
+}
+
+function field(label, name, value, type = 'text', opts) {
+  if (opts) return `<label>${label}<select name="${name}">${
+    opts.map(o => `<option value="${esc(o)}"${o === value ? ' selected' : ''}>${esc(o)}</option>`).join('')}</select></label>`;
+  return `<label>${label}<input name="${name}" type="${type}" value="${esc(value ?? '')}"></label>`;
+}
+
+function renderWatches(models) {
+  $('#watches').innerHTML = models.map((m, i) => {
+    const design = {}; Object.keys(m).forEach(k => { if (!FLAT.includes(k)) design[k] = m[k]; });
+    return `<details class="card" data-ref="${esc(m.ref)}">
+      <summary>
+        <span class="ref">REF. ${esc(m.ref)}</span>
+        <span class="nm">${esc(m.name)}</span>
+        <span class="pill">₹${Number(m.price).toLocaleString('en-IN')}</span>
+        <span class="pill ${m.status === 'out' ? 'out' : 'in'}">${m.status === 'out' ? 'SOLD OUT' : 'IN STOCK'}</span>
+      </summary>
+      <div class="body">
+        <div class="grid">
+          ${field('Name','name',m.name)}
+          ${field('Price (₹)','price',m.price,'number')}
+          ${field('Status','status',m.status,'text',['in','out'])}
+          ${field('For','gender',m.gender,'text',['men','women'])}
+          ${field('Case size (mm)','size',m.size,'number')}
+          ${field('Metal tone','metal',m.metal,'text',['gold','steel','rose'])}
+          ${field('Dial name','dialName',m.dialName)}
+          ${field('Note','note',m.note)}
+          ${field('Tone label (overrides metal)','tone',m.tone)}
+          ${field('Photo filename','photo',m.photo)}
+          ${field('Photo aspect (e.g. 4/3)','photoAspect',m.photoAspect)}
+          ${field('Sort order','sort_order',i + 1,'number')}
+        </div>
+        <label style="margin-top:16px">Design JSON — dial, bracelet, case shape. Changing this changes the rendered watch.
+          <textarea name="design" rows="9">${esc(JSON.stringify(design, null, 2))}</textarea></label>
+        <div class="row">
+          <button class="btn save">Save this watch</button>
+          <span class="msg"></span>
+        </div>
+        <p class="hint">Image uploads arrive once R2 is enabled on the Cloudflare account. Until then put the filename of a file that is in the repo.</p>
+      </div>
+    </details>`;
+  }).join('');
+
+  document.querySelectorAll('.save').forEach(btn => {
+    btn.disabled = !canWrite;
+    btn.onclick = async () => {
+      const card = btn.closest('.card'), msg = card.querySelector('.msg');
+      const model = { ref: card.dataset.ref };
+      card.querySelectorAll('[name]').forEach(el => {
+        if (el.name === 'design') return;
+        model[el.name] = (el.type === 'number') ? Number(el.value) : el.value.trim();
+      });
+      let design;
+      try { design = JSON.parse(card.querySelector('[name=design]').value || '{}'); }
+      catch (e) { msg.className = 'msg bad'; msg.textContent = 'Design JSON is not valid: ' + e.message; return; }
+      Object.assign(model, design);
+
+      btn.disabled = true; msg.className = 'msg'; msg.textContent = 'saving…';
+      try {
+        const r = await fetch('/api/inventory', {
+          method: 'PUT', headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ model }),
+        });
+        const d = await r.json();
+        if (r.ok) { msg.className = 'msg ok'; msg.textContent = 'saved'; setTimeout(loadInventory, 900); }
+        else { msg.className = 'msg bad'; msg.textContent = d.error || ('HTTP ' + r.status); }
+      } catch (e) { msg.className = 'msg bad'; msg.textContent = e.message; }
+      btn.disabled = !canWrite;
+    };
+  });
+}
+
+/* ---- site settings ---- */
+const SITE_FIELDS = [
+  ['launchMonth','Launch month'], ['city','City'], ['whatsapp','WhatsApp (digits only, no + or spaces)'],
+  ['handle','Instagram handle'], ['email','Contact email'],
+];
+function renderSite(site) {
+  $('#siteGrid').innerHTML = SITE_FIELDS.map(([k, l]) => field(l, k, site[k])).join('');
+  $('#saveSite').disabled = !canWrite;
+}
+$('#saveSite').onclick = async () => {
+  const msg = $('#siteMsg'), out = {};
+  $('#siteGrid').querySelectorAll('[name]').forEach(el => { out[el.name] = el.value.trim(); });
+  msg.className = 'msg'; msg.textContent = 'saving…';
+  try {
+    const r = await fetch('/api/inventory', {
+      method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ site: out }),
+    });
+    const d = await r.json();
+    msg.className = 'msg ' + (r.ok ? 'ok' : 'bad');
+    msg.textContent = r.ok ? 'saved' : (d.error || 'HTTP ' + r.status);
+  } catch (e) { msg.className = 'msg bad'; msg.textContent = e.message; }
+};
+
+/* ---- activity ---- */
+let eventsLoaded = false;
+async function loadEvents() {
+  if (eventsLoaded) return; eventsLoaded = true;
+  const tb = $('#events').querySelector('tbody');
+  try {
+    const r = await fetch('/api/events?limit=300');
+    if (!r.ok) {
+      tb.innerHTML = `<tr><td class="hint">${r.status === 403
+        ? 'Locked until Cloudflare Access is configured. Visitor data is never readable without auth.'
+        : 'API returned ' + r.status}</td></tr>`;
+      return;
+    }
+    const d = await r.json();
+    const kinds = Object.fromEntries(d.byKind.map(k => [k.kind, k.n]));
+    $('#stats').innerHTML = [
+      ['waitlist', 'Waitlist clicks'], ['order', 'Order clicks'],
+      ['ask', 'Question clicks'], [null, 'All events'],
+    ].map(([k, label]) =>
+      `<div class="stat"><div class="n">${k ? (kinds[k] || 0) : d.total}</div><div class="k">${label}</div></div>`
+    ).join('');
+
+    tb.innerHTML = `<tr><th>When (UTC)</th><th>What</th><th>Watch</th><th>Where</th><th>Came from</th></tr>` +
+      (d.events.length ? d.events.map(e => `<tr>
+        <td>${esc(e.created_at)}</td>
+        <td><span class="pill">${esc(e.kind)}</span></td>
+        <td>${e.ref ? 'REF. ' + esc(e.ref) : '—'}</td>
+        <td>${esc([e.city, e.country].filter(Boolean).join(', ') || '—')}</td>
+        <td style="max-width:260px;overflow-wrap:anywhere">${esc(e.referrer || '—')}</td>
+      </tr>`).join('')
+      : `<tr><td colspan="5" class="hint">No events recorded yet. They appear the moment someone taps a WhatsApp button on the site.</td></tr>`);
+  } catch (e) {
+    tb.innerHTML = `<tr><td class="hint">${esc(e.message)}</td></tr>`;
+  }
+}
+
+await probe();
+await loadInventory();
+</script>
+</body>
+</html>
