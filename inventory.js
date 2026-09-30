@@ -5,7 +5,7 @@ export const SITE = {
   launchMonth: 'October 2026',
   city: 'Gurugram',
   whatsapp: '916388173047',
-  handle: '@meravs.official',
+  handle: '@mervs.official',
   email: 'Meravsfounders@gmail.com',
 };
 
