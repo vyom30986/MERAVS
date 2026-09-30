@@ -160,7 +160,7 @@ async function probe() {
       $('#loginCard').hidden = false;
       banner('bad', '<b>Read-only until you sign in.</b> Every write is refused without a verified session.');
     } else {
-      banner('bad', '<b>Read-only — login is not configured.</b> Run <code>node tools/hash-password.mjs</code>, then add <code>ADMIN_PASSWORD_HASH</code> and <code>SESSION_SECRET</code> as encrypted Secrets on the Pages project and redeploy. Until then nothing can write, including anyone who finds this page.');
+      banner('bad', '<b>Read-only — login is not configured.</b> Run <code>node tools/hash-password.mjs</code>, then add <code>ADMIN_USERNAME</code>, <code>ADMIN_PASSWORD_HASH</code> and <code>SESSION_SECRET</code> as encrypted Secrets on the Pages project and redeploy. Until then nothing can write, including anyone who finds this page.');
     }
   } catch (e) {
     banner('bad', '<b>Could not reach the API.</b> ' + esc(e.message));
