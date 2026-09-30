@@ -98,8 +98,33 @@ export class MeravsWatch {
       const pose = hrs % 12 === 10 && mins === 10;
       this.readout.textContent = `IST ${p2(hrs)}:${p2(mins)}:${p2(Math.floor(s))}` + (pose ? ' · THE HOUR WATCHES POSE AT' : '');
     }
+    this.updateProgress(dt);
     if (this.gl) this.render(dt, now, s * 6, (mins + s / 60) * 6, ((hrs % 12) + mins / 60 + s / 3600) * 30);
   }
+
+  // Scroll progress drives the mobile hero crossfade as well as the 3D explode, so it
+  // must run even when WebGL is unavailable and render() is never called. Data Saver,
+  // low memory and low core counts all fall back to the 2D dial; see start().
+  updateProgress(dt) {
+    let tgt = this.manual ? 1 : 0;
+    if (!this.wideMQ) this.wideMQ = matchMedia('(min-width: 900px)');
+    if (this.explodeEl && !this.manual && this.wideMQ.matches) {
+      if (!this.vh || Math.abs(innerWidth - this.vw) > 1) { this.vw = innerWidth; this.vh = innerHeight; }
+      const rect = this.explodeEl.getBoundingClientRect(), vh = this.vh;
+      const q = clamp((vh - rect.top) / rect.height, 0, 1);
+      tgt = q < 0.7 ? clamp((q - 0.18) / 0.27, 0, 1) : clamp((0.95 - q) / 0.25, 0, 1);
+    } else if (this.pinEl && !this.manual && !this.wideMQ.matches) {
+      if (!this.vh || Math.abs(innerWidth - this.vw) > 1) { this.vw = innerWidth; this.vh = innerHeight; }
+      const rect = this.pinEl.getBoundingClientRect();
+      const t = clamp(-rect.top / Math.max(1, rect.height - this.vh), 0, 1);
+      tgt = t < 0.16 ? 0 : t < 0.4 ? (t - 0.16) / 0.24 : t < 0.6 ? 1 : t < 0.84 ? 1 - (t - 0.6) / 0.24 : 0;
+    }
+    this.p += (tgt - this.p) * (1 - Math.exp(-dt * 7));
+    const E = this.smooth(0);
+    if (this.onProgress && Math.abs(E - (this.lastE ?? -1)) > 0.002) { this.lastE = E; this.onProgress(E); }
+  }
+
+  smooth(d) { const t = clamp((this.p - d) / 0.72, 0, 1); return t * t * (3 - 2 * t); }
 
   async start() {
     if (this.forceFallback || this.reduce || this.gl) return;
@@ -477,23 +502,8 @@ export class MeravsWatch {
 
   render(dt, now, sa, ma, ha) {
     const G = this.gl, T = G.tmp, L = light();
-    let tgt = this.manual ? 1 : 0;
-    if (!this.wideMQ) this.wideMQ = matchMedia('(min-width: 900px)');
-    if (this.explodeEl && !this.manual && this.wideMQ.matches) {
-      if (!this.vh || Math.abs(innerWidth - this.vw) > 1) { this.vw = innerWidth; this.vh = innerHeight; }
-      const rect = this.explodeEl.getBoundingClientRect(), vh = this.vh;
-      const q = clamp((vh - rect.top) / rect.height, 0, 1);
-      tgt = q < 0.7 ? clamp((q - 0.18) / 0.27, 0, 1) : clamp((0.95 - q) / 0.25, 0, 1);
-    } else if (this.pinEl && !this.manual && !this.wideMQ.matches) {
-      if (!this.vh || Math.abs(innerWidth - this.vw) > 1) { this.vw = innerWidth; this.vh = innerHeight; }
-      const rect = this.pinEl.getBoundingClientRect();
-      const t = clamp(-rect.top / Math.max(1, rect.height - this.vh), 0, 1);
-      tgt = t < 0.16 ? 0 : t < 0.4 ? (t - 0.16) / 0.24 : t < 0.6 ? 1 : t < 0.84 ? 1 - (t - 0.6) / 0.24 : 0;
-    }
-    this.p += (tgt - this.p) * (1 - Math.exp(-dt * 7));
-    const P = this.p, sm = d => { const t = clamp((P - d) / 0.72, 0, 1); return t * t * (3 - 2 * t); };
+    const P = this.p, sm = d => this.smooth(d);
     const E = sm(0);
-    if (this.onProgress && Math.abs(E - (this.lastE ?? -1)) > 0.002) { this.lastE = E; this.onProgress(E); }
     for (const k in G.parts) { const pt = G.parts[k]; pt.e = sm(pt.d); pt.obj.position.z = pt.dz * pt.e; }
     const op = 1;
     G.bMats.forEach(m => { const tr = op < 0.999; if (m.transparent !== tr) { m.transparent = tr; m.depthWrite = !tr; m.needsUpdate = true; } m.opacity = op; });

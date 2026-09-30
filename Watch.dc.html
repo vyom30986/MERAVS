@@ -8,13 +8,15 @@
 <body>
 <x-dc>
 <helmet>
+<title>Meravs</title>
+<meta name="description" content="A watch from the first Meravs collection.">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Karla:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Cormorant+Garamond:wght@500;600&family=Pinyon+Script&display=swap">
 <script>try{var t=localStorage.getItem('meravs-theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 <style>
-:root{--ground:#E9ECF0;--ink:#101C2B;--mute:#546274;--brass:#8A6D1F;--brass-lit:#A8842B;--line:#C6CED8;--dial:#101C2B;--dial-rim:#2B3B4E;--dial-ink:#EFE7D4;--seconds:#D2543F;--btn-bg:#101C2B;--btn-fg:#E9ECF0;--glow:#F7F8FA;--shade:#D5DBE3;--rings:.55;--tex-op:1;--wm-op:.9;--tick-op:.9;color-scheme:light;
+:root{--ground:#E9ECF0;--ink:#101C2B;--mute:#546274;--brass:#7A6019;--brass-lit:#A8842B;--line:#C6CED8;--dial:#101C2B;--dial-rim:#2B3B4E;--dial-ink:#EFE7D4;--seconds:#D2543F;--btn-bg:#101C2B;--btn-fg:#E9ECF0;--glow:#F7F8FA;--shade:#D5DBE3;--rings:.55;--tex-op:1;--wm-op:.9;--tick-op:.9;color-scheme:light;
 --lx:.3;--ly:.2;--lang:146deg;--rule-attach:scroll;
 --pad:clamp(20px,5.2vw,72px);--nav-desk:none;--nav-mob:flex;--desk-inline:none;--desk-block:none;
 --stage-cols:minmax(0,1fr);--canvas-col:1;--copy-col:1;--canvas-h:100svh;--copy-pt:0px;--pin-h:260svh;--copy-row:2;--gl-h:58%;--readout-b:42%;--desk-flex:none;--mob-flex:flex;--hero-min:auto;--hero-pt:28px;--caption-top:calc(54svh + 28px);--explode-h:auto;--canvas-pos:sticky;--caption-pos:static;--dial-size:min(70vw,42svh);
@@ -97,7 +99,7 @@ a{color:var(--ink)}a:hover{color:var(--brass)}
         <sc-if value="{{ hasPhoto }}" hint-placeholder-val="{{ false }}">
           <figure style="margin:44px 0 0;display:flex;flex-direction:column;gap:12px">
             <figcaption style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--mute)">THE ACTUAL WATCH</figcaption>
-            <img src="{{ photo }}" alt="{{ photoAlt }}" loading="lazy" style="display:block;width:100%;max-width:{{ photoMax }};aspect-ratio:{{ photoAspect }};object-fit:cover;object-position:50% 45%;border:1px solid var(--line)">
+            <img src="{{ photo }}" alt="{{ photoAlt }}" loading="lazy" style="display:block;width:auto;max-width:100%;max-height:520px;border:1px solid var(--line)">
           </figure>
         </sc-if>
         <div style="margin-top:44px">
@@ -127,6 +129,7 @@ class Component extends DCLogic {
       if (this.dead) return;
       const m = inv.findModel(ref);
       this.setState({ inv, ref: m.ref, list: inv.getList() });
+      document.title = `${m.name} · Meravs`;
       this.off = inv.onListChange(list => this.setState({ list }));
       this.watch = new w.MeravsWatch({
         wrap: this.wrapRef.current, canvas: this.canvasRef.current, svgWrap: this.svgRef.current,

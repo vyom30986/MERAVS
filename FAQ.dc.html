@@ -8,13 +8,15 @@
 <body>
 <x-dc>
 <helmet>
+<title>Before you ask - Meravs</title>
+<meta name="description" content="Launch date, ordering, case sizes and how to reach us.">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Karla:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Cormorant+Garamond:wght@500;600&family=Pinyon+Script&display=swap">
 <script>try{var t=localStorage.getItem('meravs-theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 <style>
-:root{--ground:#E9ECF0;--ink:#101C2B;--mute:#546274;--brass:#8A6D1F;--brass-lit:#A8842B;--line:#C6CED8;--dial:#101C2B;--dial-rim:#2B3B4E;--dial-ink:#EFE7D4;--seconds:#D2543F;--btn-bg:#101C2B;--btn-fg:#E9ECF0;--glow:#F7F8FA;--shade:#D5DBE3;--rings:.55;--tex-op:1;--wm-op:.9;--tick-op:.9;color-scheme:light;
+:root{--ground:#E9ECF0;--ink:#101C2B;--mute:#546274;--brass:#7A6019;--brass-lit:#A8842B;--line:#C6CED8;--dial:#101C2B;--dial-rim:#2B3B4E;--dial-ink:#EFE7D4;--seconds:#D2543F;--btn-bg:#101C2B;--btn-fg:#E9ECF0;--glow:#F7F8FA;--shade:#D5DBE3;--rings:.55;--tex-op:1;--wm-op:.9;--tick-op:.9;color-scheme:light;
 --lx:.3;--ly:.2;--lang:146deg;--rule-attach:scroll;
 --pad:clamp(20px,5.2vw,72px);--nav-desk:none;--nav-mob:flex;--desk-inline:none;--desk-block:none;
 --stage-cols:minmax(0,1fr);--canvas-col:1;--copy-col:1;--canvas-h:100svh;--copy-pt:0px;--pin-h:260svh;--copy-row:2;--gl-h:58%;--readout-b:42%;--desk-flex:none;--mob-flex:flex;--hero-min:auto;--hero-pt:28px;--caption-top:calc(54svh + 28px);--explode-h:auto;--canvas-pos:sticky;--caption-pos:static;--dial-size:min(70vw,42svh);
@@ -74,12 +76,11 @@ class Component extends DCLogic {
       waHref: inv ? inv.waLink('Hi Meravs — I have a question.') : undefined,
       igHref: inv ? inv.igLink() : undefined, handle: S.handle || '',
       faqs: [
-        { q: 'When do you launch?', a: `${S.launchMonth || '[LAUNCH MONTH]'}. People on the WhatsApp list hear first.` },
+        { q: 'When do you launch?', a: `${S.launchMonth || 'Soon'}. People on the WhatsApp list hear first.` },
         { q: 'How do I order?', a: 'Tap Order on WhatsApp on any watch. The message is filled in with the watch and its price, and we confirm payment and delivery with you there.' },
         { q: 'What sizes are the cases?', a: '38–40mm. Most watches at this price are too big, and everyone has agreed to pretend otherwise.' },
         { q: 'Will prices change at launch?', a: 'There is one price per watch. No struck-through MRP, no permanent sale, no discount that was never a discount.' },
-        { q: 'Where can you deliver?', a: '[SHIPPING REGIONS AND TIMES]' },
-        { q: 'What is your returns policy?', a: '[RETURNS AND WARRANTY POLICY]' },
+        { q: 'Where can you deliver?', a: 'India-wide by courier. Exact delivery times are confirmed on WhatsApp before payment.' },
         { q: 'Where are the full specifications?', a: 'We will publish full specifications for each watch at launch.' },
       ],
     };
