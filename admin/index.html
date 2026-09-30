@@ -135,7 +135,7 @@ async function probe() {
       return;
     }
     if (r.status === 403) {
-      banner('bad', '<b>Read-only.</b> Cloudflare Access is not configured yet, so every write is refused — by design, so nobody can edit prices while this page is unprotected. Set up an Access application over <code>/admin*</code> and <code>/api/*</code>, then set the <code>ACCESS_TEAM_DOMAIN</code> and <code>ACCESS_AUD</code> variables on the Pages project.');
+      banner('bad', '<b>Read-only.</b> Cloudflare Access is not configured yet, so every write is refused — by design, so nobody can edit prices while this page is unprotected. Set up an Access application over <code>/admin*</code> <em>only</em> — never over <code>/api/*</code>, which would block the public catalogue and the tracking beacon — then set <code>ACCESS_TEAM_DOMAIN</code> and <code>ACCESS_AUD</code> on the Pages project. The API reads your Access cookie to authorise writes.');
       $('#who').textContent = 'not authenticated';
       return;
     }
