@@ -86,7 +86,7 @@ class Component extends DCLogic {
     const bg = v => on(v) ? 'var(--btn-bg)' : 'transparent', fg = v => on(v) ? 'var(--btn-fg)' : 'var(--ink)';
     return {
       models, empty: all.length > 0 && models.length === 0,
-      countLabel: String(all.length || 6).padStart(2, '0'),
+      countLabel: String(all.length || 5).padStart(2, '0'),
       genders: [['', 'ALL'], ['men', 'MEN'], ['women', 'WOMEN']].map(([v, l]) => ({ label: l, bg: gender === v ? 'var(--btn-bg)' : 'transparent', fg: gender === v ? 'var(--btn-fg)' : 'var(--ink)', pick: () => this.setState({ gender: v }) })),
       setAll: () => this.setState({ size: 0 }), allBg: bg(0), allFg: fg(0),
       sizes: [...new Set(all.map(m => m.size))].sort((a, b) => a - b).map(v => ({ label: v + 'MM', bg: bg(v), fg: fg(v), pick: () => this.setState({ size: v }) })),

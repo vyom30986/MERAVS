@@ -33,8 +33,6 @@ export const MODELS = [
     photo: 'ref-05.png', shape: 'eye', hands: 'slim', seconds: false, caseFinish: 'polished',
     bracelet: { center: 'metal', scale: 0.8, pitch: 1.6, centerW: 7.2, outerW: 0.01, outerX: 0, centerFinish: 'polished', gems: 5 },
     dial: { d0: '#3048B0', d1: '#23358C', d2: '#141F5C', ink: '#E9D9A8', idx: '#D9BC7C', sheen: '#9FB0F0', style: 'waves', numerals: 'eye', font: 'serif', wordY: -0.3 } },
-  { ref: '06', gender: 'men', name: 'Reference 06', dialName: 'Forest', metal: 'steel', size: 40, price: 3650, status: 'out', // SAMPLE
-    dial: { d0: '#24463B', d1: '#18332B', d2: '#0D1D18', ink: '#EFE7D4', idx: '#E4E7EA', sheen: '#8FC0A8' } },
 ];
 
 export const METAL = { gold: { hex: '#D3B06A', label: 'Gold-tone' }, steel: { hex: '#C9CDD2', label: 'Steel-tone' }, rose: { hex: '#D9A98C', label: 'Rose-gold and steel' } };
