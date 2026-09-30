@@ -13,10 +13,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Karla:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Cormorant+Garamond:wght@500;600&family=Pinyon+Script&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Marcellus+SC&family=Literata:ital,opsz,wght@0,7..72,400..600;1,7..72,400..500&family=JetBrains+Mono:wght@400&family=Cormorant+Garamond:wght@500;600&family=Pinyon+Script&display=swap">
 <script>try{var t=localStorage.getItem('meravs-theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 <style>
 :root{--ground:#E9ECF0;--ink:#101C2B;--mute:#546274;--brass:#7A6019;--brass-lit:#A8842B;--line:#C6CED8;--dial:#101C2B;--dial-rim:#2B3B4E;--dial-ink:#EFE7D4;--seconds:#D2543F;--btn-bg:#101C2B;--btn-fg:#E9ECF0;--glow:#F7F8FA;--shade:#D5DBE3;--rings:.55;--tex-op:1;--wm-op:.9;--tick-op:.9;color-scheme:light;
+--display:'Marcellus',Georgia,serif;--label:'Marcellus SC',Georgia,serif;--body:'Literata',Georgia,serif;--mono:'JetBrains Mono',ui-monospace,monospace;--script:'Pinyon Script',cursive;
 --lx:.3;--ly:.2;--lang:146deg;--rule-attach:scroll;
 --pad:clamp(20px,5.2vw,72px);--nav-desk:none;--nav-mob:flex;--desk-inline:none;--desk-block:none;
 --stage-cols:minmax(0,1fr);--canvas-col:1;--copy-col:1;--canvas-h:100svh;--copy-pt:0px;--pin-h:260svh;--copy-row:2;--gl-h:58%;--readout-b:42%;--desk-flex:none;--mob-flex:flex;--hero-min:auto;--hero-pt:28px;--caption-top:calc(54svh + 28px);--explode-h:auto;--canvas-pos:sticky;--caption-pos:static;--dial-size:min(70vw,42svh);
@@ -29,7 +30,7 @@
 *,*::before,*::after{box-sizing:border-box}
 html{overscroll-behavior-y:none}
 html,body{margin:0;background:var(--ground);color:var(--ink)}
-body{font-family:'Karla',sans-serif;-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
+body{font-family:var(--body);-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
 a{color:var(--ink)}a:hover{color:var(--brass)}
 ::selection{background:var(--brass);color:var(--ground)}
 ::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
@@ -41,7 +42,7 @@ a{color:var(--ink)}a:hover{color:var(--brass)}
   <dc-import name="SiteHeader" active="about" hint-size="100%,72px"></dc-import>
   <main style="position:relative;z-index:1">
     <section data-screen-label="About hero" style="display:flex;flex-direction:column;align-items:center;text-align:center;padding:clamp(56px,10vw,140px) var(--pad) clamp(56px,8vw,112px)">
-      <div role="img" aria-label="Meravs" style="display:inline-flex;align-items:flex-end;font-family:'Marcellus',serif;font-size:clamp(46px,9vw,124px);letter-spacing:.12em;line-height:1;padding:.5em 0">
+      <div role="img" aria-label="Meravs" style="display:inline-flex;align-items:flex-end;font-family:var(--display);font-size:clamp(46px,9vw,124px);letter-spacing:.12em;line-height:1;padding:.5em 0">
         <span aria-hidden="true">MERA</span>
         <span aria-hidden="true" style="position:relative;display:inline-block;width:1.05em;height:1em;margin:0 .12em 0 -.02em">
           <svg viewBox="0 0 100 100" style="position:absolute;left:50%;top:50%;width:2.3em;height:2.3em;transform:translate(-50%,-56%);overflow:visible">
@@ -60,7 +61,7 @@ a{color:var(--ink)}a:hover{color:var(--brass)}
         </span>
         <span aria-hidden="true">S</span>
       </div>
-      <div style="margin-top:28px;font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.16em;color:var(--brass)">EST. 2026 · INDIA</div>
+      <div style="margin-top:28px;font-family:var(--label);font-size:13px;letter-spacing:.045em;color:var(--brass)">Est. 2026 · India</div>
       <p style="margin:28px 0 0;max-width:40ch;font-size:clamp(17px,1.4vw,20px);line-height:1.6;color:var(--mute);text-wrap:pretty">Meravs is a new watch label out of {{ city }}. The first collection is short on purpose — a few dials, chosen carefully, priced without the theatre.</p>
     </section>
 
@@ -68,23 +69,23 @@ a{color:var(--ink)}a:hover{color:var(--brass)}
       <div style="height:1px;background-image:linear-gradient(90deg,var(--line) 0,var(--line) calc(var(--lx)*100vw - 30vw),var(--brass-lit) calc(var(--lx)*100vw),var(--line) calc(var(--lx)*100vw + 30vw),var(--line) 100vw);background-attachment:var(--rule-attach)"></div>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:clamp(40px,5vw,72px);padding-top:clamp(40px,5vw,64px)">
         <article style="display:flex;flex-direction:column;gap:14px">
-          <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--brass)">THE LETTERS</div>
-          <h2 style="font-family:'Marcellus',serif;font-weight:400;font-size:clamp(26px,2.4vw,34px);line-height:1.12;margin:0">Cut from Roman capitals</h2>
+          <div style="font-family:var(--label);font-size:12.5px;letter-spacing:.045em;color:var(--brass)">The letters</div>
+          <h2 style="font-family:var(--display);font-weight:400;font-size:clamp(26px,2.4vw,34px);line-height:1.12;margin:0">Cut from Roman capitals</h2>
           <p style="margin:0;font-size:16.5px;line-height:1.65;color:var(--mute);max-width:38ch;text-wrap:pretty">The name is set in Marcellus, a typeface drawn from Roman inscriptional capitals. That is why the dial carries Roman numerals: the wordmark and the hours come from the same source.</p>
         </article>
         <article style="display:flex;flex-direction:column;gap:14px">
-          <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--brass)">THE COLOURS</div>
-          <h2 style="font-family:'Marcellus',serif;font-weight:400;font-size:clamp(26px,2.4vw,34px);line-height:1.12;margin:0">Taken from the first two watches</h2>
+          <div style="font-family:var(--label);font-size:12.5px;letter-spacing:.045em;color:var(--brass)">The colours</div>
+          <h2 style="font-family:var(--display);font-weight:400;font-size:clamp(26px,2.4vw,34px);line-height:1.12;margin:0">Taken from the first two watches</h2>
           <p style="margin:0;font-size:16.5px;line-height:1.65;color:var(--mute);max-width:38ch;text-wrap:pretty">Navy by day and burgundy by night, with gold throughout. The navy and gold come from a blue sunburst dial and a gold case, the two watches the brand starts with.</p>
         </article>
         <article style="display:flex;flex-direction:column;gap:14px">
-          <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--brass)">THE PRICE</div>
-          <h2 style="font-family:'Marcellus',serif;font-weight:400;font-size:clamp(26px,2.4vw,34px);line-height:1.12;margin:0">One price, printed plainly</h2>
+          <div style="font-family:var(--label);font-size:12.5px;letter-spacing:.045em;color:var(--brass)">The price</div>
+          <h2 style="font-family:var(--display);font-weight:400;font-size:clamp(26px,2.4vw,34px);line-height:1.12;margin:0">One price, printed plainly</h2>
           <p style="margin:0;font-size:16.5px;line-height:1.65;color:var(--mute);max-width:38ch;text-wrap:pretty">No struck-through MRP, no permanent sale, no discount that was never a discount.</p>
         </article>
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:clamp(48px,6vw,80px)">
-        <a href="Collection.dc.html" style="display:inline-flex;align-items:center;gap:14px;min-height:54px;padding:0 22px;white-space:nowrap;background:var(--btn-bg);color:var(--btn-fg);border:1px solid;border-image:linear-gradient(var(--lang),var(--brass-lit),var(--brass) 45%,transparent 90%) 1;font-weight:600;font-size:16px;text-decoration:none" style-hover="color:var(--btn-fg);filter:brightness(1.12)">See the collection<span aria-hidden="true" style="font-family:'JetBrains Mono',monospace">→</span></a>
+        <a href="Collection.dc.html" style="display:inline-flex;align-items:center;gap:14px;min-height:54px;padding:0 22px;white-space:nowrap;background:var(--btn-bg);color:var(--btn-fg);border:1px solid;border-image:linear-gradient(var(--lang),var(--brass-lit),var(--brass) 45%,transparent 90%) 1;font-weight:600;font-size:16px;text-decoration:none" style-hover="color:var(--btn-fg);filter:brightness(1.12)">See the collection<span aria-hidden="true" style="font-family:var(--label)">→</span></a>
         <a href="{{ waHref }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;min-height:54px;padding:0 22px;white-space:nowrap;color:var(--ink);border:1px solid;border-image:linear-gradient(var(--lang),var(--brass-lit),var(--line) 55%) 1;font-weight:500;font-size:16px;text-decoration:none" style-hover="color:var(--brass)">Join the list on WhatsApp</a>
       </div>
     </section>

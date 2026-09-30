@@ -18,10 +18,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Karla:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Cormorant+Garamond:wght@500;600&family=Pinyon+Script&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Marcellus+SC&family=Literata:ital,opsz,wght@0,7..72,400..600;1,7..72,400..500&family=JetBrains+Mono:wght@400&family=Cormorant+Garamond:wght@500;600&family=Pinyon+Script&display=swap">
 <script>try{var t=localStorage.getItem('meravs-theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 <style>
 :root{--ground:#E9ECF0;--ink:#101C2B;--mute:#546274;--brass:#7A6019;--brass-lit:#A8842B;--line:#C6CED8;--dial:#101C2B;--dial-rim:#2B3B4E;--dial-ink:#EFE7D4;--seconds:#D2543F;--btn-bg:#101C2B;--btn-fg:#E9ECF0;--glow:#F7F8FA;--shade:#D5DBE3;--rings:.55;--tex-op:1;--wm-op:.9;--tick-op:.9;color-scheme:light;
+--display:'Marcellus',Georgia,serif;--label:'Marcellus SC',Georgia,serif;--body:'Literata',Georgia,serif;--mono:'JetBrains Mono',ui-monospace,monospace;--script:'Pinyon Script',cursive;
 --lx:.3;--ly:.2;--lang:146deg;--rule-attach:scroll;
 --pad:clamp(20px,5.2vw,72px);--nav-desk:none;--nav-mob:flex;--desk-inline:none;--desk-block:none;
 --stage-cols:minmax(0,1fr);--canvas-col:1;--copy-col:1;--canvas-h:100svh;--copy-pt:0px;--pin-h:260svh;--copy-row:2;--gl-h:58%;--readout-b:42%;--desk-flex:none;--mob-flex:flex;--hero-min:auto;--hero-pt:28px;--caption-top:calc(54svh + 28px);--explode-h:auto;--canvas-pos:sticky;--caption-pos:static;--dial-size:min(70vw,42svh);
@@ -34,7 +35,7 @@
 *,*::before,*::after{box-sizing:border-box}
 html{overscroll-behavior-y:none}
 html,body{margin:0;background:var(--ground);color:var(--ink)}
-body{font-family:'Karla',sans-serif;-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
+body{font-family:var(--body);-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
 a{color:var(--ink)}a:hover{color:var(--brass)}
 ::selection{background:var(--brass);color:var(--ground)}
 ::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
@@ -56,30 +57,30 @@ a{color:var(--ink)}a:hover{color:var(--brass)}
       </div>
       <canvas ref="{{ canvasRef }}" style="position:absolute;left:0;top:0;width:100%;height:var(--gl-h);display:block;opacity:0;transition:opacity .7s ease"></canvas>
       <div ref="{{ labelsRef }}" aria-hidden="true" style="position:absolute;inset:0;pointer-events:none">
-        <div data-part="crystal" style="position:absolute;left:0;top:0;opacity:0;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;line-height:14px;color:var(--ink);will-change:transform"><span data-t="" style="display:flex;gap:8px"><span style="color:var(--brass)">01</span><span>CRYSTAL</span></span><span data-l="" style="height:1px;width:20px;background:var(--mute);opacity:.6"></span><span style="width:5px;height:5px;border-radius:50%;background:var(--brass);flex:none"></span></div>
-        <div data-part="bezel" style="position:absolute;left:0;top:0;opacity:0;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;line-height:14px;color:var(--ink);will-change:transform"><span data-t="" style="display:flex;gap:8px"><span style="color:var(--brass)">02</span><span>BEZEL</span></span><span data-l="" style="height:1px;width:20px;background:var(--mute);opacity:.6"></span><span style="width:5px;height:5px;border-radius:50%;background:var(--brass);flex:none"></span></div>
-        <div data-part="hands" style="position:absolute;left:0;top:0;opacity:0;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;line-height:14px;color:var(--ink);will-change:transform"><span data-t="" style="display:flex;gap:8px"><span style="color:var(--brass)">03</span><span>HANDS</span></span><span data-l="" style="height:1px;width:20px;background:var(--mute);opacity:.6"></span><span style="width:5px;height:5px;border-radius:50%;background:var(--brass);flex:none"></span></div>
-        <div data-part="dial" style="position:absolute;left:0;top:0;opacity:0;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;line-height:14px;color:var(--ink);will-change:transform"><span data-t="" style="display:flex;gap:8px"><span style="color:var(--brass)">04</span><span>DIAL</span></span><span data-l="" style="height:1px;width:20px;background:var(--mute);opacity:.6"></span><span style="width:5px;height:5px;border-radius:50%;background:var(--brass);flex:none"></span></div>
-        <div data-part="case" style="position:absolute;left:0;top:0;opacity:0;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;line-height:14px;color:var(--ink);will-change:transform"><span data-t="" style="display:flex;gap:8px"><span style="color:var(--brass)">05</span><span>CASE</span></span><span data-l="" style="height:1px;width:20px;background:var(--mute);opacity:.6"></span><span style="width:5px;height:5px;border-radius:50%;background:var(--brass);flex:none"></span></div>
-        <div data-part="caseback" style="position:absolute;left:0;top:0;opacity:0;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;line-height:14px;color:var(--ink);will-change:transform"><span data-t="" style="display:flex;gap:8px"><span style="color:var(--brass)">06</span><span>CASEBACK</span></span><span data-l="" style="height:1px;width:20px;background:var(--mute);opacity:.6"></span><span style="width:5px;height:5px;border-radius:50%;background:var(--brass);flex:none"></span></div>
-        <div data-part="bracelet" style="position:absolute;left:0;top:0;opacity:0;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;line-height:14px;color:var(--ink);will-change:transform"><span data-t="" style="display:flex;gap:8px"><span style="color:var(--brass)">07</span><span>BRACELET</span></span><span data-l="" style="height:1px;width:20px;background:var(--mute);opacity:.6"></span><span style="width:5px;height:5px;border-radius:50%;background:var(--brass);flex:none"></span></div>
-        <div data-part="movement" style="position:absolute;left:0;top:0;opacity:0;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;line-height:14px;color:var(--ink);will-change:transform"><span data-t="" style="display:flex;gap:8px"><span style="color:var(--brass)">08</span><span>MOVEMENT</span></span><span data-l="" style="height:1px;width:20px;background:var(--mute);opacity:.6"></span><span style="width:5px;height:5px;border-radius:50%;background:var(--brass);flex:none"></span></div>
+        <div data-part="crystal" style="position:absolute;left:0;top:0;opacity:0;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:var(--label);font-size:12.5px;letter-spacing:.045em;line-height:14px;color:var(--ink);will-change:transform"><span data-t="" style="display:flex;gap:8px"><span style="color:var(--brass)">01</span><span>Crystal</span></span><span data-l="" style="height:1px;width:20px;background:var(--mute);opacity:.6"></span><span style="width:5px;height:5px;border-radius:50%;background:var(--brass);flex:none"></span></div>
+        <div data-part="bezel" style="position:absolute;left:0;top:0;opacity:0;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:var(--label);font-size:12.5px;letter-spacing:.045em;line-height:14px;color:var(--ink);will-change:transform"><span data-t="" style="display:flex;gap:8px"><span style="color:var(--brass)">02</span><span>Bezel</span></span><span data-l="" style="height:1px;width:20px;background:var(--mute);opacity:.6"></span><span style="width:5px;height:5px;border-radius:50%;background:var(--brass);flex:none"></span></div>
+        <div data-part="hands" style="position:absolute;left:0;top:0;opacity:0;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:var(--label);font-size:12.5px;letter-spacing:.045em;line-height:14px;color:var(--ink);will-change:transform"><span data-t="" style="display:flex;gap:8px"><span style="color:var(--brass)">03</span><span>Hands</span></span><span data-l="" style="height:1px;width:20px;background:var(--mute);opacity:.6"></span><span style="width:5px;height:5px;border-radius:50%;background:var(--brass);flex:none"></span></div>
+        <div data-part="dial" style="position:absolute;left:0;top:0;opacity:0;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:var(--label);font-size:12.5px;letter-spacing:.045em;line-height:14px;color:var(--ink);will-change:transform"><span data-t="" style="display:flex;gap:8px"><span style="color:var(--brass)">04</span><span>Dial</span></span><span data-l="" style="height:1px;width:20px;background:var(--mute);opacity:.6"></span><span style="width:5px;height:5px;border-radius:50%;background:var(--brass);flex:none"></span></div>
+        <div data-part="case" style="position:absolute;left:0;top:0;opacity:0;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:var(--label);font-size:12.5px;letter-spacing:.045em;line-height:14px;color:var(--ink);will-change:transform"><span data-t="" style="display:flex;gap:8px"><span style="color:var(--brass)">05</span><span>Case</span></span><span data-l="" style="height:1px;width:20px;background:var(--mute);opacity:.6"></span><span style="width:5px;height:5px;border-radius:50%;background:var(--brass);flex:none"></span></div>
+        <div data-part="caseback" style="position:absolute;left:0;top:0;opacity:0;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:var(--label);font-size:12.5px;letter-spacing:.045em;line-height:14px;color:var(--ink);will-change:transform"><span data-t="" style="display:flex;gap:8px"><span style="color:var(--brass)">06</span><span>Caseback</span></span><span data-l="" style="height:1px;width:20px;background:var(--mute);opacity:.6"></span><span style="width:5px;height:5px;border-radius:50%;background:var(--brass);flex:none"></span></div>
+        <div data-part="bracelet" style="position:absolute;left:0;top:0;opacity:0;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:var(--label);font-size:12.5px;letter-spacing:.045em;line-height:14px;color:var(--ink);will-change:transform"><span data-t="" style="display:flex;gap:8px"><span style="color:var(--brass)">07</span><span>Bracelet</span></span><span data-l="" style="height:1px;width:20px;background:var(--mute);opacity:.6"></span><span style="width:5px;height:5px;border-radius:50%;background:var(--brass);flex:none"></span></div>
+        <div data-part="movement" style="position:absolute;left:0;top:0;opacity:0;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:var(--label);font-size:12.5px;letter-spacing:.045em;line-height:14px;color:var(--ink);will-change:transform"><span data-t="" style="display:flex;gap:8px"><span style="color:var(--brass)">08</span><span>Movement</span></span><span data-l="" style="height:1px;width:20px;background:var(--mute);opacity:.6"></span><span style="width:5px;height:5px;border-radius:50%;background:var(--brass);flex:none"></span></div>
       </div>
-      <div style="position:absolute;left:0;right:0;bottom:var(--readout-b);display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px var(--pad);font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:var(--mute);pointer-events:none">
-        <span ref="{{ readoutRef }}" style="font-variant-numeric:tabular-nums">IST --:--:--</span>
-        <sc-if value="{{ gl }}" hint-placeholder-val="{{ false }}"><span style="display:var(--desk-inline)">DRAG TO TURN</span>
+      <div style="position:absolute;left:0;right:0;bottom:var(--readout-b);display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px var(--pad);font-family:var(--label);font-size:12.5px;letter-spacing:.045em;color:var(--mute);pointer-events:none">
+        <span ref="{{ readoutRef }}" style="font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;font-variant-numeric:tabular-nums">IST --:--:--</span>
+        <sc-if value="{{ gl }}" hint-placeholder-val="{{ false }}"><span style="display:var(--desk-inline)">Drag to turn</span>
         </sc-if>
       </div>
       <div style="display:var(--mob-flex);position:absolute;left:0;right:0;bottom:0;height:calc(100% - var(--gl-h));flex-direction:column;justify-content:center;padding:8px var(--pad) 28px">
         <div style="display:grid">
           <div ref="{{ ovA }}" style="grid-area:1/1;align-self:center;transition:opacity .25s linear">
-            <div style="display:flex;align-items:center;gap:12px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;color:var(--brass);text-transform:uppercase"><span style="width:24px;height:1px;background:var(--brass);flex:none"></span><span>FIRST COLLECTION · {{ launchMonth }}</span></div>
-            <h1 style="font-family:'Marcellus',serif;font-weight:400;font-size:clamp(30px,8.6vw,40px);line-height:1.06;margin:14px 0 20px;max-width:13ch;text-wrap:balance">Something worth checking the time for.</h1>
-            <a href="{{ waHref }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:12px;min-height:50px;padding:0 20px;white-space:nowrap;background:var(--btn-bg);color:var(--btn-fg);border:1px solid;border-image:linear-gradient(var(--lang),var(--brass-lit),var(--brass) 45%,transparent 90%) 1;font-weight:600;font-size:15.5px;text-decoration:none">Join the list on WhatsApp<span aria-hidden="true" style="font-family:'JetBrains Mono',monospace">→</span></a>
+            <div style="display:flex;align-items:center;gap:12px;font-family:var(--label);font-size:12.5px;letter-spacing:.045em;color:var(--brass);"><span style="width:24px;height:1px;background:var(--brass);flex:none"></span><span>FIRST Collection · {{ launchMonth }}</span></div>
+            <h1 style="font-family:var(--display);font-weight:400;font-size:clamp(30px,8.6vw,40px);line-height:1.06;margin:14px 0 20px;max-width:13ch;text-wrap:balance">Something worth checking the time for.</h1>
+            <a href="{{ waHref }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:12px;min-height:50px;padding:0 20px;white-space:nowrap;background:var(--btn-bg);color:var(--btn-fg);border:1px solid;border-image:linear-gradient(var(--lang),var(--brass-lit),var(--brass) 45%,transparent 90%) 1;font-weight:600;font-size:15.5px;text-decoration:none">Join the list on WhatsApp<span aria-hidden="true" style="font-family:var(--label)">→</span></a>
           </div>
           <div ref="{{ ovB }}" aria-hidden="true" style="grid-area:1/1;align-self:center;opacity:0;pointer-events:none;transition:opacity .25s linear">
-            <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;color:var(--brass)">IN PARTS</div>
-            <div style="font-family:'Marcellus',serif;font-size:clamp(28px,8vw,36px);line-height:1.08;margin:12px 0 12px;text-wrap:balance">Considered from the caseback up.</div>
+            <div style="font-family:var(--label);font-size:12.5px;letter-spacing:.045em;color:var(--brass)">In parts</div>
+            <div style="font-family:var(--display);font-size:clamp(28px,8vw,36px);line-height:1.08;margin:12px 0 12px;text-wrap:balance">Considered from the caseback up.</div>
             <p style="font-size:16px;line-height:1.55;color:var(--mute);margin:0;max-width:34ch">Eight parts. Each one decided on, none of them left to a default.</p>
           </div>
         </div>
@@ -90,16 +91,16 @@ a{color:var(--ink)}a:hover{color:var(--brass)}
     <div style="grid-column:1;grid-row:var(--copy-row);position:relative;z-index:1;min-width:0;padding-top:var(--copy-pt)">
       <section data-screen-label="Hero" style="position:relative;isolation:isolate;min-height:var(--hero-min);display:flex;flex-direction:column;justify-content:center;padding:var(--hero-pt) var(--pad) 56px">
         <div aria-hidden="true" style="position:absolute;inset:0;z-index:-1;opacity:var(--tex-op);pointer-events:none;background:repeating-conic-gradient(from 0deg at 115% 42%,var(--line) 0deg .35deg,transparent .35deg 2.5deg);-webkit-mask-image:linear-gradient(270deg,rgba(0,0,0,.55),transparent 75%);mask-image:linear-gradient(270deg,rgba(0,0,0,.55),transparent 75%)"></div>
-        <div aria-hidden="true" style="display:var(--desk-block);position:absolute;left:clamp(14px,1.6vw,26px);bottom:56px;writing-mode:vertical-rl;transform:rotate(180deg);font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.3em;color:var(--mute);opacity:.8">UTC+05:30 · IIII, NOT IV</div>
+        <div aria-hidden="true" style="display:var(--desk-block);position:absolute;left:clamp(14px,1.6vw,26px);bottom:56px;writing-mode:vertical-rl;transform:rotate(180deg);font-family:var(--label);font-size:11.5px;letter-spacing:.045em;color:var(--mute);opacity:.8">UTC+05:30 · IIII, NOT IV</div>
         <div style="max-width:600px">
-          <div style="display:var(--desk-flex);align-items:center;gap:14px;font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.16em;color:var(--brass);text-transform:uppercase">
+          <div style="display:var(--desk-flex);align-items:center;gap:14px;font-family:var(--label);font-size:13px;letter-spacing:.045em;color:var(--brass);">
             <span style="width:28px;height:1px;background:var(--brass);flex:none"></span>
-            <span>FIRST COLLECTION · {{ launchMonth }}</span>
+            <span>FIRST Collection · {{ launchMonth }}</span>
           </div>
-          <h1 style="display:var(--desk-block);font-family:'Marcellus',serif;font-weight:400;font-size:clamp(40px,5.6vw,86px);line-height:1.04;letter-spacing:-.005em;margin:22px 0 24px;max-width:12ch;text-wrap:balance">Something worth checking the time for.</h1>
+          <h1 style="display:var(--desk-block);font-family:var(--display);font-weight:400;font-size:clamp(40px,5.6vw,86px);line-height:1.04;letter-spacing:-.005em;margin:22px 0 24px;max-width:12ch;text-wrap:balance">Something worth checking the time for.</h1>
           <p style="font-size:clamp(16.5px,1.25vw,19px);line-height:1.6;color:var(--mute);margin:0 0 36px;max-width:38ch;text-wrap:pretty">Meravs is a new watch label out of {{ city }}. The first collection is short on purpose — a few dials, chosen carefully, priced without the theatre.</p>
           <div style="display:flex;flex-wrap:wrap;gap:12px">
-            <a href="{{ waHref }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:14px;min-height:54px;padding:0 22px;white-space:nowrap;background:var(--btn-bg);color:var(--btn-fg);border:1px solid;border-image:linear-gradient(var(--lang),var(--brass-lit),var(--brass) 45%,transparent 90%) 1;font-weight:600;font-size:16px;text-decoration:none;letter-spacing:.005em" style-hover="color:var(--btn-fg);filter:brightness(1.12)">Join the list on WhatsApp<span aria-hidden="true" style="font-family:'JetBrains Mono',monospace">→</span></a>
+            <a href="{{ waHref }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:14px;min-height:54px;padding:0 22px;white-space:nowrap;background:var(--btn-bg);color:var(--btn-fg);border:1px solid;border-image:linear-gradient(var(--lang),var(--brass-lit),var(--brass) 45%,transparent 90%) 1;font-weight:600;font-size:16px;text-decoration:none;letter-spacing:.005em" style-hover="color:var(--btn-fg);filter:brightness(1.12)">Join the list on WhatsApp<span aria-hidden="true" style="font-family:var(--label)">→</span></a>
             <a href="{{ igHref }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;min-height:54px;padding:0 22px;white-space:nowrap;color:var(--ink);border:1px solid;border-image:linear-gradient(var(--lang),var(--brass-lit),var(--line) 55%) 1;font-weight:500;font-size:16px;text-decoration:none" style-hover="color:var(--brass)">Follow {{ handle }}</a>
           </div>
         </div>
@@ -107,8 +108,8 @@ a{color:var(--ink)}a:hover{color:var(--brass)}
 
       <section ref="{{ explodeRef }}" data-screen-label="In parts" style="display:var(--desk-block);min-height:var(--explode-h);padding:0 var(--pad)">
         <div style="position:var(--caption-pos);top:var(--caption-top);max-width:460px;padding:24px 0 64px">
-          <div style="font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.16em;color:var(--brass)">IN PARTS</div>
-          <h2 style="font-family:'Marcellus',serif;font-weight:400;font-size:clamp(30px,3.2vw,48px);line-height:1.08;margin:16px 0 16px;text-wrap:balance">Considered from the caseback up.</h2>
+          <div style="font-family:var(--label);font-size:13px;letter-spacing:.045em;color:var(--brass)">In parts</div>
+          <h2 style="font-family:var(--display);font-weight:400;font-size:clamp(30px,3.2vw,48px);line-height:1.08;margin:16px 0 16px;text-wrap:balance">Considered from the caseback up.</h2>
           <p style="font-size:17px;line-height:1.6;color:var(--mute);margin:0;max-width:34ch;text-wrap:pretty">Eight parts. Each one decided on, none of them left to a default.</p>
         </div>
       </section>
@@ -117,30 +118,30 @@ a{color:var(--ink)}a:hover{color:var(--brass)}
 
   <section data-screen-label="Tenets" style="position:relative;z-index:3;padding:clamp(56px,9vw,128px) var(--pad) clamp(56px,8vw,112px)">
     <div style="display:flex;align-items:center;gap:18px;margin-bottom:clamp(36px,5vw,64px)">
-      <span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.16em;color:var(--brass);flex:none">THREE TENETS</span>
+      <span style="font-family:var(--label);font-size:13px;letter-spacing:.045em;color:var(--brass);flex:none">Three tenets</span>
       <span style="flex:1;height:1px;background-image:linear-gradient(90deg,var(--line) 0,var(--line) calc(var(--lx)*100vw - 30vw),var(--brass-lit) calc(var(--lx)*100vw),var(--line) calc(var(--lx)*100vw + 30vw),var(--line) 100vw);background-attachment:var(--rule-attach)"></span>
     </div>
     <div aria-hidden="true" style="height:7px;margin:calc(-1 * clamp(36px,5vw,64px) + 10px) 0 clamp(36px,5vw,56px);opacity:var(--tick-op);background:repeating-linear-gradient(90deg,var(--mute) 0 1px,transparent 1px 60px),repeating-linear-gradient(90deg,var(--line) 0 1px,transparent 1px 12px) 0 0/100% 4px no-repeat"></div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:clamp(36px,4vw,56px)">
       <article style="position:relative;isolation:isolate;display:flex;flex-direction:column;gap:14px">
         <div style="height:1px;background-image:linear-gradient(90deg,var(--line) 0,var(--line) calc(var(--lx)*100vw - 22vw),var(--brass-lit) calc(var(--lx)*100vw),var(--line) calc(var(--lx)*100vw + 22vw),var(--line) 100vw);background-attachment:var(--rule-attach)"></div>
-        <div style="font-family:'Marcellus',serif;font-size:26px;color:var(--brass);margin-top:10px">I</div>
-        <span aria-hidden="true" style="position:absolute;right:0;top:8px;z-index:-1;font-family:'Marcellus',serif;font-size:clamp(120px,12vw,180px);line-height:1;color:transparent;-webkit-text-stroke:1px var(--line);opacity:var(--wm-op);pointer-events:none">I</span>
-        <h3 style="font-family:'Marcellus',serif;font-weight:400;font-size:clamp(24px,2vw,30px);line-height:1.15;margin:0">A short first collection</h3>
+        <div style="font-family:var(--display);font-size:26px;color:var(--brass);margin-top:10px">I</div>
+        <span aria-hidden="true" style="position:absolute;right:0;top:8px;z-index:-1;font-family:var(--display);font-size:clamp(120px,12vw,180px);line-height:1;color:transparent;-webkit-text-stroke:1px var(--line);opacity:var(--wm-op);pointer-events:none">I</span>
+        <h3 style="font-family:var(--display);font-weight:400;font-size:clamp(24px,2vw,30px);line-height:1.15;margin:0">A short first collection</h3>
         <p style="font-size:16.5px;line-height:1.6;color:var(--mute);margin:0;max-width:36ch;text-wrap:pretty">A handful of references, not a catalogue. Every dial has a reason to exist.</p>
       </article>
       <article style="position:relative;isolation:isolate;display:flex;flex-direction:column;gap:14px">
         <div style="height:1px;background-image:linear-gradient(90deg,var(--line) 0,var(--line) calc(var(--lx)*100vw - 22vw),var(--brass-lit) calc(var(--lx)*100vw),var(--line) calc(var(--lx)*100vw + 22vw),var(--line) 100vw);background-attachment:var(--rule-attach)"></div>
-        <div style="font-family:'Marcellus',serif;font-size:26px;color:var(--brass);margin-top:10px">II</div>
-        <span aria-hidden="true" style="position:absolute;right:0;top:8px;z-index:-1;font-family:'Marcellus',serif;font-size:clamp(120px,12vw,180px);line-height:1;color:transparent;-webkit-text-stroke:1px var(--line);opacity:var(--wm-op);pointer-events:none">II</span>
-        <h3 style="font-family:'Marcellus',serif;font-weight:400;font-size:clamp(24px,2vw,30px);line-height:1.15;margin:0">Sized for real wrists</h3>
+        <div style="font-family:var(--display);font-size:26px;color:var(--brass);margin-top:10px">II</div>
+        <span aria-hidden="true" style="position:absolute;right:0;top:8px;z-index:-1;font-family:var(--display);font-size:clamp(120px,12vw,180px);line-height:1;color:transparent;-webkit-text-stroke:1px var(--line);opacity:var(--wm-op);pointer-events:none">II</span>
+        <h3 style="font-family:var(--display);font-weight:400;font-size:clamp(24px,2vw,30px);line-height:1.15;margin:0">Sized for real wrists</h3>
         <p style="font-size:16.5px;line-height:1.6;color:var(--mute);margin:0;max-width:36ch;text-wrap:pretty">40–42mm on the men&rsquo;s references, and the women&rsquo;s cut properly small. Most watches at this price are too big, and everyone has agreed to pretend otherwise.</p>
       </article>
       <article style="position:relative;isolation:isolate;display:flex;flex-direction:column;gap:14px">
         <div style="height:1px;background-image:linear-gradient(90deg,var(--line) 0,var(--line) calc(var(--lx)*100vw - 22vw),var(--brass-lit) calc(var(--lx)*100vw),var(--line) calc(var(--lx)*100vw + 22vw),var(--line) 100vw);background-attachment:var(--rule-attach)"></div>
-        <div style="font-family:'Marcellus',serif;font-size:26px;color:var(--brass);margin-top:10px">III</div>
-        <span aria-hidden="true" style="position:absolute;right:0;top:8px;z-index:-1;font-family:'Marcellus',serif;font-size:clamp(120px,12vw,180px);line-height:1;color:transparent;-webkit-text-stroke:1px var(--line);opacity:var(--wm-op);pointer-events:none">III</span>
-        <h3 style="font-family:'Marcellus',serif;font-weight:400;font-size:clamp(24px,2vw,30px);line-height:1.15;margin:0">One price, printed plainly</h3>
+        <div style="font-family:var(--display);font-size:26px;color:var(--brass);margin-top:10px">III</div>
+        <span aria-hidden="true" style="position:absolute;right:0;top:8px;z-index:-1;font-family:var(--display);font-size:clamp(120px,12vw,180px);line-height:1;color:transparent;-webkit-text-stroke:1px var(--line);opacity:var(--wm-op);pointer-events:none">III</span>
+        <h3 style="font-family:var(--display);font-weight:400;font-size:clamp(24px,2vw,30px);line-height:1.15;margin:0">One price, printed plainly</h3>
         <p style="font-size:16.5px;line-height:1.6;color:var(--mute);margin:0;max-width:36ch;text-wrap:pretty">No struck-through MRP, no permanent sale, no discount that was never a discount.</p>
       </article>
     </div>
@@ -148,9 +149,9 @@ a{color:var(--ink)}a:hover{color:var(--brass)}
 
   <section data-screen-label="Collection teaser" style="position:relative;z-index:3;padding:0 var(--pad) clamp(64px,9vw,128px)">
     <div style="display:flex;align-items:center;gap:18px;margin-bottom:clamp(36px,5vw,64px)">
-      <span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.16em;color:var(--brass);flex:none">THE FIRST COLLECTION</span>
+      <span style="font-family:var(--label);font-size:13px;letter-spacing:.045em;color:var(--brass);flex:none">The first collection</span>
       <span style="flex:1;height:1px;background-image:linear-gradient(90deg,var(--line) 0,var(--line) calc(var(--lx)*100vw - 30vw),var(--brass-lit) calc(var(--lx)*100vw),var(--line) calc(var(--lx)*100vw + 30vw),var(--line) 100vw);background-attachment:var(--rule-attach)"></span>
-      <a href="Collection.dc.html" style="flex:none;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;color:var(--ink);text-decoration:none" style-hover="color:var(--brass)">SEE ALL →</a>
+      <a href="Collection.dc.html" style="flex:none;font-family:var(--label);font-size:12.5px;letter-spacing:.045em;color:var(--ink);text-decoration:none" style-hover="color:var(--brass)">See all →</a>
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:clamp(40px,4vw,56px) clamp(20px,3vw,40px)">
       <sc-for list="{{ teaser }}" as="m" hint-placeholder-count="3">
@@ -205,7 +206,7 @@ class Component extends DCLogic {
     return {
       wrapRef: this.wrapRef, canvasRef: this.canvasRef, svgRef: this.svgRef, readoutRef: this.readoutRef,
       labelsRef: this.labelsRef, explodeRef: this.explodeRef, gl: this.state.gl, dialLive: !this.state.gl, ovA: this.ovA, ovB: this.ovB,
-      layersOn: this.state.layers, layersLabel: this.state.layers ? 'ASSEMBLE' : 'VIEW LAYERS',
+      layersOn: this.state.layers, layersLabel: this.state.layers ? 'Assemble' : 'View layers',
       layBg: this.state.layers ? 'var(--btn-bg)' : 'var(--ground)', layFg: this.state.layers ? 'var(--btn-fg)' : 'var(--ink)',
       toggleLayers: () => { const on = !this.state.layers; this.setState({ layers: on }); this.watch && this.watch.setExplode(on); },
       heroModel: Component.THEME_WATCH[this.state.theme],

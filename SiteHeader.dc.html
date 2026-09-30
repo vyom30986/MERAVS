@@ -9,20 +9,20 @@
 <x-dc>
 <header style="position:{{ pos }};top:0;left:0;right:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px var(--pad)">
   <a href="/" style="min-width:0;display:flex;flex-wrap:wrap;align-items:baseline;column-gap:16px;row-gap:2px;text-decoration:none;color:var(--ink)">
-    <span role="img" aria-label="Meravs" style="display:inline-flex;align-items:flex-end;font-family:'Marcellus',serif;font-size:clamp(17px,4.8vw,21px);line-height:1;letter-spacing:.3em"><span aria-hidden="true">MERA</span><svg aria-hidden="true" viewBox="0 0 40 40" style="width:1.05em;height:1.05em;margin:0 .22em -.12em -.12em;overflow:visible;flex:none"><polygon points="18.6,29.3 21.4,30.7 39,-4" style="fill:var(--brass)"></polygon><polygon points="18.9,31 21.1,29 6,3" style="fill:var(--brass)"></polygon><polygon points="19.3,30 20.7,30 20,39" style="fill:var(--brass)"></polygon><circle cx="20" cy="30" r="2.6" style="fill:var(--ground);stroke:var(--brass);stroke-width:1.2"></circle><circle cx="20" cy="30" r="1" style="fill:var(--seconds)"></circle></svg><span aria-hidden="true">S</span></span>
-    <span style="display:var(--desk-inline);font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--mute)">EST. 2026 · INDIA</span>
+    <span role="img" aria-label="Meravs" style="display:inline-flex;align-items:flex-end;font-family:var(--display);font-size:clamp(17px,4.8vw,21px);line-height:1;letter-spacing:.3em"><span aria-hidden="true">MERA</span><svg aria-hidden="true" viewBox="0 0 40 40" style="width:1.05em;height:1.05em;margin:0 .22em -.12em -.12em;overflow:visible;flex:none"><polygon points="18.6,29.3 21.4,30.7 39,-4" style="fill:var(--brass)"></polygon><polygon points="18.9,31 21.1,29 6,3" style="fill:var(--brass)"></polygon><polygon points="19.3,30 20.7,30 20,39" style="fill:var(--brass)"></polygon><circle cx="20" cy="30" r="2.6" style="fill:var(--ground);stroke:var(--brass);stroke-width:1.2"></circle><circle cx="20" cy="30" r="1" style="fill:var(--seconds)"></circle></svg><span aria-hidden="true">S</span></span>
+    <span style="display:var(--desk-inline);font-family:var(--label);font-size:12.5px;letter-spacing:.045em;color:var(--mute)">Est. 2026 · India</span>
   </a>
-  <nav aria-label="Main" style="display:var(--nav-desk);align-items:center;gap:30px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em">
-    <a href="Collection.dc.html" style="text-decoration:none;color:{{ cCol }};padding:8px 0;border-bottom:1px solid {{ cLine }}" style-hover="color:var(--brass)">COLLECTION</a>
-    <a href="About.dc.html" style="text-decoration:none;color:{{ aCol }};padding:8px 0;border-bottom:1px solid {{ aLine }}" style-hover="color:var(--brass)">ABOUT</a>
+  <nav aria-label="Main" style="display:var(--nav-desk);align-items:center;gap:30px;font-family:var(--label);font-size:12.5px;letter-spacing:.045em">
+    <a href="Collection.dc.html" style="text-decoration:none;color:{{ cCol }};padding:8px 0;border-bottom:1px solid {{ cLine }}" style-hover="color:var(--brass)">Collection</a>
+    <a href="About.dc.html" style="text-decoration:none;color:{{ aCol }};padding:8px 0;border-bottom:1px solid {{ aLine }}" style-hover="color:var(--brass)">About</a>
     <a href="FAQ.dc.html" style="text-decoration:none;color:{{ fCol }};padding:8px 0;border-bottom:1px solid {{ fLine }}" style-hover="color:var(--brass)">FAQ</a>
   </nav>
   <div style="display:flex;align-items:center;gap:6px;flex:none">
-    <a href="List.dc.html" aria-label="Your notify list" style="display:flex;align-items:center;gap:8px;height:40px;min-width:40px;justify-content:center;padding:0 10px;text-decoration:none;color:var(--ink);font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;border:1px solid var(--line)" style-hover="color:var(--brass)">
-      <span style="display:var(--desk-inline)">LIST</span>
+    <a href="List.dc.html" aria-label="Your notify list" style="display:flex;align-items:center;gap:8px;height:40px;min-width:40px;justify-content:center;padding:0 10px;text-decoration:none;color:var(--ink);font-family:var(--label);font-size:12.5px;letter-spacing:.045em;border:1px solid var(--line)" style-hover="color:var(--brass)">
+      <span style="display:var(--desk-inline)">List</span>
       <span style="min-width:18px;height:18px;display:grid;place-items:center;border-radius:9px;background:{{ badgeBg }};color:{{ badgeFg }};font-size:10px;letter-spacing:0;padding:0 5px">{{ count }}</span>
     </a>
-    <button onClick="{{ toggleTheme }}" aria-label="{{ themeAria }}" title="{{ themeAria }}" style="display:flex;align-items:center;gap:10px;height:40px;padding:0 8px;background:transparent;color:var(--ink);border:1px solid;border-image:linear-gradient(var(--lang),var(--brass-lit),var(--line) 55%) 1;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;cursor:pointer" style-hover="color:var(--brass)">
+    <button onClick="{{ toggleTheme }}" aria-label="{{ themeAria }}" title="{{ themeAria }}" style="display:flex;align-items:center;gap:10px;height:40px;padding:0 8px;background:transparent;color:var(--ink);border:1px solid;border-image:linear-gradient(var(--lang),var(--brass-lit),var(--line) 55%) 1;font-family:var(--label);font-size:12.5px;letter-spacing:.045em;cursor:pointer" style-hover="color:var(--brass)">
       <span style="position:relative;width:24px;height:24px;border-radius:50%;border:1px solid var(--brass);overflow:hidden;flex:none;background:var(--ground)">
         <span style="position:absolute;inset:2px;border-radius:50%;overflow:hidden;transform:rotate({{ phaseRot }}deg);transition:transform .8s cubic-bezier(.6,0,.2,1)">
           <span style="position:absolute;top:0;bottom:0;left:0;width:50%;background:var(--brass)"></span>
@@ -38,17 +38,17 @@
   <sc-if value="{{ open }}" hint-placeholder-val="{{ false }}">
     <div style="position:fixed;inset:0;z-index:60;background:var(--ground);display:flex;flex-direction:column;padding:16px var(--pad) 32px;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch">
       <div style="display:flex;justify-content:space-between;align-items:center;height:40px">
-        <span role="img" aria-label="Meravs" style="display:inline-flex;align-items:flex-end;font-family:'Marcellus',serif;font-size:clamp(17px,4.8vw,21px);line-height:1;letter-spacing:.3em"><span aria-hidden="true">MERA</span><svg aria-hidden="true" viewBox="0 0 40 40" style="width:1.05em;height:1.05em;margin:0 .22em -.12em -.12em;overflow:visible;flex:none"><polygon points="18.6,29.3 21.4,30.7 39,-4" style="fill:var(--brass)"></polygon><polygon points="18.9,31 21.1,29 6,3" style="fill:var(--brass)"></polygon><polygon points="19.3,30 20.7,30 20,39" style="fill:var(--brass)"></polygon><circle cx="20" cy="30" r="2.6" style="fill:var(--ground);stroke:var(--brass);stroke-width:1.2"></circle><circle cx="20" cy="30" r="1" style="fill:var(--seconds)"></circle></svg><span aria-hidden="true">S</span></span>
-        <button onClick="{{ closeMenu }}" aria-label="Close menu" style="width:40px;height:40px;background:transparent;border:1px solid var(--line);color:var(--ink);font-family:'JetBrains Mono',monospace;font-size:16px;cursor:pointer;white-space:nowrap">×</button>
+        <span role="img" aria-label="Meravs" style="display:inline-flex;align-items:flex-end;font-family:var(--display);font-size:clamp(17px,4.8vw,21px);line-height:1;letter-spacing:.3em"><span aria-hidden="true">MERA</span><svg aria-hidden="true" viewBox="0 0 40 40" style="width:1.05em;height:1.05em;margin:0 .22em -.12em -.12em;overflow:visible;flex:none"><polygon points="18.6,29.3 21.4,30.7 39,-4" style="fill:var(--brass)"></polygon><polygon points="18.9,31 21.1,29 6,3" style="fill:var(--brass)"></polygon><polygon points="19.3,30 20.7,30 20,39" style="fill:var(--brass)"></polygon><circle cx="20" cy="30" r="2.6" style="fill:var(--ground);stroke:var(--brass);stroke-width:1.2"></circle><circle cx="20" cy="30" r="1" style="fill:var(--seconds)"></circle></svg><span aria-hidden="true">S</span></span>
+        <button onClick="{{ closeMenu }}" aria-label="Close menu" style="width:40px;height:40px;background:transparent;border:1px solid var(--line);color:var(--ink);font-family:var(--label);font-size:16px;cursor:pointer;white-space:nowrap">×</button>
       </div>
       <nav aria-label="Mobile" style="display:flex;flex-direction:column;margin-top:48px">
-        <a href="/" style="font-family:'Marcellus',serif;font-size:38px;line-height:1;text-decoration:none;color:var(--ink);padding:16px 0;border-bottom:1px solid var(--line)">Home</a>
-        <a href="Collection.dc.html" style="font-family:'Marcellus',serif;font-size:38px;line-height:1;text-decoration:none;color:var(--ink);padding:16px 0;border-bottom:1px solid var(--line)">Collection</a>
-        <a href="About.dc.html" style="font-family:'Marcellus',serif;font-size:38px;line-height:1;text-decoration:none;color:var(--ink);padding:16px 0;border-bottom:1px solid var(--line)">About</a>
-        <a href="FAQ.dc.html" style="font-family:'Marcellus',serif;font-size:38px;line-height:1;text-decoration:none;color:var(--ink);padding:16px 0;border-bottom:1px solid var(--line)">FAQ &amp; contact</a>
-        <a href="List.dc.html" style="font-family:'Marcellus',serif;font-size:38px;line-height:1;text-decoration:none;color:var(--ink);padding:16px 0;border-bottom:1px solid var(--line)">Your list</a>
+        <a href="/" style="font-family:var(--display);font-size:38px;line-height:1;text-decoration:none;color:var(--ink);padding:16px 0;border-bottom:1px solid var(--line)">Home</a>
+        <a href="Collection.dc.html" style="font-family:var(--display);font-size:38px;line-height:1;text-decoration:none;color:var(--ink);padding:16px 0;border-bottom:1px solid var(--line)">Collection</a>
+        <a href="About.dc.html" style="font-family:var(--display);font-size:38px;line-height:1;text-decoration:none;color:var(--ink);padding:16px 0;border-bottom:1px solid var(--line)">About</a>
+        <a href="FAQ.dc.html" style="font-family:var(--display);font-size:38px;line-height:1;text-decoration:none;color:var(--ink);padding:16px 0;border-bottom:1px solid var(--line)">FAQ &amp; contact</a>
+        <a href="List.dc.html" style="font-family:var(--display);font-size:38px;line-height:1;text-decoration:none;color:var(--ink);padding:16px 0;border-bottom:1px solid var(--line)">Your list</a>
       </nav>
-      <div style="margin-top:auto;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--mute)">EST. 2026 · INDIA</div>
+      <div style="margin-top:auto;font-family:var(--label);font-size:12.5px;letter-spacing:.045em;color:var(--mute)">Est. 2026 · India</div>
     </div>
   </sc-if>
 </header>
@@ -114,7 +114,7 @@ class Component extends DCLogic {
 
   renderVals() {
     const theme = this.effTheme(), a = this.props.active || '';
-    const NAMES = { light: 'DAY', dark: 'NIGHT', navy: 'MIDNIGHT' }, NEXT = { light: 'Night', dark: 'Midnight', navy: 'Day' };
+    const NAMES = { light: 'Day', dark: 'NIGHT', navy: 'Midnight' }, NEXT = { light: 'Night', dark: 'Midnight', navy: 'Day' };
     const col = k => a === k ? 'var(--brass)' : 'var(--ink)';
     const line = k => a === k ? 'var(--brass)' : 'transparent';
     return {
@@ -124,8 +124,8 @@ class Component extends DCLogic {
       count: this.state.count,
       badgeBg: this.state.count ? 'var(--brass)' : 'transparent',
       badgeFg: this.state.count ? 'var(--ground)' : 'var(--mute)',
-      phaseRot: { light: 0, dark: 180, navy: 270 }[theme] ?? 0, themeName: NAMES[theme] || 'DAY',
-      themeAria: `Colour theme: ${(NAMES[theme] || 'DAY').toLowerCase()}. Switch to ${NEXT[theme] || 'Night'}`,
+      phaseRot: { light: 0, dark: 180, navy: 270 }[theme] ?? 0, themeName: NAMES[theme] || 'Day',
+      themeAria: `Colour theme: ${(NAMES[theme] || 'Day').toLowerCase()}. Switch to ${NEXT[theme] || 'Night'}`,
       toggleTheme: this.toggleTheme,
       open: this.state.open,
       openMenu: () => { this.setState({ open: true }); document.documentElement.style.overflow = 'hidden'; },

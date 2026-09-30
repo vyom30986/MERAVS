@@ -13,10 +13,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Karla:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Cormorant+Garamond:wght@500;600&family=Pinyon+Script&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Marcellus+SC&family=Literata:ital,opsz,wght@0,7..72,400..600;1,7..72,400..500&family=JetBrains+Mono:wght@400&family=Cormorant+Garamond:wght@500;600&family=Pinyon+Script&display=swap">
 <script>try{var t=localStorage.getItem('meravs-theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 <style>
 :root{--ground:#E9ECF0;--ink:#101C2B;--mute:#546274;--brass:#7A6019;--brass-lit:#A8842B;--line:#C6CED8;--dial:#101C2B;--dial-rim:#2B3B4E;--dial-ink:#EFE7D4;--seconds:#D2543F;--btn-bg:#101C2B;--btn-fg:#E9ECF0;--glow:#F7F8FA;--shade:#D5DBE3;--rings:.55;--tex-op:1;--wm-op:.9;--tick-op:.9;color-scheme:light;
+--display:'Marcellus',Georgia,serif;--label:'Marcellus SC',Georgia,serif;--body:'Literata',Georgia,serif;--mono:'JetBrains Mono',ui-monospace,monospace;--script:'Pinyon Script',cursive;
 --lx:.3;--ly:.2;--lang:146deg;--rule-attach:scroll;
 --pad:clamp(20px,5.2vw,72px);--nav-desk:none;--nav-mob:flex;--desk-inline:none;--desk-block:none;
 --stage-cols:minmax(0,1fr);--canvas-col:1;--copy-col:1;--canvas-h:100svh;--copy-pt:0px;--pin-h:260svh;--copy-row:2;--gl-h:58%;--readout-b:42%;--desk-flex:none;--mob-flex:flex;--hero-min:auto;--hero-pt:28px;--caption-top:calc(54svh + 28px);--explode-h:auto;--canvas-pos:sticky;--caption-pos:static;--dial-size:min(70vw,42svh);
@@ -29,7 +30,7 @@
 *,*::before,*::after{box-sizing:border-box}
 html{overscroll-behavior-y:none}
 html,body{margin:0;background:var(--ground);color:var(--ink)}
-body{font-family:'Karla',sans-serif;-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
+body{font-family:var(--body);-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
 a{color:var(--ink)}a:hover{color:var(--brass)}
 ::selection{background:var(--brass);color:var(--ground)}
 ::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
@@ -40,10 +41,10 @@ a{color:var(--ink)}a:hover{color:var(--brass)}
   <div aria-hidden="true" style="position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(120vmax 90vmax at calc(var(--lx)*100%) calc(var(--ly)*100%),var(--glow) 0%,transparent 55%),linear-gradient(180deg,transparent 40%,var(--shade) 160%)"></div>
   <dc-import name="SiteHeader" hint-size="100%,72px"></dc-import>
   <main style="position:relative;z-index:1;flex:1;padding:clamp(32px,6vw,80px) var(--pad) clamp(64px,9vw,128px);max-width:1080px;width:100%">
-    <div style="display:flex;align-items:center;gap:14px;font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.16em;color:var(--brass)">
+    <div style="display:flex;align-items:center;gap:14px;font-family:var(--label);font-size:13px;letter-spacing:.045em;color:var(--brass)">
       <span style="width:28px;height:1px;background:var(--brass);flex:none"></span><span>YOUR LIST · {{ countLabel }}</span>
     </div>
-    <h1 style="font-family:'Marcellus',serif;font-weight:400;font-size:clamp(38px,5vw,72px);line-height:1.04;margin:20px 0 14px">Watches to hear about</h1>
+    <h1 style="font-family:var(--display);font-weight:400;font-size:clamp(38px,5vw,72px);line-height:1.04;margin:20px 0 14px">Watches to hear about</h1>
     <p style="margin:0 0 clamp(32px,4vw,48px);max-width:46ch;font-size:16.5px;line-height:1.6;color:var(--mute)">Nothing is charged or reserved. Send the list to us on WhatsApp to order these or hear when sold-out ones return.</p>
     <sc-if value="{{ hasItems }}" hint-placeholder-val="{{ false }}">
       <div style="display:flex;flex-direction:column;border-bottom:1px solid var(--line)">
@@ -51,23 +52,23 @@ a{color:var(--ink)}a:hover{color:var(--brass)}
           <div style="display:grid;grid-template-columns:72px minmax(0,1fr) auto;align-items:center;gap:18px;padding:18px 0;border-top:1px solid var(--line)">
             <a href="{{ it.href }}" aria-label="{{ it.name }}" style="display:block;width:72px;height:72px"><dc-import name="Dial" model="{{ it.model }}" hint-size="72px,72px"></dc-import></a>
             <div style="min-width:0">
-              <a href="{{ it.href }}" style="text-decoration:none;color:var(--ink)" style-hover="color:var(--brass)"><div style="font-family:'Marcellus',serif;font-size:22px;line-height:1.2">{{ it.name }}</div></a>
+              <a href="{{ it.href }}" style="text-decoration:none;color:var(--ink)" style-hover="color:var(--brass)"><div style="font-family:var(--display);font-size:22px;line-height:1.2">{{ it.name }}</div></a>
               <div style="font-size:14.5px;color:var(--mute);margin-top:4px">{{ it.desc }}</div>
-              <div style="display:flex;flex-wrap:wrap;gap:14px;margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:var(--mute)"><span style="color:var(--ink);font-size:12.5px;letter-spacing:.04em">{{ it.price }}</span><span>{{ it.status }}</span></div>
+              <div style="display:flex;flex-wrap:wrap;gap:14px;margin-top:8px;font-family:var(--label);font-size:12.5px;letter-spacing:.045em;color:var(--mute)"><span style="color:var(--ink);font-size:12.5px;letter-spacing:.04em">{{ it.price }}</span><span>{{ it.status }}</span></div>
             </div>
-            <button onClick="{{ it.remove }}" aria-label="Remove {{ it.name }}" style="height:40px;padding:0 12px;background:transparent;color:var(--mute);border:1px solid var(--line);font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;cursor:pointer" style-hover="color:var(--ink)">REMOVE</button>
+            <button onClick="{{ it.remove }}" aria-label="Remove {{ it.name }}" style="height:40px;padding:0 12px;background:transparent;color:var(--mute);border:1px solid var(--line);font-family:var(--label);font-size:12.5px;letter-spacing:.045em;cursor:pointer" style-hover="color:var(--ink)">Remove</button>
           </div>
         </sc-for>
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:32px">
-        <a href="{{ sendHref }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:14px;min-height:54px;padding:0 22px;white-space:nowrap;background:var(--btn-bg);color:var(--btn-fg);border:1px solid;border-image:linear-gradient(var(--lang),var(--brass-lit),var(--brass) 45%,transparent 90%) 1;font-weight:600;font-size:16px;text-decoration:none" style-hover="color:var(--btn-fg);filter:brightness(1.12)">Send my list on WhatsApp<span aria-hidden="true" style="font-family:'JetBrains Mono',monospace">→</span></a>
+        <a href="{{ sendHref }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:14px;min-height:54px;padding:0 22px;white-space:nowrap;background:var(--btn-bg);color:var(--btn-fg);border:1px solid;border-image:linear-gradient(var(--lang),var(--brass-lit),var(--brass) 45%,transparent 90%) 1;font-weight:600;font-size:16px;text-decoration:none" style-hover="color:var(--btn-fg);filter:brightness(1.12)">Send my list on WhatsApp<span aria-hidden="true" style="font-family:var(--label)">→</span></a>
         <a href="Collection.dc.html" style="display:inline-flex;align-items:center;min-height:54px;padding:0 22px;white-space:nowrap;color:var(--ink);border:1px solid;border-image:linear-gradient(var(--lang),var(--brass-lit),var(--line) 55%) 1;font-weight:500;font-size:16px;text-decoration:none" style-hover="color:var(--brass)">Keep browsing</a>
       </div>
     </sc-if>
     <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ true }}">
       <div style="padding:40px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:20px">
         <p style="margin:0;font-size:17px;color:var(--mute)">Your list is empty.</p>
-        <a href="Collection.dc.html" style="display:inline-flex;align-items:center;gap:14px;min-height:54px;padding:0 22px;white-space:nowrap;background:var(--btn-bg);color:var(--btn-fg);font-weight:600;font-size:16px;text-decoration:none">See the collection<span aria-hidden="true" style="font-family:'JetBrains Mono',monospace">→</span></a>
+        <a href="Collection.dc.html" style="display:inline-flex;align-items:center;gap:14px;min-height:54px;padding:0 22px;white-space:nowrap;background:var(--btn-bg);color:var(--btn-fg);font-weight:600;font-size:16px;text-decoration:none">See the collection<span aria-hidden="true" style="font-family:var(--label)">→</span></a>
       </div>
     </sc-if>
   </main>
@@ -90,7 +91,7 @@ class Component extends DCLogic {
     const models = inv ? this.state.list.map(r => inv.MODELS.find(m => m.ref === r)).filter(Boolean) : [];
     const items = models.map(m => ({
       model: m, name: m.name, href: `Watch.dc.html?ref=${m.ref}`, desc: inv.describe(m), price: inv.formatPrice(m.price),
-      status: m.status === 'out' ? 'SOLD OUT' : 'IN STOCK',
+      status: m.status === 'out' ? 'Sold out' : 'In stock',
       remove: () => inv.toggleInList(m.ref),
     }));
     const text = "Hi Meravs — I'd like to ask about these:\n" + models.map(m => `• ${m.name} (${inv.describe(m)})`).join('\n');

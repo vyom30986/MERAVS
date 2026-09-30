@@ -7,13 +7,13 @@
 <title>Meravs admin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Karla:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Cormorant+Garamond:wght@500;600&family=Pinyon+Script&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Marcellus+SC&family=Literata:ital,opsz,wght@0,7..72,400..600;1,7..72,400..500&family=JetBrains+Mono:wght@400&family=Cormorant+Garamond:wght@500;600&family=Pinyon+Script&display=swap">
 <style>
   :root{
     --bg:#070D16; --panel:#0E1725; --panel2:#132033; --line:#1E2C40; --line2:#2A3C55;
     --ink:#E9ECF1; --mute:#8494A8; --dim:#5D6B7E;
     --brass:#C9A55C; --brass-lit:#E5CB93; --ok:#5BB98B; --bad:#E0654E; --warn:#D9A441;
-    --display:'Marcellus',Georgia,serif; --body:'Karla',system-ui,sans-serif;
+    --display:'Marcellus',Georgia,serif; --label:'Marcellus SC',Georgia,serif; --body:'Literata',Georgia,serif;
     --mono:'JetBrains Mono',ui-monospace,monospace;
     --r:2px;
     color-scheme:dark;
@@ -30,7 +30,7 @@
   .gate-card{width:min(100%,400px);border:1px solid var(--line);background:var(--panel);padding:34px 30px;
     box-shadow:0 30px 80px -40px #000}
   .gate .mark{font-family:var(--display);font-size:20px;letter-spacing:.34em;text-indent:.34em;margin:0 0 4px}
-  .gate .sub{font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:var(--dim);text-transform:uppercase;margin:0 0 26px}
+  .gate .sub{font-family:var(--label);font-size:11.5px;letter-spacing:.18em;color:var(--dim);text-transform:uppercase;margin:0 0 26px}
 
   /* ---------- shell ---------- */
   .shell{display:grid;grid-template-columns:230px minmax(0,1fr);min-height:100%}
@@ -38,7 +38,7 @@
     position:sticky;top:0;height:100vh}
   aside .brand{padding:0 22px 22px;border-bottom:1px solid var(--line);margin-bottom:16px}
   aside .brand h1{font-family:var(--display);font-size:17px;letter-spacing:.3em;margin:0;font-weight:400}
-  aside .brand span{font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;color:var(--dim);text-transform:uppercase}
+  aside .brand span{font-family:var(--label);font-size:11.5px;letter-spacing:.18em;color:var(--dim);text-transform:uppercase}
   aside nav{display:flex;flex-direction:column}
   aside nav button{display:flex;align-items:center;gap:11px;text-align:left;background:none;border:0;cursor:pointer;
     color:var(--mute);font-family:var(--body);font-size:14px;padding:11px 22px;border-left:2px solid transparent}
@@ -46,7 +46,7 @@
   aside nav button[aria-selected="true"]{color:var(--brass);border-left-color:var(--brass);background:#0D1826}
   aside nav svg{width:16px;height:16px;flex:none;opacity:.85}
   aside .foot{margin-top:auto;padding:16px 22px 0;border-top:1px solid var(--line);
-    font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--dim);overflow-wrap:anywhere}
+    font-family:var(--label);font-size:11.5px;letter-spacing:.1em;color:var(--dim);overflow-wrap:anywhere}
   aside .foot a{display:inline-block;margin-top:8px}
 
   main{padding:30px clamp(20px,3vw,40px) 80px;min-width:0}
@@ -64,7 +64,7 @@
   .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,160px),1fr));gap:14px;margin-bottom:26px}
   .stat{border:1px solid var(--line);background:var(--panel);padding:16px 18px}
   .stat .n{font-family:var(--display);font-size:32px;line-height:1;font-variant-numeric:tabular-nums}
-  .stat .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-top:8px}
+  .stat .k{font-family:var(--label);font-size:11.5px;letter-spacing:.045em;color:var(--dim);margin-top:8px}
 
   .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr));gap:16px}
   .wcard{border:1px solid var(--line);background:var(--panel);cursor:pointer;text-align:left;padding:0;
@@ -74,7 +74,7 @@
     background:radial-gradient(circle at 50% 45%,#16233A 0%,var(--panel) 62%,#050A11 130%)}
   .wcard .art svg{width:100%;height:100%;display:block}
   .wcard .meta{padding:13px 15px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:3px}
-  .wcard .r{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;color:var(--brass)}
+  .wcard .r{font-family:var(--label);font-size:11.5px;letter-spacing:.045em;color:var(--brass)}
   .wcard .n{font-family:var(--display);font-size:17px}
   .wcard .p{font-family:var(--mono);font-size:12.5px;color:var(--mute);font-variant-numeric:tabular-nums}
   .tag{font-family:var(--mono);font-size:9px;letter-spacing:.12em;padding:3px 7px;border:1px solid;align-self:flex-start;margin-top:4px}
@@ -88,13 +88,13 @@
   .preview .art{aspect-ratio:1;display:grid;place-items:center;padding:8%;
     background:radial-gradient(circle at 50% 45%,#16233A 0%,var(--panel) 62%,#050A11 130%)}
   .preview .art svg{width:100%;height:100%}
-  .preview .cap{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;color:var(--dim);
+  .preview .cap{font-family:var(--label);font-size:11.5px;letter-spacing:.045em;color:var(--dim);
     text-transform:uppercase;text-align:center;margin-top:14px}
 
   fieldset{border:1px solid var(--line);background:var(--panel);padding:18px 20px 22px;margin:0 0 16px}
-  legend{font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--brass);padding:0 8px}
+  legend{font-family:var(--label);font-size:11.5px;letter-spacing:.045em;color:var(--brass);padding:0 8px}
   .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:14px}
-  label{display:flex;flex-direction:column;gap:6px;font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;
+  label{display:flex;flex-direction:column;gap:6px;font-family:var(--label);font-size:11.5px;letter-spacing:.14em;
     text-transform:uppercase;color:var(--dim)}
   input,select,textarea{font-family:var(--body);font-size:14.5px;background:var(--bg);color:var(--ink);
     border:1px solid var(--line2);padding:9px 11px;width:100%;min-width:0;border-radius:var(--r)}
@@ -118,12 +118,12 @@
   .btn[disabled]{opacity:.4;cursor:not-allowed}
   .bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;position:sticky;bottom:0;background:linear-gradient(transparent,var(--bg) 30%);
     padding:18px 0 4px;margin-top:4px}
-  .msg{font-family:var(--mono);font-size:11px;letter-spacing:.08em}
+  .msg{font-family:var(--label);font-size:12.5px;letter-spacing:.08em}
   .msg.ok{color:var(--ok)} .msg.bad{color:var(--bad)}
 
   table{width:100%;border-collapse:collapse;font-size:13px}
   th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
-  th{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+  th{font-family:var(--label);font-size:11.5px;letter-spacing:.045em;color:var(--dim)}
   td{font-variant-numeric:tabular-nums}
   tbody tr:hover{background:var(--panel)}
   .scroll{overflow-x:auto;border:1px solid var(--line);background:var(--panel)}

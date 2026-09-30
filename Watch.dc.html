@@ -13,10 +13,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Karla:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Cormorant+Garamond:wght@500;600&family=Pinyon+Script&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Marcellus+SC&family=Literata:ital,opsz,wght@0,7..72,400..600;1,7..72,400..500&family=JetBrains+Mono:wght@400&family=Cormorant+Garamond:wght@500;600&family=Pinyon+Script&display=swap">
 <script>try{var t=localStorage.getItem('meravs-theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 <style>
 :root{--ground:#E9ECF0;--ink:#101C2B;--mute:#546274;--brass:#7A6019;--brass-lit:#A8842B;--line:#C6CED8;--dial:#101C2B;--dial-rim:#2B3B4E;--dial-ink:#EFE7D4;--seconds:#D2543F;--btn-bg:#101C2B;--btn-fg:#E9ECF0;--glow:#F7F8FA;--shade:#D5DBE3;--rings:.55;--tex-op:1;--wm-op:.9;--tick-op:.9;color-scheme:light;
+--display:'Marcellus',Georgia,serif;--label:'Marcellus SC',Georgia,serif;--body:'Literata',Georgia,serif;--mono:'JetBrains Mono',ui-monospace,monospace;--script:'Pinyon Script',cursive;
 --lx:.3;--ly:.2;--lang:146deg;--rule-attach:scroll;
 --pad:clamp(20px,5.2vw,72px);--nav-desk:none;--nav-mob:flex;--desk-inline:none;--desk-block:none;
 --stage-cols:minmax(0,1fr);--canvas-col:1;--copy-col:1;--canvas-h:100svh;--copy-pt:0px;--pin-h:260svh;--copy-row:2;--gl-h:58%;--readout-b:42%;--desk-flex:none;--mob-flex:flex;--hero-min:auto;--hero-pt:28px;--caption-top:calc(54svh + 28px);--explode-h:auto;--canvas-pos:sticky;--caption-pos:static;--dial-size:min(70vw,42svh);
@@ -29,7 +30,7 @@
 *,*::before,*::after{box-sizing:border-box}
 html{overscroll-behavior-y:none}
 html,body{margin:0;background:var(--ground);color:var(--ink)}
-body{font-family:'Karla',sans-serif;-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
+body{font-family:var(--body);-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
 a{color:var(--ink)}a:hover{color:var(--brass)}
 ::selection{background:var(--brass);color:var(--ground)}
 ::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
@@ -49,20 +50,20 @@ a{color:var(--ink)}a:hover{color:var(--brass)}
       </div>
       <canvas ref="{{ canvasRef }}" style="position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;transition:opacity .7s ease"></canvas>
       <div ref="{{ labelsRef }}" aria-hidden="true" style="position:absolute;inset:0;pointer-events:none">
-        <div data-part="crystal" style="position:absolute;left:0;top:0;opacity:0;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;line-height:14px;color:var(--ink);will-change:transform"><span data-t="" style="display:flex;gap:8px"><span style="color:var(--brass)">01</span><span>CRYSTAL</span></span><span data-l="" style="height:1px;width:20px;background:var(--mute);opacity:.6"></span><span style="width:5px;height:5px;border-radius:50%;background:var(--brass);flex:none"></span></div>
-        <div data-part="bezel" style="position:absolute;left:0;top:0;opacity:0;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;line-height:14px;color:var(--ink);will-change:transform"><span data-t="" style="display:flex;gap:8px"><span style="color:var(--brass)">02</span><span>BEZEL</span></span><span data-l="" style="height:1px;width:20px;background:var(--mute);opacity:.6"></span><span style="width:5px;height:5px;border-radius:50%;background:var(--brass);flex:none"></span></div>
-        <div data-part="hands" style="position:absolute;left:0;top:0;opacity:0;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;line-height:14px;color:var(--ink);will-change:transform"><span data-t="" style="display:flex;gap:8px"><span style="color:var(--brass)">03</span><span>HANDS</span></span><span data-l="" style="height:1px;width:20px;background:var(--mute);opacity:.6"></span><span style="width:5px;height:5px;border-radius:50%;background:var(--brass);flex:none"></span></div>
-        <div data-part="dial" style="position:absolute;left:0;top:0;opacity:0;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;line-height:14px;color:var(--ink);will-change:transform"><span data-t="" style="display:flex;gap:8px"><span style="color:var(--brass)">04</span><span>DIAL</span></span><span data-l="" style="height:1px;width:20px;background:var(--mute);opacity:.6"></span><span style="width:5px;height:5px;border-radius:50%;background:var(--brass);flex:none"></span></div>
-        <div data-part="case" style="position:absolute;left:0;top:0;opacity:0;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;line-height:14px;color:var(--ink);will-change:transform"><span data-t="" style="display:flex;gap:8px"><span style="color:var(--brass)">05</span><span>CASE</span></span><span data-l="" style="height:1px;width:20px;background:var(--mute);opacity:.6"></span><span style="width:5px;height:5px;border-radius:50%;background:var(--brass);flex:none"></span></div>
-        <div data-part="caseback" style="position:absolute;left:0;top:0;opacity:0;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;line-height:14px;color:var(--ink);will-change:transform"><span data-t="" style="display:flex;gap:8px"><span style="color:var(--brass)">06</span><span>CASEBACK</span></span><span data-l="" style="height:1px;width:20px;background:var(--mute);opacity:.6"></span><span style="width:5px;height:5px;border-radius:50%;background:var(--brass);flex:none"></span></div>
-        <div data-part="bracelet" style="position:absolute;left:0;top:0;opacity:0;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;line-height:14px;color:var(--ink);will-change:transform"><span data-t="" style="display:flex;gap:8px"><span style="color:var(--brass)">07</span><span>BRACELET</span></span><span data-l="" style="height:1px;width:20px;background:var(--mute);opacity:.6"></span><span style="width:5px;height:5px;border-radius:50%;background:var(--brass);flex:none"></span></div>
-        <div data-part="movement" style="position:absolute;left:0;top:0;opacity:0;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;line-height:14px;color:var(--ink);will-change:transform"><span data-t="" style="display:flex;gap:8px"><span style="color:var(--brass)">08</span><span>MOVEMENT</span></span><span data-l="" style="height:1px;width:20px;background:var(--mute);opacity:.6"></span><span style="width:5px;height:5px;border-radius:50%;background:var(--brass);flex:none"></span></div>
+        <div data-part="crystal" style="position:absolute;left:0;top:0;opacity:0;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:var(--label);font-size:12.5px;letter-spacing:.045em;line-height:14px;color:var(--ink);will-change:transform"><span data-t="" style="display:flex;gap:8px"><span style="color:var(--brass)">01</span><span>Crystal</span></span><span data-l="" style="height:1px;width:20px;background:var(--mute);opacity:.6"></span><span style="width:5px;height:5px;border-radius:50%;background:var(--brass);flex:none"></span></div>
+        <div data-part="bezel" style="position:absolute;left:0;top:0;opacity:0;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:var(--label);font-size:12.5px;letter-spacing:.045em;line-height:14px;color:var(--ink);will-change:transform"><span data-t="" style="display:flex;gap:8px"><span style="color:var(--brass)">02</span><span>Bezel</span></span><span data-l="" style="height:1px;width:20px;background:var(--mute);opacity:.6"></span><span style="width:5px;height:5px;border-radius:50%;background:var(--brass);flex:none"></span></div>
+        <div data-part="hands" style="position:absolute;left:0;top:0;opacity:0;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:var(--label);font-size:12.5px;letter-spacing:.045em;line-height:14px;color:var(--ink);will-change:transform"><span data-t="" style="display:flex;gap:8px"><span style="color:var(--brass)">03</span><span>Hands</span></span><span data-l="" style="height:1px;width:20px;background:var(--mute);opacity:.6"></span><span style="width:5px;height:5px;border-radius:50%;background:var(--brass);flex:none"></span></div>
+        <div data-part="dial" style="position:absolute;left:0;top:0;opacity:0;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:var(--label);font-size:12.5px;letter-spacing:.045em;line-height:14px;color:var(--ink);will-change:transform"><span data-t="" style="display:flex;gap:8px"><span style="color:var(--brass)">04</span><span>Dial</span></span><span data-l="" style="height:1px;width:20px;background:var(--mute);opacity:.6"></span><span style="width:5px;height:5px;border-radius:50%;background:var(--brass);flex:none"></span></div>
+        <div data-part="case" style="position:absolute;left:0;top:0;opacity:0;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:var(--label);font-size:12.5px;letter-spacing:.045em;line-height:14px;color:var(--ink);will-change:transform"><span data-t="" style="display:flex;gap:8px"><span style="color:var(--brass)">05</span><span>Case</span></span><span data-l="" style="height:1px;width:20px;background:var(--mute);opacity:.6"></span><span style="width:5px;height:5px;border-radius:50%;background:var(--brass);flex:none"></span></div>
+        <div data-part="caseback" style="position:absolute;left:0;top:0;opacity:0;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:var(--label);font-size:12.5px;letter-spacing:.045em;line-height:14px;color:var(--ink);will-change:transform"><span data-t="" style="display:flex;gap:8px"><span style="color:var(--brass)">06</span><span>Caseback</span></span><span data-l="" style="height:1px;width:20px;background:var(--mute);opacity:.6"></span><span style="width:5px;height:5px;border-radius:50%;background:var(--brass);flex:none"></span></div>
+        <div data-part="bracelet" style="position:absolute;left:0;top:0;opacity:0;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:var(--label);font-size:12.5px;letter-spacing:.045em;line-height:14px;color:var(--ink);will-change:transform"><span data-t="" style="display:flex;gap:8px"><span style="color:var(--brass)">07</span><span>Bracelet</span></span><span data-l="" style="height:1px;width:20px;background:var(--mute);opacity:.6"></span><span style="width:5px;height:5px;border-radius:50%;background:var(--brass);flex:none"></span></div>
+        <div data-part="movement" style="position:absolute;left:0;top:0;opacity:0;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:var(--label);font-size:12.5px;letter-spacing:.045em;line-height:14px;color:var(--ink);will-change:transform"><span data-t="" style="display:flex;gap:8px"><span style="color:var(--brass)">08</span><span>Movement</span></span><span data-l="" style="height:1px;width:20px;background:var(--mute);opacity:.6"></span><span style="width:5px;height:5px;border-radius:50%;background:var(--brass);flex:none"></span></div>
       </div>
       
-      <div style="position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;gap:12px;padding:14px var(--pad);font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:var(--mute);pointer-events:none;align-items:center">
-        <span ref="{{ readoutRef }}" style="font-variant-numeric:tabular-nums">IST --:--:--</span>
+      <div style="position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;gap:12px;padding:14px var(--pad);font-family:var(--label);font-size:12.5px;letter-spacing:.045em;color:var(--mute);pointer-events:none;align-items:center">
+        <span ref="{{ readoutRef }}" style="font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;font-variant-numeric:tabular-nums">IST --:--:--</span>
         <sc-if value="{{ gl }}" hint-placeholder-val="{{ false }}">
-        <button onClick="{{ toggleLayers }}" aria-pressed="{{ layersOn }}" style="pointer-events:auto;display:flex;align-items:center;gap:10px;height:40px;padding:0 14px;background:{{ layBg }};color:{{ layFg }};border:1px solid;border-image:linear-gradient(var(--lang),var(--brass-lit),var(--line) 55%) 1;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;white-space:nowrap;cursor:pointer">
+        <button onClick="{{ toggleLayers }}" aria-pressed="{{ layersOn }}" style="pointer-events:auto;display:flex;align-items:center;gap:10px;height:40px;padding:0 14px;background:{{ layBg }};color:{{ layFg }};border:1px solid;border-image:linear-gradient(var(--lang),var(--brass-lit),var(--line) 55%) 1;font-family:var(--label);font-size:12.5px;letter-spacing:.045em;white-space:nowrap;cursor:pointer">
           <span aria-hidden="true" style="display:flex;flex-direction:column;gap:3px"><span style="width:14px;height:1px;background:currentColor;margin-left:{{ l1 }}"></span><span style="width:14px;height:1px;background:currentColor"></span><span style="width:14px;height:1px;background:currentColor;margin-left:{{ l3 }}"></span></span>{{ layersLabel }}
         </button>
       </sc-if>
@@ -71,39 +72,39 @@ a{color:var(--ink)}a:hover{color:var(--brass)}
 
     <section data-screen-label="Watch detail" style="grid-column:var(--pd-info-col);grid-row:var(--pd-info-row);min-width:0;padding:clamp(28px,5vw,72px) var(--pad) clamp(56px,7vw,96px);display:flex;flex-direction:column;justify-content:center;min-height:var(--pd-info-min)">
       <div style="max-width:520px;display:flex;flex-direction:column">
-        <nav aria-label="Breadcrumb" style="display:flex;gap:10px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--mute)">
-          <a href="Collection.dc.html" style="color:var(--mute);text-decoration:none" style-hover="color:var(--brass)">COLLECTION</a><span>/</span><span style="color:var(--brass)">REF. {{ refNo }}</span>
+        <nav aria-label="Breadcrumb" style="display:flex;gap:10px;font-family:var(--label);font-size:12.5px;letter-spacing:.045em;color:var(--mute)">
+          <a href="Collection.dc.html" style="color:var(--mute);text-decoration:none" style-hover="color:var(--brass)">Collection</a><span>/</span><span style="color:var(--brass)">Ref. {{ refNo }}</span>
         </nav>
-        <h1 style="font-family:'Marcellus',serif;font-weight:400;font-size:clamp(40px,4.6vw,68px);line-height:1.04;margin:18px 0 12px">{{ name }}</h1>
+        <h1 style="font-family:var(--display);font-weight:400;font-size:clamp(40px,4.6vw,68px);line-height:1.04;margin:18px 0 12px">{{ name }}</h1>
         <p style="margin:0;font-size:17px;line-height:1.55;color:var(--mute)">{{ desc }}</p>
         <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin:32px 0 20px;padding:18px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
-          <span style="font-family:'JetBrains Mono',monospace;font-size:clamp(22px,2.2vw,28px);letter-spacing:.02em">{{ price }}</span>
-          <span style="display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:{{ statusCol }}"><span style="width:6px;height:6px;border-radius:50%;background:{{ statusCol }}"></span>{{ statusLabel }}</span>
+          <span style="font-family:var(--label);font-size:clamp(22px,2.2vw,28px);letter-spacing:.045em">{{ price }}</span>
+          <span style="display:flex;align-items:center;gap:8px;font-family:var(--label);font-size:12.5px;letter-spacing:.045em;color:{{ statusCol }}"><span style="width:6px;height:6px;border-radius:50%;background:{{ statusCol }}"></span>{{ statusLabel }}</span>
         </div>
         <div style="display:flex;flex-wrap:wrap;gap:12px">
           <sc-if value="{{ canOrder }}" hint-placeholder-val="{{ true }}">
-            <a href="{{ orderHref }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:12px;min-height:54px;padding:0 22px;white-space:nowrap;background:var(--btn-bg);color:var(--btn-fg);border:1px solid;border-image:linear-gradient(var(--lang),var(--brass-lit),var(--brass) 45%,transparent 90%) 1;font-weight:600;font-size:16px;text-decoration:none" style-hover="color:var(--btn-fg);filter:brightness(1.12)">Order on WhatsApp<span aria-hidden="true" style="font-family:'JetBrains Mono',monospace">→</span></a>
+            <a href="{{ orderHref }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:12px;min-height:54px;padding:0 22px;white-space:nowrap;background:var(--btn-bg);color:var(--btn-fg);border:1px solid;border-image:linear-gradient(var(--lang),var(--brass-lit),var(--brass) 45%,transparent 90%) 1;font-weight:600;font-size:16px;text-decoration:none" style-hover="color:var(--btn-fg);filter:brightness(1.12)">Order on WhatsApp<span aria-hidden="true" style="font-family:var(--label)">→</span></a>
           </sc-if>
           <sc-if value="{{ isOut }}" hint-placeholder-val="{{ false }}">
-            <button onClick="{{ toggle }}" aria-pressed="{{ onList }}" style="display:inline-flex;align-items:center;gap:12px;min-height:54px;padding:0 22px;white-space:nowrap;background:var(--btn-bg);color:var(--btn-fg);border:1px solid;border-image:linear-gradient(var(--lang),var(--brass-lit),var(--brass) 45%,transparent 90%) 1;font-family:'Karla',sans-serif;font-weight:600;font-size:16px;cursor:pointer;white-space:nowrap">{{ notifyLabel }}</button>
+            <button onClick="{{ toggle }}" aria-pressed="{{ onList }}" style="display:inline-flex;align-items:center;gap:12px;min-height:54px;padding:0 22px;white-space:nowrap;background:var(--btn-bg);color:var(--btn-fg);border:1px solid;border-image:linear-gradient(var(--lang),var(--brass-lit),var(--brass) 45%,transparent 90%) 1;font-family:var(--body);font-weight:600;font-size:16px;cursor:pointer;white-space:nowrap">{{ notifyLabel }}</button>
           </sc-if>
           <a href="{{ askHref }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;min-height:54px;padding:0 22px;white-space:nowrap;color:var(--ink);border:1px solid;border-image:linear-gradient(var(--lang),var(--brass-lit),var(--line) 55%) 1;font-weight:500;font-size:16px;text-decoration:none" style-hover="color:var(--brass)">Ask on WhatsApp</a>
         </div>
         <p style="margin:14px 0 0;font-size:14px;line-height:1.5;color:var(--mute)">{{ orderNote }}</p>
         <dl style="display:grid;grid-template-columns:auto 1fr;gap:12px 28px;margin:40px 0 0;font-size:15.5px">
-          <dt style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--mute);padding-top:3px">DIAL</dt><dd style="margin:0">{{ dialName }}</dd>
-          <dt style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--mute);padding-top:3px">CASE TONE</dt><dd style="margin:0">{{ metalName }}</dd>
-          <dt style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--mute);padding-top:3px">CASE SIZE</dt><dd style="margin:0">{{ sizeLabel }}</dd>
-          <dt style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--mute);padding-top:3px">DETAILS</dt><dd style="margin:0;color:var(--mute)">Full specifications are published at launch.</dd>
+          <dt style="font-family:var(--label);font-size:12.5px;letter-spacing:.045em;color:var(--mute);padding-top:3px">Dial</dt><dd style="margin:0">{{ dialName }}</dd>
+          <dt style="font-family:var(--label);font-size:12.5px;letter-spacing:.045em;color:var(--mute);padding-top:3px">Case tone</dt><dd style="margin:0">{{ metalName }}</dd>
+          <dt style="font-family:var(--label);font-size:12.5px;letter-spacing:.045em;color:var(--mute);padding-top:3px">Case size</dt><dd style="margin:0">{{ sizeLabel }}</dd>
+          <dt style="font-family:var(--label);font-size:12.5px;letter-spacing:.045em;color:var(--mute);padding-top:3px">Details</dt><dd style="margin:0;color:var(--mute)">Full specifications are published at launch.</dd>
         </dl>
         <sc-if value="{{ hasPhoto }}" hint-placeholder-val="{{ false }}">
           <figure style="margin:44px 0 0;display:flex;flex-direction:column;gap:12px">
-            <figcaption style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--mute)">THE ACTUAL WATCH</figcaption>
+            <figcaption style="font-family:var(--label);font-size:12.5px;letter-spacing:.045em;color:var(--mute)">The actual watch</figcaption>
             <img src="{{ photo }}" alt="{{ photoAlt }}" loading="lazy" style="display:block;width:auto;max-width:100%;max-height:520px;border:1px solid var(--line)">
           </figure>
         </sc-if>
         <div style="margin-top:44px">
-          <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--mute);margin-bottom:14px">OTHER REFERENCES</div>
+          <div style="font-family:var(--label);font-size:12.5px;letter-spacing:.045em;color:var(--mute);margin-bottom:14px">Other references</div>
           <div style="display:flex;flex-wrap:wrap;gap:10px">
             <sc-for list="{{ others }}" as="o" hint-placeholder-count="6">
               <button onClick="{{ o.pick }}" aria-label="{{ o.name }}" aria-current="{{ o.current }}" style="width:52px;height:52px;padding:5px;background:transparent;border:1px solid {{ o.border }};cursor:pointer">
@@ -155,14 +156,14 @@ class Component extends DCLogic {
     const out = m && m.status === 'out';
     return {
       wrapRef: this.wrapRef, canvasRef: this.canvasRef, svgRef: this.svgRef, readoutRef: this.readoutRef, labelsRef: this.labelsRef, gl: this.state.gl, dialLive: !this.state.gl,
-      layersOn: this.state.layers, layersLabel: this.state.layers ? 'ASSEMBLE' : 'VIEW LAYERS',
+      layersOn: this.state.layers, layersLabel: this.state.layers ? 'Assemble' : 'View layers',
       layBg: this.state.layers ? 'var(--btn-bg)' : 'var(--ground)', layFg: this.state.layers ? 'var(--btn-fg)' : 'var(--ink)',
       l1: this.state.layers ? '-4px' : '0px', l3: this.state.layers ? '4px' : '0px',
       toggleLayers: () => { const on = !this.state.layers; this.setState({ layers: on }); this.watch && this.watch.setExplode(on); },
       model: m || undefined,
       refNo: m ? m.ref : '', name: m ? m.name : '', desc: m ? inv.describe(m) : '',
       price: m ? inv.formatPrice(m.price) : '',
-      statusLabel: out ? 'SOLD OUT' : 'IN STOCK', statusCol: out ? 'var(--mute)' : 'var(--brass)',
+      statusLabel: out ? 'Sold out' : 'In stock', statusCol: out ? 'var(--mute)' : 'var(--brass)',
       hasPhoto: !!(m && m.photo), photoAspect: (m && m.photoAspect) || '3/4', photoMax: m && m.photoAspect ? '480px' : '360px', photo: m && m.photo ? m.photo : undefined, photoAlt: m ? `Photograph of ${m.name}` : '',
       dialName: m ? m.dialName : '', metalName: m ? inv.METAL[m.metal].label : '', sizeLabel: m ? `${m.size}mm` : '',
       onList,

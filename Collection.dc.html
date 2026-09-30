@@ -13,10 +13,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Karla:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Cormorant+Garamond:wght@500;600&family=Pinyon+Script&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Marcellus+SC&family=Literata:ital,opsz,wght@0,7..72,400..600;1,7..72,400..500&family=JetBrains+Mono:wght@400&family=Cormorant+Garamond:wght@500;600&family=Pinyon+Script&display=swap">
 <script>try{var t=localStorage.getItem('meravs-theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 <style>
 :root{--ground:#E9ECF0;--ink:#101C2B;--mute:#546274;--brass:#7A6019;--brass-lit:#A8842B;--line:#C6CED8;--dial:#101C2B;--dial-rim:#2B3B4E;--dial-ink:#EFE7D4;--seconds:#D2543F;--btn-bg:#101C2B;--btn-fg:#E9ECF0;--glow:#F7F8FA;--shade:#D5DBE3;--rings:.55;--tex-op:1;--wm-op:.9;--tick-op:.9;color-scheme:light;
+--display:'Marcellus',Georgia,serif;--label:'Marcellus SC',Georgia,serif;--body:'Literata',Georgia,serif;--mono:'JetBrains Mono',ui-monospace,monospace;--script:'Pinyon Script',cursive;
 --lx:.3;--ly:.2;--lang:146deg;--rule-attach:scroll;
 --pad:clamp(20px,5.2vw,72px);--nav-desk:none;--nav-mob:flex;--desk-inline:none;--desk-block:none;
 --stage-cols:minmax(0,1fr);--canvas-col:1;--copy-col:1;--canvas-h:100svh;--copy-pt:0px;--pin-h:260svh;--copy-row:2;--gl-h:58%;--readout-b:42%;--desk-flex:none;--mob-flex:flex;--hero-min:auto;--hero-pt:28px;--caption-top:calc(54svh + 28px);--explode-h:auto;--canvas-pos:sticky;--caption-pos:static;--dial-size:min(70vw,42svh);
@@ -29,7 +30,7 @@
 *,*::before,*::after{box-sizing:border-box}
 html{overscroll-behavior-y:none}
 html,body{margin:0;background:var(--ground);color:var(--ink)}
-body{font-family:'Karla',sans-serif;-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
+body{font-family:var(--body);-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
 a{color:var(--ink)}a:hover{color:var(--brass)}
 ::selection{background:var(--brass);color:var(--ground)}
 ::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
@@ -40,27 +41,27 @@ a{color:var(--ink)}a:hover{color:var(--brass)}
   <div aria-hidden="true" style="position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(120vmax 90vmax at calc(var(--lx)*100%) calc(var(--ly)*100%),var(--glow) 0%,transparent 55%),linear-gradient(180deg,transparent 40%,var(--shade) 160%)"></div>
   <dc-import name="SiteHeader" active="collection" hint-size="100%,72px"></dc-import>
   <main style="position:relative;z-index:1;padding:clamp(32px,6vw,80px) var(--pad) clamp(64px,9vw,128px)">
-    <div style="display:flex;align-items:center;gap:14px;font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.16em;color:var(--brass)">
+    <div style="display:flex;align-items:center;gap:14px;font-family:var(--label);font-size:13px;letter-spacing:.045em;color:var(--brass)">
       <span style="width:28px;height:1px;background:var(--brass);flex:none"></span>
-      <span>COLLECTION · {{ countLabel }} REFERENCES</span>
+      <span>Collection · {{ countLabel }} references</span>
     </div>
     <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:24px 48px;margin:20px 0 clamp(32px,4vw,48px)">
-      <h1 style="font-family:'Marcellus',serif;font-weight:400;font-size:clamp(38px,5vw,72px);line-height:1.04;margin:0;max-width:14ch;text-wrap:balance">The first collection</h1>
+      <h1 style="font-family:var(--display);font-weight:400;font-size:clamp(38px,5vw,72px);line-height:1.04;margin:0;max-width:14ch;text-wrap:balance">The first collection</h1>
       <p style="margin:0;max-width:40ch;font-size:16.5px;line-height:1.6;color:var(--mute);text-wrap:pretty">Order any watch on WhatsApp. We confirm the price, payment and delivery with you there.</p>
     </div>
     <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:16px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:clamp(32px,4vw,48px)">
-      <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--mute);margin-right:6px">FOR</span>
+      <span style="font-family:var(--label);font-size:12.5px;letter-spacing:.045em;color:var(--mute);margin-right:6px">For</span>
       <sc-for list="{{ genders }}" as="gd" hint-placeholder-count="3">
-        <button onClick="{{ gd.pick }}" style="height:36px;padding:0 14px;background:{{ gd.bg }};color:{{ gd.fg }};border:1px solid var(--line);font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;cursor:pointer">{{ gd.label }}</button>
+        <button onClick="{{ gd.pick }}" style="height:36px;padding:0 14px;background:{{ gd.bg }};color:{{ gd.fg }};border:1px solid var(--line);font-family:var(--label);font-size:12.5px;letter-spacing:.045em;cursor:pointer">{{ gd.label }}</button>
       </sc-for>
       <span aria-hidden="true" style="width:1px;height:20px;background:var(--line);margin:0 6px"></span>
-      <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--mute);margin-right:6px">SIZE</span>
-      <button onClick="{{ setAll }}" style="height:36px;padding:0 14px;background:{{ allBg }};color:{{ allFg }};border:1px solid var(--line);font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;cursor:pointer">ALL</button>
+      <span style="font-family:var(--label);font-size:12.5px;letter-spacing:.045em;color:var(--mute);margin-right:6px">Size</span>
+      <button onClick="{{ setAll }}" style="height:36px;padding:0 14px;background:{{ allBg }};color:{{ allFg }};border:1px solid var(--line);font-family:var(--label);font-size:12.5px;letter-spacing:.045em;cursor:pointer">All</button>
       <sc-for list="{{ sizes }}" as="sz" hint-placeholder-count="4">
-        <button onClick="{{ sz.pick }}" style="height:36px;padding:0 14px;background:{{ sz.bg }};color:{{ sz.fg }};border:1px solid var(--line);font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;cursor:pointer">{{ sz.label }}</button>
+        <button onClick="{{ sz.pick }}" style="height:36px;padding:0 14px;background:{{ sz.bg }};color:{{ sz.fg }};border:1px solid var(--line);font-family:var(--label);font-size:12.5px;letter-spacing:.045em;cursor:pointer">{{ sz.label }}</button>
       </sc-for>
-      <button onClick="{{ toggleStock }}" aria-pressed="{{ stockOnly }}" style="margin-left:auto;flex:none;white-space:nowrap;display:flex;align-items:center;gap:10px;height:36px;padding:0 14px;background:transparent;color:var(--ink);border:1px solid var(--line);font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;cursor:pointer">
-        <span style="width:12px;height:12px;border:1px solid var(--brass);background:{{ stockBox }}"></span>IN STOCK ONLY
+      <button onClick="{{ toggleStock }}" aria-pressed="{{ stockOnly }}" style="margin-left:auto;flex:none;white-space:nowrap;display:flex;align-items:center;gap:10px;height:36px;padding:0 14px;background:transparent;color:var(--ink);border:1px solid var(--line);font-family:var(--label);font-size:12.5px;letter-spacing:.045em;cursor:pointer">
+        <span style="width:12px;height:12px;border:1px solid var(--brass);background:{{ stockBox }}"></span>In stock only
       </button>
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));gap:clamp(40px,4vw,56px) clamp(20px,3vw,40px)">
@@ -87,9 +88,9 @@ class Component extends DCLogic {
     return {
       models, empty: all.length > 0 && models.length === 0,
       countLabel: String(all.length || 5).padStart(2, '0'),
-      genders: [['', 'ALL'], ['men', 'MEN'], ['women', 'WOMEN']].map(([v, l]) => ({ label: l, bg: gender === v ? 'var(--btn-bg)' : 'transparent', fg: gender === v ? 'var(--btn-fg)' : 'var(--ink)', pick: () => this.setState({ gender: v }) })),
+      genders: [['', 'All'], ['men', 'Men'], ['women', 'Women']].map(([v, l]) => ({ label: l, bg: gender === v ? 'var(--btn-bg)' : 'transparent', fg: gender === v ? 'var(--btn-fg)' : 'var(--ink)', pick: () => this.setState({ gender: v }) })),
       setAll: () => this.setState({ size: 0 }), allBg: bg(0), allFg: fg(0),
-      sizes: [...new Set(all.map(m => m.size))].sort((a, b) => a - b).map(v => ({ label: v + 'MM', bg: bg(v), fg: fg(v), pick: () => this.setState({ size: v }) })),
+      sizes: [...new Set(all.map(m => m.size))].sort((a, b) => a - b).map(v => ({ label: v + 'mm', bg: bg(v), fg: fg(v), pick: () => this.setState({ size: v }) })),
       stockOnly, toggleStock: () => this.setState(s => ({ stockOnly: !s.stockOnly })),
       stockBox: stockOnly ? 'var(--brass)' : 'transparent',
     };
