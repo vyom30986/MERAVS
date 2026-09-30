@@ -101,6 +101,12 @@
   textarea{font-family:var(--mono);font-size:12px;line-height:1.6;resize:vertical}
   input:focus,select:focus,textarea:focus{outline:none;border-color:var(--brass)}
   input[type=color]{padding:3px;height:38px;cursor:pointer}
+  .pwwrap{position:relative;display:block}
+  .pwwrap input{padding-right:46px}
+  .eye{position:absolute;right:1px;top:1px;bottom:1px;width:44px;display:grid;place-items:center;
+    background:none;border:0;color:var(--dim);cursor:pointer;padding:0}
+  .eye:hover,.eye:focus-visible{color:var(--brass)}
+  .eye svg{width:18px;height:18px}
   .swatch{display:grid;grid-template-columns:38px minmax(0,1fr);gap:7px;align-items:center}
   .swatch input[type=text]{font-family:var(--mono);font-size:12px}
 
@@ -138,7 +144,13 @@
     <form id="loginForm">
       <div style="display:flex;flex-direction:column;gap:14px">
         <label>Admin ID<input type="text" id="uid" autocomplete="username" autocapitalize="none" spellcheck="false" required></label>
-        <label>Password<input type="password" id="pw" autocomplete="current-password" required></label>
+        <label>Password<span class="pwwrap">
+          <input type="password" id="pw" autocomplete="current-password" required>
+          <button type="button" class="eye" id="eye" aria-label="Show password" aria-pressed="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1.5 12S5 5.5 12 5.5 22.5 12 22.5 12 19 18.5 12 18.5 1.5 12 1.5 12Z"/><circle cx="12" cy="12" r="3.2"/>
+            </svg></button>
+        </span></label>
         <button class="btn" type="submit" id="loginBtn" style="margin-top:4px">Sign in</button>
       </div>
     </form>
@@ -280,7 +292,7 @@ async function boot() {
   if (!d.admin) {
     $('#gate').hidden = false;
     if (!d.passwordLoginAvailable) {
-      note('#gateNote', 'bad', '<b>Login is not configured.</b> Add <code>ADMIN_USERNAME</code>, <code>ADMIN_PASSWORD_HASH</code> and <code>SESSION_SECRET</code> as Secrets on the Pages project, then redeploy. Until then nothing can be changed, by anyone.');
+      note('#gateNote', 'bad', '<b>The server has no password set, so nothing you type here can work.</b> This is not a wrong password — there is nothing to compare against. Add <code>ADMIN_USERNAME</code>, <code>ADMIN_PASSWORD_HASH</code> and <code>SESSION_SECRET</code> as Secrets on the Pages project. <b>Then redeploy</b> — secrets only take effect on a new deployment, which is the usual reason this message is still showing after you have added them.');
       $('#loginBtn').disabled = true;
     }
     return;
@@ -298,6 +310,18 @@ async function boot() {
 }
 
 function note(sel, kind, html) { const n = $(sel); n.hidden = false; n.className = 'note ' + kind; n.innerHTML = html; }
+
+/* show / hide the password, so a typo is something you can see rather than guess at */
+const EYE_OPEN = '<path d="M1.5 12S5 5.5 12 5.5 22.5 12 22.5 12 19 18.5 12 18.5 1.5 12 1.5 12Z"/><circle cx="12" cy="12" r="3.2"/>';
+const EYE_SHUT = '<path d="M3 3l18 18M10.6 6A8.7 8.7 0 0 1 12 5.5c7 0 10.5 6.5 10.5 6.5a19 19 0 0 1-3.6 4.3M6.6 8.1A19 19 0 0 0 1.5 12S5 18.5 12 18.5a9.6 9.6 0 0 0 3.6-.7"/><path d="M9.8 9.9a3.2 3.2 0 0 0 4.4 4.4"/>';
+$('#eye').onclick = () => {
+  const pw = $('#pw'), on = pw.type === 'password';
+  pw.type = on ? 'text' : 'password';
+  $('#eye').setAttribute('aria-pressed', String(on));
+  $('#eye').setAttribute('aria-label', on ? 'Hide password' : 'Show password');
+  $('#eye').querySelector('svg').innerHTML = on ? EYE_SHUT : EYE_OPEN;
+  pw.focus();
+};
 
 $('#loginForm').onsubmit = async e => {
   e.preventDefault();

@@ -57,7 +57,10 @@ export async function onRequestPost({ request, env }) {
 
   let body;
   try { body = await request.json(); } catch (_) { return json({ error: 'bad_json' }, 400); }
-  const username = typeof body?.username === 'string' ? body.username : '';
+  // Trim the ID on both sides - a trailing space from autofill or a paste is
+  // not a different user, and an unexplainable rejection is worse than useless.
+  // The password is never trimmed; whitespace there may be deliberate.
+  const username = typeof body?.username === 'string' ? body.username.trim() : '';
   const password = typeof body?.password === 'string' ? body.password : '';
   if (!username || username.length > 256) return json({ error: 'invalid' }, 401);
   if (!password || password.length > 512) return json({ error: 'invalid' }, 401);
@@ -66,7 +69,7 @@ export async function onRequestPost({ request, env }) {
   // make it measurably faster than a wrong password, which tells an attacker
   // when they have guessed the ID correctly.
   const [userOk, passOk] = await Promise.all([
-    safeEqualString(username, env.ADMIN_USERNAME),
+    safeEqualString(username, String(env.ADMIN_USERNAME).trim()),
     verifyPassword(password, env.ADMIN_PASSWORD_HASH),
   ]);
   const ok = userOk && passOk;

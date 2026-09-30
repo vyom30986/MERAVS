@@ -61,7 +61,10 @@ export async function safeEqualString(a, b) {
 
 export async function verifyPassword(password, stored) {
   if (typeof stored !== 'string') return false;
-  const parts = stored.split('$');
+  // Pasting into a dashboard field very easily picks up a stray newline or
+  // space. Tolerate that rather than failing with an unexplainable "wrong
+  // password" the owner has no way to diagnose.
+  const parts = stored.trim().split('$').map(s => s.trim());
   if (parts.length !== 4 || parts[0] !== 'pbkdf2') return false;
   const iterations = parseInt(parts[1], 10);
   if (!Number.isFinite(iterations) || iterations < 10000) return false;
