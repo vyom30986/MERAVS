@@ -43,6 +43,17 @@ function timingSafeEqual(a, b) {
   return diff === 0;
 }
 
+// Compare two strings without leaking their length or contents through timing.
+// Both sides are hashed to a fixed 32 bytes first, so a length mismatch cannot
+// short-circuit the comparison.
+export async function safeEqualString(a, b) {
+  const [ha, hb] = await Promise.all([
+    crypto.subtle.digest('SHA-256', enc.encode(String(a ?? ''))),
+    crypto.subtle.digest('SHA-256', enc.encode(String(b ?? ''))),
+  ]);
+  return timingSafeEqual(new Uint8Array(ha), new Uint8Array(hb));
+}
+
 /* ---------- password ----------
    Stored as: pbkdf2$<iterations>$<saltB64url>$<hashB64url>
    Generated locally by tools/hash-password.mjs so the plaintext password

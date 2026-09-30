@@ -83,7 +83,9 @@
   <h2 style="font-family:var(--display);font-weight:400;font-size:20px;margin:0">Sign in</h2>
   <p class="hint">Checked on the server against a PBKDF2 hash. Nothing on this page can be read to get past it.</p>
   <form id="loginForm" style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-top:14px">
-    <label style="flex:1;min-width:220px">Password
+    <label style="flex:1;min-width:180px">ID
+      <input type="text" id="uid" autocomplete="username" autocapitalize="none" spellcheck="false" required></label>
+    <label style="flex:1;min-width:180px">Password
       <input type="password" id="pw" autocomplete="current-password" required></label>
     <button class="btn" type="submit" id="loginBtn">Sign in</button>
   </form>
@@ -173,7 +175,7 @@ $('#loginForm').onsubmit = async e => {
   try {
     const r = await fetch('/api/login', {
       method: 'POST', headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ password: $('#pw').value }),
+      body: JSON.stringify({ username: $('#uid').value, password: $('#pw').value }),
     });
     const d = await r.json();
     if (r.ok) { msg.className = 'msg ok'; msg.textContent = 'signed in'; location.reload(); return; }
@@ -182,7 +184,7 @@ $('#loginForm').onsubmit = async e => {
       ? `Too many attempts. Wait ${d.retryAfterMinutes} minutes.`
       : d.error === 'login_not_configured'
         ? 'Login is not configured on the server yet.'
-        : 'Wrong password.';
+        : 'Wrong ID or password.';
   } catch (err) { msg.className = 'msg bad'; msg.textContent = err.message; }
   btn.disabled = false;
   $('#pw').value = '';

@@ -7,7 +7,7 @@
 // SESSION_SECRET unset, login is impossible and every write stays refused.
 
 import {
-  json, verifyPassword, verifyAdmin, verifyAccess, verifySession,
+  json, verifyPassword, safeEqualString, verifyAdmin, verifyAccess, verifySession,
   makeSession, sessionCookie,
 } from '../_lib.js';
 
@@ -30,13 +30,13 @@ export async function onRequestGet({ request, env }) {
     via: null,
     // Tell the panel which login routes are actually usable, so it can show
     // the right thing instead of a form that cannot possibly work.
-    passwordLoginAvailable: Boolean(env.ADMIN_PASSWORD_HASH && env.SESSION_SECRET),
+    passwordLoginAvailable: Boolean(env.ADMIN_USERNAME && env.ADMIN_PASSWORD_HASH && env.SESSION_SECRET),
     accessConfigured: Boolean(env.ACCESS_TEAM_DOMAIN && env.ACCESS_AUD),
   });
 }
 
 export async function onRequestPost({ request, env }) {
-  if (!env.ADMIN_PASSWORD_HASH || !env.SESSION_SECRET) {
+  if (!env.ADMIN_USERNAME || !env.ADMIN_PASSWORD_HASH || !env.SESSION_SECRET) {
     return json({ error: 'login_not_configured' }, 503);
   }
 
@@ -57,10 +57,19 @@ export async function onRequestPost({ request, env }) {
 
   let body;
   try { body = await request.json(); } catch (_) { return json({ error: 'bad_json' }, 400); }
+  const username = typeof body?.username === 'string' ? body.username : '';
   const password = typeof body?.password === 'string' ? body.password : '';
-  if (!password || password.length > 512) return json({ error: 'bad_password' }, 400);
+  if (!username || username.length > 256) return json({ error: 'invalid' }, 401);
+  if (!password || password.length > 512) return json({ error: 'invalid' }, 401);
 
-  const ok = await verifyPassword(password, env.ADMIN_PASSWORD_HASH);
+  // Always evaluate both checks. Bailing out early on a wrong username would
+  // make it measurably faster than a wrong password, which tells an attacker
+  // when they have guessed the ID correctly.
+  const [userOk, passOk] = await Promise.all([
+    safeEqualString(username, env.ADMIN_USERNAME),
+    verifyPassword(password, env.ADMIN_PASSWORD_HASH),
+  ]);
+  const ok = userOk && passOk;
 
   if (env.DB) {
     try {
