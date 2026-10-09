@@ -7,26 +7,7 @@
 // that verifies against the team's published keys. With ACCESS_TEAM_DOMAIN or
 // ACCESS_AUD unset, nothing can write - including us.
 
-import { json, verifyAdmin } from '../_lib.js';
-
-// With the panel unauthenticated, a record of every change is the only thing
-// standing between "someone edited a price" and "nobody knows what happened".
-async function audit(env, request, who, what, ref) {
-  if (!env.DB) return;
-  const cf = request.cf || {};
-  try {
-    await env.DB.prepare(
-      `INSERT INTO events (created_at, kind, ref, email, country, city, referrer, path, user_agent)
-       VALUES (datetime('now'), 'admin_write', ?, ?, ?, ?, ?, ?, ?)`
-    ).bind(
-      ref || null, who || null,
-      (cf.country || '').slice(0, 8) || null,
-      (cf.city || '').slice(0, 64) || null,
-      (request.headers.get('cf-connecting-ip') || '').slice(0, 64) || null,
-      what, (request.headers.get('user-agent') || '').slice(0, 300) || null
-    ).run();
-  } catch (_) { /* never fail a save because the audit row failed */ }
-}
+import { json, verifyAdmin, audit, salesSettings, SALES_MODES } from '../_lib.js';
 
 // D1 keeps the flat fields as columns and the renderer's nested config in `design`.
 // Recombine into the single object watchshape.js and the pages already consume.
@@ -55,11 +36,16 @@ function rowToModel(row) {
 export async function onRequestGet({ env }) {
   if (!env.DB) return json({ error: 'no_database' }, 503);
   try {
-    const [models, site] = await Promise.all([
+    const [models, site, sales] = await Promise.all([
       env.DB.prepare('SELECT * FROM models ORDER BY sort_order').all(),
       env.DB.prepare('SELECT key, value FROM site').all(),
+      salesSettings(env),
     ]);
     return json({
+      // 'paused' hides every price and swaps Order for the waitlist, without
+      // deleting anything. One write flips it to 'preorder' or 'live'.
+      salesMode: sales.salesMode,
+      depositPct: sales.depositPct,
       site: Object.fromEntries((site.results || []).map(r => [r.key, r.value])),
       models: (models.results || []).map(rowToModel),
     }, 200, 'public, max-age=30, s-maxage=60');
@@ -84,6 +70,31 @@ export async function onRequestPut({ request, env }) {
     ));
     await audit(env, request, email, 'site:' + entries.map(e => e[0]).join(','), null);
     return json({ ok: true, wrote: 'site', by: email, keys: entries.map(e => e[0]) });
+  }
+
+  if (body && body.config && typeof body.config === 'object') {
+    // admin_config also holds the password hash, the session secret and the
+    // email allowlist. Only these two keys are writable over HTTP - anything
+    // else is refused rather than ignored, so a typo cannot silently pass.
+    const out = [];
+    for (const [k, v] of Object.entries(body.config)) {
+      if (k === 'sales_mode') {
+        if (!SALES_MODES.includes(v)) return json({ error: 'bad_sales_mode', allowed: SALES_MODES }, 400);
+        out.push([k, v]);
+      } else if (k === 'deposit_pct') {
+        const n = Math.round(Number(v));
+        if (!Number.isFinite(n) || n < 1 || n > 100) return json({ error: 'bad_deposit_pct' }, 400);
+        out.push([k, String(n)]);
+      } else {
+        return json({ error: 'key_not_writable', key: k }, 400);
+      }
+    }
+    if (!out.length) return json({ error: 'nothing_to_write' }, 400);
+    await env.DB.batch(out.map(([k, v]) =>
+      env.DB.prepare("INSERT OR REPLACE INTO admin_config (key,value,updated_at) VALUES (?,?,datetime('now'))").bind(k, v)
+    ));
+    await audit(env, request, email, 'config:' + out.map(e => e[0] + '=' + e[1]).join(','), null);
+    return json({ ok: true, wrote: 'config', by: email, keys: out.map(e => e[0]) });
   }
 
   const m = body && body.model;

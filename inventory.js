@@ -45,6 +45,13 @@ const FALLBACK_MODELS = [
 let MODELS = FALLBACK_MODELS;
 let SITE = FALLBACK_SITE;
 let SOURCE = 'fallback';
+// 'paused'   until a manufacturer is confirmed: prices hidden, every button is
+//            the waitlist. Nothing is deleted.
+// 'preorder' prices shown, a deposit reserves the watch, balance on dispatch.
+// 'live'     ordinary ordering over WhatsApp.
+// Set in the admin panel; one write flips the whole site.
+let SALES_MODE = 'paused';
+let DEPOSIT_PCT = 50;
 
 // Top-level await: every consumer already does import('./inventory.js').then(...),
 // so awaiting here means they all receive live data with no change on their side.
@@ -57,6 +64,8 @@ if (typeof fetch === 'function') {
       const d = await r.json();
       if (Array.isArray(d.models) && d.models.length) { MODELS = d.models; SOURCE = 'api'; }
       if (d.site && typeof d.site === 'object') SITE = { ...FALLBACK_SITE, ...d.site };
+      if (['paused', 'preorder', 'live'].includes(d.salesMode)) SALES_MODE = d.salesMode;
+      if (Number.isFinite(+d.depositPct) && +d.depositPct > 0) DEPOSIT_PCT = Math.round(+d.depositPct);
     }
   } catch (_) {
     // offline, timed out, API not deployed yet - the fallback above stands
@@ -65,7 +74,21 @@ if (typeof fetch === 'function') {
   }
 }
 
-export { MODELS, SITE, SOURCE };
+export { MODELS, SITE, SOURCE, SALES_MODE, DEPOSIT_PCT };
+export const salesMode = () => SALES_MODE;
+// salesLive() asks one question: may this page show a price and take an order?
+// Both 'live' and 'preorder' answer yes; the mode decides how the button reads.
+export const salesLive = () => SALES_MODE === 'live' || SALES_MODE === 'preorder';
+export const isPreorder = () => SALES_MODE === 'preorder';
+export const depositOn = total => Math.round((Number(total) || 0) * DEPOSIT_PCT / 100);
+export const preorderLink = m => `preorder.html?ref=${encodeURIComponent(m.ref)}`;
+// The one call a page makes for its main button, so no page has to know the
+// mode rules: paused -> waitlist, preorder -> the deposit form, live -> WhatsApp.
+export function cta(m) {
+  if (SALES_MODE === 'paused') return { label: 'Join the waitlist', href: joinLink(), external: true };
+  if (SALES_MODE === 'preorder') return { label: `Pre-order - ${DEPOSIT_PCT}% now`, href: preorderLink(m), external: false };
+  return { label: 'Order on WhatsApp', href: orderLink(m), external: true };
+}
 
 export const METAL = { gold: { hex: '#D3B06A', label: 'Gold-tone' }, steel: { hex: '#C9CDD2', label: 'Steel-tone' }, rose: { hex: '#D9A98C', label: 'Rose-gold and steel' } };
 

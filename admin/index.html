@@ -131,6 +131,37 @@
   .kind{font-family:var(--mono);font-size:9px;letter-spacing:.1em;padding:3px 7px;border:1px solid var(--line2);color:var(--mute)}
   .kind.waitlist{color:var(--brass);border-color:#4A3C1E}
   .kind.order{color:var(--ok);border-color:#24533F}
+  .kind.preorder{color:#8FB8E8;border-color:#294866}
+
+  /* pre-order status pills: colour carries the stage, so a glance down the
+     column tells you what is waiting on you without reading every word. */
+  .st{font-family:var(--label);font-size:11px;letter-spacing:.06em;padding:3px 9px;border:1px solid var(--line2);color:var(--mute);white-space:nowrap}
+  .st.enquiry{color:var(--dim)}
+  .st.deposit_pending{color:var(--brass);border-color:#4A3C1E}
+  .st.deposit_paid{color:var(--ok);border-color:#24533F}
+  .st.in_production{color:#8FB8E8;border-color:#294866}
+  .st.shipped{color:#8FB8E8;border-color:#294866}
+  .st.delivered{color:var(--ok);border-color:#24533F}
+  .st.cancelled,.st.refunded{color:var(--bad);border-color:#5A2A22}
+
+  .mode{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:12px;margin-bottom:6px}
+  .mode button{text-align:left;background:var(--panel);border:1px solid var(--line2);color:var(--ink);
+    padding:15px 16px;cursor:pointer;font-family:var(--body);font-size:14px;line-height:1.45}
+  .mode button:hover{border-color:var(--brass)}
+  .mode button[aria-pressed="true"]{border-color:var(--brass);background:#0D1826}
+  .mode button b{display:block;font-family:var(--label);font-size:13px;letter-spacing:.06em;color:var(--brass);margin-bottom:5px}
+  .mode button span{color:var(--mute);font-size:13px}
+
+  tr.dim td{opacity:.55}
+  td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  th.num{text-align:right}
+  .inline{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+  .inline select,.inline input{font-family:var(--body);font-size:12.5px;padding:5px 7px;background:var(--bg);
+    color:var(--ink);border:1px solid var(--line2)}
+  .inline input{width:92px}
+  .mini{font-size:11.5px;padding:5px 9px;font-weight:500}
+  .copy{background:none;border:0;color:var(--brass);cursor:pointer;font-family:var(--mono);font-size:12px;padding:0}
+  .copy:hover{text-decoration:underline}
 </style>
 </head>
 <body>
@@ -190,6 +221,31 @@
       <div class="scroll"><table id="ovTable"></table></div>
     </section>
 
+    <section id="v-preorders" hidden>
+      <div class="head">
+        <div><h2>Pre-orders</h2><p id="poSub">—</p></div>
+        <button class="btn ghost" id="poReload">Refresh</button>
+      </div>
+      <div class="stats" id="poStats"></div>
+      <div class="scroll"><table id="poTable"></table></div>
+      <p style="margin:16px 0 0;font-size:13px;color:var(--mute);line-height:1.6;max-width:72ch">
+        Totals leave out cancelled and refunded orders, so what you see is money you can still expect.
+        <b>Deposit held</b> is what has actually arrived. Mark a deposit paid only once you have seen the UPI
+        credit — this table is the only record of it.
+      </p>
+    </section>
+
+    <section id="v-costs" hidden>
+      <div class="head"><div><h2>Costs</h2><p id="coSub">—</p></div></div>
+      <div class="stats" id="coStats"></div>
+      <fieldset><legend>Add a cost</legend>
+        <div class="grid" id="coForm"></div>
+        <div class="bar"><button class="btn" id="coAdd">Add cost</button><span class="msg" id="coMsg"></span></div>
+      </fieldset>
+      <div class="head" style="margin-top:8px"><div><h2 style="font-size:19px">Everything spent</h2></div></div>
+      <div class="scroll"><table id="coTable"></table></div>
+    </section>
+
     <section id="v-watches" hidden>
       <div class="head">
         <div><h2>Watches</h2><p id="wSub">—</p></div>
@@ -201,6 +257,16 @@
 
     <section id="v-site" hidden>
       <div class="head"><div><h2>Site settings</h2><p>Shown across the public site. The WhatsApp number drives every order button.</p></div></div>
+      <fieldset><legend>Are we selling?</legend>
+        <div class="mode" id="modeBox"></div>
+        <div class="grid" id="depositBox"></div>
+        <div class="bar"><button class="btn" id="saveMode">Apply</button><span class="msg" id="modeMsg"></span></div>
+        <p style="margin:4px 0 0;font-size:13px;color:var(--mute);line-height:1.6;max-width:72ch">
+          This changes the public site everywhere at once — prices, buttons, the FAQ. It takes up to a minute
+          to reach everyone, because the catalogue is cached at the edge.
+        </p>
+      </fieldset>
+
       <fieldset><legend>Details</legend>
         <div class="grid" id="siteGrid"></div>
         <div class="bar"><button class="btn" id="saveSite">Save settings</button><span class="msg" id="siteMsg"></span></div>
@@ -222,7 +288,8 @@ const inr = n => '₹' + Number(n || 0).toLocaleString('en-IN');
 const FLAT = ['ref','gender','name','dialName','note','tone','metal','size','price','status','photo','photoAspect','sort_order'];
 
 let W = null;             // watchshape module
-let STATE = { models: [], site: {}, events: null, editing: null };
+let STATE = { models: [], site: {}, events: null, editing: null,
+              salesMode: 'paused', depositPct: 50, pre: null, costs: null };
 
 /* ================= dial renderer =================
    Ports the SVG build out of Dial.dc.html so the panel can draw a watch from
@@ -310,7 +377,7 @@ async function boot() {
     try { W = await import('/watchshape.js'); } catch (_) {}
     try { await document.fonts.ready; } catch (_) {}
     buildNav();
-    await Promise.all([loadInventory(), loadEvents()]);
+    await Promise.all([loadInventory(), loadEvents(), loadPreorders(), loadCosts()]);
     renderOverview();
     return;
   }
@@ -332,7 +399,7 @@ async function boot() {
   try { W = await import('/watchshape.js'); } catch (_) {}
   try { await document.fonts.ready; } catch (_) {}
   buildNav();
-  await Promise.all([loadInventory(), loadEvents()]);
+  await Promise.all([loadInventory(), loadEvents(), loadPreorders(), loadCosts()]);
   renderOverview();
 }
 
@@ -429,15 +496,18 @@ const ICON = {
   watches: '<circle cx="12" cy="12" r="6"/><path d="M12 9v3l2 1M9 6l1-3h4l1 3M9 18l1 3h4l1-3"/>',
   site: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18"/>',
   activity: '<path d="M3 12h4l3 8 4-16 3 8h4"/>',
+  preorders: '<path d="M4 4h12l4 4v12H4z"/><path d="M8 10h8M8 14h5"/>',
+  costs: '<path d="M12 2v20"/><path d="M17 6.5c0-2-2.2-3-5-3s-5 1-5 3.2S9.5 10 12 10.5s5 1.3 5 3.5-2.2 3.5-5 3.5-5-1.2-5-3"/>',
 };
+const LABEL = { preorders: 'Pre-orders', costs: 'Costs' };
 function buildNav() {
-  $('#nav').innerHTML = ['overview','watches','site','activity'].map((k, i) =>
+  $('#nav').innerHTML = ['overview','preorders','costs','watches','site','activity'].map((k, i) =>
     `<button data-v="${k}" aria-selected="${i === 0}">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${ICON[k]}</svg>
-      ${k[0].toUpperCase() + k.slice(1)}</button>`).join('');
+      ${LABEL[k] || k[0].toUpperCase() + k.slice(1)}</button>`).join('');
   $('#nav').querySelectorAll('button').forEach(b => b.onclick = () => {
     $('#nav').querySelectorAll('button').forEach(x => x.setAttribute('aria-selected', String(x === b)));
-    ['overview','watches','site','activity'].forEach(k => { $('#v-' + k).hidden = k !== b.dataset.v; });
+    ['overview','preorders','costs','watches','site','activity'].forEach(k => { $('#v-' + k).hidden = k !== b.dataset.v; });
     if (b.dataset.v === 'watches') closeEditor();
   });
 }
@@ -448,24 +518,42 @@ async function loadInventory() {
   if (!r.ok) return;
   const d = await r.json();
   STATE.models = d.models || []; STATE.site = d.site || {};
-  renderGrid(); renderSite();
+  if (d.salesMode) STATE.salesMode = d.salesMode;
+  if (Number(d.depositPct) > 0) STATE.depositPct = Math.round(Number(d.depositPct));
+  renderGrid(); renderSite(); renderMode();
 }
 async function loadEvents() {
   try { const r = await fetch('/api/events?limit=300'); if (r.ok) STATE.events = await r.json(); }
   catch (_) {}
   renderActivity();
 }
+async function loadPreorders() {
+  try { const r = await fetch('/api/preorders?limit=400'); if (r.ok) STATE.pre = await r.json(); }
+  catch (_) {}
+  renderPreorders();
+}
+async function loadCosts() {
+  try { const r = await fetch('/api/costs?limit=500'); if (r.ok) STATE.costs = await r.json(); }
+  catch (_) {}
+  renderCosts();
+}
 
 /* ================= overview ================= */
 function renderOverview() {
   const inStock = STATE.models.filter(m => m.status !== 'out').length;
   const kinds = Object.fromEntries((STATE.events?.byKind || []).map(k => [k.kind, k.n]));
-  const value = STATE.models.reduce((s, m) => s + Number(m.price || 0), 0);
-  $('#ovSub').textContent = `${STATE.models.length} references · ${inStock} in stock`;
+  const t = (STATE.pre && STATE.pre.totals) || {};
+  const spent = (STATE.costs && STATE.costs.total) || 0;
+  const held = t.depositPaid || 0;
+  const MODE_WORD = { paused: 'Paused', preorder: 'Pre-order', live: 'Selling' };
+  $('#ovSub').textContent = `${MODE_WORD[STATE.salesMode] || STATE.salesMode} · ${STATE.models.length} references · ${inStock} in stock`;
+  // Cash position first. Taps are interesting; money in and money out is the business.
   $('#ovStats').innerHTML = [
-    [STATE.models.length, 'References'], [inStock, 'In stock'],
+    [t.count || 0, 'Pre-orders'], [inr(held), 'Deposits held'],
+    [inr(t.balanceDue || 0), 'Balance to come'], [inr(spent), 'Spent so far'],
+    [inr(held - spent), held - spent < 0 ? 'Out of pocket' : 'Net position'],
     [kinds.waitlist || 0, 'Waitlist taps'], [kinds.order || 0, 'Order taps'],
-    [inr(value), 'Catalogue value'],
+    [inStock, 'In stock'],
   ].map(([n, k]) => `<div class="stat"><div class="n">${n}</div><div class="k">${k}</div></div>`).join('');
   $('#ovTable').innerHTML = eventRows((STATE.events?.events || []).slice(0, 12));
 }
@@ -620,6 +708,190 @@ $('#saveSite').onclick = async () => {
     msg.className = 'msg ' + (r.ok ? 'ok' : 'bad');
     msg.textContent = r.ok ? 'saved' : (d.error || 'HTTP ' + r.status);
     if (r.ok) loadInventory();
+  } catch (e) { msg.className = 'msg bad'; msg.textContent = e.message; }
+};
+
+/* ================= sales mode =================
+   Three settings, written to admin_config. The public catalogue reads them on
+   every request, so a change here reaches the site without a deployment.    */
+const MODES = [
+  ['paused',   'Paused',    'No prices anywhere. Every button becomes the waitlist. Nobody can try to buy a watch you cannot ship.'],
+  ['preorder', 'Pre-order', 'Prices are shown and the deposit form opens. You collect part of the price now, the rest on dispatch.'],
+  ['live',     'Selling',   'Ordinary ordering. Every watch button opens WhatsApp with the watch and its price filled in.'],
+];
+let MODE_PICK = null;
+function renderMode() {
+  if (MODE_PICK === null) MODE_PICK = STATE.salesMode;
+  $('#modeBox').innerHTML = MODES.map(([k, name, why]) =>
+    `<button data-m="${k}" aria-pressed="${k === MODE_PICK}"><b>${name}</b><span>${why}</span></button>`).join('');
+  $('#modeBox').querySelectorAll('button').forEach(b => b.onclick = () => {
+    MODE_PICK = b.dataset.m; renderMode();
+  });
+  $('#depositBox').innerHTML = MODE_PICK === 'preorder'
+    ? F('Deposit %', 'deposit_pct', STATE.depositPct, 'number')
+    : '';
+}
+$('#saveMode').onclick = async () => {
+  const msg = $('#modeMsg'), config = { sales_mode: MODE_PICK };
+  const dep = $('#depositBox').querySelector('[name="deposit_pct"]');
+  if (dep) {
+    const n = Math.round(Number(dep.value));
+    if (!Number.isFinite(n) || n < 1 || n > 100) { msg.className = 'msg bad'; msg.textContent = 'Deposit must be 1-100%.'; return; }
+    config.deposit_pct = n;
+  }
+  msg.className = 'msg'; msg.textContent = 'applying...';
+  try {
+    const r = await fetch('/api/inventory', { method: 'PUT', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ config }) });
+    const d = await r.json();
+    msg.className = 'msg ' + (r.ok ? 'ok' : 'bad');
+    msg.textContent = r.ok ? 'applied - live in about a minute' : (d.error || 'HTTP ' + r.status);
+    if (r.ok) { await loadInventory(); renderOverview(); }
+  } catch (e) { msg.className = 'msg bad'; msg.textContent = e.message; }
+};
+
+/* ================= pre-orders ================= */
+const ST_WORD = { enquiry: 'enquiry', deposit_pending: 'deposit sent?', deposit_paid: 'deposit in',
+  in_production: 'in production', shipped: 'shipped', delivered: 'delivered',
+  cancelled: 'cancelled', refunded: 'refunded' };
+
+function renderPreorders() {
+  const d = STATE.pre;
+  if (!d) {
+    $('#poSub').textContent = 'Could not load pre-orders.';
+    $('#poStats').innerHTML = '';
+    $('#poTable').innerHTML = `<tbody><tr><td class="empty">Pre-orders could not be loaded. Refresh, or check that you are still signed in.</td></tr></tbody>`;
+    return;
+  }
+  const t = d.totals || {}, by = Object.fromEntries((d.byStatus || []).map(x => [x.status, x.n]));
+  const waiting = (by.enquiry || 0) + (by.deposit_pending || 0);
+  $('#poSub').textContent = t.count
+    ? `${t.count} live ${t.count === 1 ? 'pre-order' : 'pre-orders'} · ${t.units} ${t.units === 1 ? 'watch' : 'watches'}` +
+      (waiting ? ` · ${waiting} waiting on a deposit` : ' · every deposit is in')
+    : 'No pre-orders yet.';
+  $('#poStats').innerHTML = [
+    [t.count || 0, 'Live orders'], [t.units || 0, 'Watches'],
+    [inr(t.gross || 0), 'Order value'], [inr(t.depositPaid || 0), 'Deposits held'],
+    [inr((t.depositDue || 0) - (t.depositPaid || 0)), 'Deposits owed'],
+    [inr(t.balanceDue || 0), 'Balance to come'],
+  ].map(([n, k]) => `<div class="stat"><div class="n">${n}</div><div class="k">${k}</div></div>`).join('');
+
+  const rows = d.orders || [];
+  if (!rows.length) {
+    $('#poTable').innerHTML = `<tbody><tr><td class="empty">Nothing yet. A pre-order appears here the moment someone fills in the form.</td></tr></tbody>`;
+    return;
+  }
+  $('#poTable').innerHTML =
+    `<thead><tr><th>Code</th><th>When (UTC)</th><th>Watch</th><th>Customer</th>
+      <th class="num">Total</th><th class="num">Deposit</th><th class="num">Balance</th>
+      <th>Status</th><th>Record</th></tr></thead><tbody>` +
+    rows.map(o => {
+      const dead = o.status === 'cancelled' || o.status === 'refunded';
+      const total = (o.unit_price || 0) * (o.qty || 1);
+      const depOk = (o.deposit_paid || 0) >= (o.deposit_due || 0);
+      return `<tr class="${dead ? 'dim' : ''}" data-id="${o.id}">
+        <td><button class="copy" data-copy="${esc(o.code)}" title="Copy">${esc(o.code)}</button></td>
+        <td>${esc((o.created_at || '').replace('T', ' ').slice(0, 16))}</td>
+        <td>REF. ${esc(o.ref)}${o.qty > 1 ? ' &times;' + o.qty : ''}<br><span style="color:var(--mute)">${esc(o.model_name || '')}</span></td>
+        <td>${esc(o.customer_name || '-')}<br>
+            <a href="https://wa.me/${esc(o.customer_phone || '')}" target="_blank" rel="noopener" style="color:var(--brass)">${esc(o.customer_phone || '')}</a><br>
+            <span style="color:var(--mute);overflow-wrap:anywhere">${esc(o.customer_email || '')}</span></td>
+        <td class="num">${inr(total)}</td>
+        <td class="num" style="color:${depOk ? 'var(--ok)' : 'var(--brass)'}">${inr(o.deposit_paid)} <span style="color:var(--dim)">/ ${inr(o.deposit_due)}</span></td>
+        <td class="num">${inr(o.balance_paid)} <span style="color:var(--dim)">/ ${inr(o.balance_due)}</span></td>
+        <td><span class="st ${esc(o.status)}">${esc(ST_WORD[o.status] || o.status)}</span></td>
+        <td><div class="inline">
+          <select data-act="status">${(d.statuses || []).map(st =>
+            `<option value="${st}"${st === o.status ? ' selected' : ''}>${esc(ST_WORD[st] || st)}</option>`).join('')}</select>
+          <button class="btn mini ghost" data-act="dep">Deposit in</button>
+          <button class="btn mini ghost" data-act="bal">Paid in full</button>
+        </div></td></tr>`;
+    }).join('') + '</tbody>';
+
+  $('#poTable').querySelectorAll('[data-copy]').forEach(b => b.onclick = () => {
+    navigator.clipboard?.writeText(b.dataset.copy);
+    const was = b.textContent; b.textContent = 'copied'; setTimeout(() => { b.textContent = was; }, 900);
+  });
+  $('#poTable').querySelectorAll('select[data-act="status"]').forEach(sel => sel.onchange = () =>
+    patchOrder(sel.closest('tr').dataset.id, { status: sel.value }));
+  $('#poTable').querySelectorAll('button[data-act]').forEach(b => b.onclick = () => {
+    const tr = b.closest('tr'), o = (STATE.pre.orders || []).find(x => String(x.id) === tr.dataset.id);
+    if (!o) return;
+    // "Deposit in" and "Paid in full" fill in the amount that is actually owed,
+    // so the common case is one click and the numbers cannot drift.
+    if (b.dataset.act === 'dep') patchOrder(o.id, { deposit_paid: o.deposit_due, status: 'deposit_paid' });
+    else patchOrder(o.id, { deposit_paid: o.deposit_due, balance_paid: o.balance_due, status: 'delivered' });
+  });
+}
+
+async function patchOrder(id, body) {
+  try {
+    const r = await fetch('/api/preorders', { method: 'PATCH', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ id: Number(id), ...body }) });
+    if (!r.ok) { const d = await r.json().catch(() => ({})); alert('Could not save: ' + (d.error || r.status)); }
+  } catch (e) { alert('Could not save: ' + e.message); }
+  await loadPreorders(); renderOverview();
+}
+$('#poReload').onclick = () => { loadPreorders(); loadCosts(); };
+
+/* ================= costs ================= */
+const CAT = ['samples','inventory','packaging','shipping','photography','ads','website','legal','fees','other'];
+function renderCosts() {
+  const d = STATE.costs;
+  $('#coForm').innerHTML =
+    F('Amount ₹', 'amount', '', 'number') +
+    F('Category', 'category', 'samples', 'text', CAT) +
+    F('Date', 'spent_on', new Date().toISOString().slice(0, 10), 'date') +
+    F('What for', 'description', '');
+  if (!d) {
+    $('#coSub').textContent = 'Could not load costs.';
+    $('#coStats').innerHTML = '';
+    $('#coTable').innerHTML = `<tbody><tr><td class="empty">Costs could not be loaded.</td></tr></tbody>`;
+    return;
+  }
+  const top = (d.byCategory || [])[0];
+  $('#coSub').textContent = d.count
+    ? `${inr(d.total)} across ${d.count} ${d.count === 1 ? 'line' : 'lines'}` +
+      (top ? ` · most of it on ${top.category}` : '')
+    : 'Nothing recorded yet.';
+  const held = ((STATE.pre && STATE.pre.totals) || {}).depositPaid || 0;
+  $('#coStats').innerHTML = [
+    [inr(d.total), 'Spent so far'], [inr(held), 'Deposits held'],
+    [inr(held - d.total), held - d.total < 0 ? 'Out of pocket' : 'Covered by deposits'],
+    ...(d.byCategory || []).slice(0, 3).map(c => [inr(c.total), c.category]),
+  ].map(([n, k]) => `<div class="stat"><div class="n">${n}</div><div class="k">${k}</div></div>`).join('');
+
+  const rows = d.costs || [];
+  $('#coTable').innerHTML = !rows.length
+    ? `<tbody><tr><td class="empty">Nothing yet. Every rupee the brand spends belongs here - samples, couriers, ad money, the lot.</td></tr></tbody>`
+    : `<thead><tr><th>Date</th><th>Category</th><th>What for</th><th class="num">Amount</th><th></th></tr></thead><tbody>` +
+      rows.map(c => `<tr data-id="${c.id}">
+        <td>${esc(c.spent_on || (c.created_at || '').slice(0, 10))}</td>
+        <td><span class="kind">${esc(c.category)}</span></td>
+        <td>${esc(c.description || '-')}</td>
+        <td class="num">${inr(c.amount)}</td>
+        <td><button class="btn mini ghost" data-del="${c.id}">Remove</button></td></tr>`).join('') + '</tbody>';
+
+  $('#coTable').querySelectorAll('[data-del]').forEach(b => b.onclick = async () => {
+    if (!confirm('Remove this cost line? This cannot be undone.')) return;
+    try { await fetch('/api/costs?id=' + encodeURIComponent(b.dataset.del), { method: 'DELETE' }); }
+    catch (_) {}
+    await loadCosts(); renderOverview();
+  });
+}
+$('#coAdd').onclick = async () => {
+  const msg = $('#coMsg'), get = n => $('#coForm').querySelector(`[name="${n}"]`);
+  const amount = Math.round(Number(get('amount').value));
+  if (!Number.isFinite(amount) || amount <= 0) { msg.className = 'msg bad'; msg.textContent = 'Put in an amount.'; return; }
+  msg.className = 'msg'; msg.textContent = 'saving...';
+  try {
+    const r = await fetch('/api/costs', { method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ amount, category: get('category').value,
+        spent_on: get('spent_on').value, description: get('description').value }) });
+    const d = await r.json();
+    msg.className = 'msg ' + (r.ok ? 'ok' : 'bad');
+    msg.textContent = r.ok ? 'saved' : (d.error || 'HTTP ' + r.status);
+    if (r.ok) { await loadCosts(); renderOverview(); }
   } catch (e) { msg.className = 'msg bad'; msg.textContent = e.message; }
 };
 

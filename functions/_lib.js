@@ -307,3 +307,54 @@ export async function verifyAdmin(request, env) {
   // being an admin - the allowlist is the only thing that grants that.
   return isAllowed(email, cfg) ? email : null;
 }
+
+/* ---------- request helpers ---------- */
+
+export const clientIp = request =>
+  (request.headers.get('cf-connecting-ip') || '').slice(0, 64) || 'unknown';
+
+// Every admin write lands in `events` as kind 'admin_write'. If a price changes
+// or a pre-order is marked paid, there is a row saying who did it and when.
+// Never throws: an audit failure must not lose the write it was describing.
+export async function audit(env, request, who, what, ref) {
+  if (!env.DB) return;
+  const cf = request.cf || {};
+  try {
+    await env.DB.prepare(
+      `INSERT INTO events (created_at, kind, ref, email, country, city, referrer, path, user_agent)
+       VALUES (datetime('now'), 'admin_write', ?, ?, ?, ?, ?, ?, ?)`
+    ).bind(
+      ref || null, who || null,
+      (cf.country || '').slice(0, 8) || null,
+      (cf.city || '').slice(0, 64) || null,
+      clientIp(request),
+      what, (request.headers.get('user-agent') || '').slice(0, 300) || null
+    ).run();
+  } catch (_) { /* never fail a save because the audit row failed */ }
+}
+
+/* ---------- sales mode ----------
+   'paused'   nothing is for sale: no prices, every button is the waitlist
+   'preorder' prices shown, 50% deposit taken, balance on dispatch
+   'live'     ordinary ordering over WhatsApp
+   Stored in admin_config so it flips with one write, no deployment.          */
+
+export const SALES_MODES = ['paused', 'preorder', 'live'];
+
+export async function salesSettings(env) {
+  const out = { salesMode: 'paused', depositPct: 50 };
+  if (!env.DB) return out;
+  try {
+    const r = await env.DB.prepare(
+      "SELECT key, value FROM admin_config WHERE key IN ('sales_mode','deposit_pct')"
+    ).all();
+    for (const row of r.results || []) {
+      if (row.key === 'sales_mode' && SALES_MODES.includes(row.value)) out.salesMode = row.value;
+      if (row.key === 'deposit_pct') {
+        const n = Math.round(Number(row.value));
+        if (Number.isFinite(n) && n >= 1 && n <= 100) out.depositPct = n;
+      }
+    }
+  } catch (_) {}
+  return out;
+}

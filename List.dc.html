@@ -89,9 +89,11 @@ class Component extends DCLogic {
   renderVals() {
     const inv = this.state.inv;
     const models = inv ? this.state.list.map(r => inv.MODELS.find(m => m.ref === r)).filter(Boolean) : [];
+    const live = inv ? inv.salesLive() : false;
     const items = models.map(m => ({
-      model: m, name: m.name, href: `Watch.dc.html?ref=${m.ref}`, desc: inv.describe(m), price: inv.formatPrice(m.price),
-      status: m.status === 'out' ? 'Sold out' : 'In stock',
+      model: m, name: m.name, href: `Watch.dc.html?ref=${m.ref}`, desc: inv.describe(m),
+      price: live ? inv.formatPrice(m.price) : 'Price at launch',
+      status: live ? (m.status === 'out' ? 'Sold out' : 'In stock') : 'Pre-launch',
       remove: () => inv.toggleInList(m.ref),
     }));
     const text = "Hi Meravs — I'd like to ask about these:\n" + models.map(m => `• ${m.name} (${inv.describe(m)})`).join('\n');

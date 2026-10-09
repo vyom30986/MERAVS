@@ -78,9 +78,11 @@ class Component extends DCLogic {
       igHref: inv ? inv.igLink() : undefined, handle: S.handle || '',
       faqs: [
         { q: 'When do you launch?', a: `${S.launchMonth || 'Soon'}. People on the WhatsApp list hear first.` },
-        { q: 'How do I order?', a: 'Tap Order on WhatsApp on any watch. The message is filled in with the watch and its price, and we confirm payment and delivery with you there.' },
+        { q: 'Can I order now?', a: inv && inv.salesLive()
+          ? 'Tap Order on WhatsApp on any watch. The message is filled in with the watch and its price, and we confirm payment and delivery with you there.'
+          : 'Not yet. What you see is the design, not stock on a shelf. We are changing manufacturer because the first samples did not last a week, and we will not sell you something we would not wear. Join the waitlist and you hear the real prices and the order date first.' },
         { q: 'What sizes are the cases?', a: '40mm and 42mm for men, 20mm and 22mm for women. Most watches at this price are too big, and everyone has agreed to pretend otherwise.' },
-        { q: 'Will prices change at launch?', a: 'There is one price per watch. No struck-through MRP, no permanent sale, no discount that was never a discount.' },
+        { q: 'Why are there no prices?', a: 'Because we do not have a confirmed cost yet, and a number we have to take back is worse than no number. At launch there is one price per watch: no struck-through MRP, no permanent sale, no discount that was never a discount.' },
         { q: 'Where can you deliver?', a: 'India-wide by courier. Exact delivery times are confirmed on WhatsApp before payment.' },
         { q: 'Where are the full specifications?', a: 'We will publish full specifications for each watch at launch.' },
       ],

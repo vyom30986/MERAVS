@@ -83,7 +83,7 @@ a{color:var(--ink)}a:hover{color:var(--brass)}
         </div>
         <div style="display:flex;flex-wrap:wrap;gap:12px">
           <sc-if value="{{ canOrder }}" hint-placeholder-val="{{ true }}">
-            <a href="{{ orderHref }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:12px;min-height:54px;padding:0 22px;white-space:nowrap;background:var(--btn-bg);color:var(--btn-fg);border:1px solid;border-image:linear-gradient(var(--lang),var(--brass-lit),var(--brass) 45%,transparent 90%) 1;font-weight:600;font-size:16px;text-decoration:none" style-hover="color:var(--btn-fg);filter:brightness(1.12)">Order on WhatsApp<span aria-hidden="true" style="font-family:var(--label)">→</span></a>
+            <a href="{{ ctaHref }}" target="{{ ctaTarget }}" rel="noopener" style="display:inline-flex;align-items:center;gap:12px;min-height:54px;padding:0 22px;white-space:nowrap;background:var(--btn-bg);color:var(--btn-fg);border:1px solid;border-image:linear-gradient(var(--lang),var(--brass-lit),var(--brass) 45%,transparent 90%) 1;font-weight:600;font-size:16px;text-decoration:none" style-hover="color:var(--btn-fg);filter:brightness(1.12)">{{ ctaLabel }}<span aria-hidden="true" style="font-family:var(--label)">→</span></a>
           </sc-if>
           <sc-if value="{{ isOut }}" hint-placeholder-val="{{ false }}">
             <button onClick="{{ toggle }}" aria-pressed="{{ onList }}" style="display:inline-flex;align-items:center;gap:12px;min-height:54px;padding:0 22px;white-space:nowrap;background:var(--btn-bg);color:var(--btn-fg);border:1px solid;border-image:linear-gradient(var(--lang),var(--brass-lit),var(--brass) 45%,transparent 90%) 1;font-family:var(--body);font-weight:600;font-size:16px;cursor:pointer;white-space:nowrap">{{ notifyLabel }}</button>
@@ -153,6 +153,9 @@ class Component extends DCLogic {
     const inv = this.state.inv;
     const m = inv ? inv.findModel(this.state.ref) : null;
     const onList = m ? this.state.list.includes(m.ref) : false;
+    const live = inv ? inv.salesLive() : false;
+    const mode = inv ? inv.salesMode() : 'paused';
+    const cta = inv && m ? inv.cta(m) : { label: 'Join the waitlist', href: undefined, external: true };
     const out = m && m.status === 'out';
     return {
       wrapRef: this.wrapRef, canvasRef: this.canvasRef, svgRef: this.svgRef, readoutRef: this.readoutRef, labelsRef: this.labelsRef, gl: this.state.gl, dialLive: !this.state.gl,
@@ -162,14 +165,19 @@ class Component extends DCLogic {
       toggleLayers: () => { const on = !this.state.layers; this.setState({ layers: on }); this.watch && this.watch.setExplode(on); },
       model: m || undefined,
       refNo: m ? m.ref : '', name: m ? m.name : '', desc: m ? inv.describe(m) : '',
-      price: m ? inv.formatPrice(m.price) : '',
-      statusLabel: out ? 'Sold out' : 'In stock', statusCol: out ? 'var(--mute)' : 'var(--brass)',
+      price: m ? (live ? inv.formatPrice(m.price) : 'Price at launch') : '',
+      statusLabel: live ? (out ? 'Sold out' : 'In stock') : 'Pre-launch', statusCol: out && live ? 'var(--mute)' : 'var(--brass)',
       hasPhoto: !!(m && m.photo), photoAspect: (m && m.photoAspect) || '3/4', photoMax: m && m.photoAspect ? '480px' : '360px', photo: m && m.photo ? m.photo : undefined, photoAlt: m ? `Photograph of ${m.name}` : '',
       dialName: m ? m.dialName : '', metalName: m ? inv.METAL[m.metal].label : '', sizeLabel: m ? `${m.size}mm` : '',
       onList,
       notifyLabel: onList ? 'On your list' : 'Notify me if it returns',
-      canOrder: !!m && !out, isOut: !!out, orderHref: m ? inv.orderLink(m) : undefined,
-      orderNote: out ? 'Sold out. We will message you on WhatsApp if it comes back.' : 'Tapping the button opens WhatsApp with this watch and its price filled in. We confirm payment and delivery there.',
+      ctaLabel: cta.label, ctaHref: cta.href, ctaTarget: cta.external ? '_blank' : '_self',
+      canOrder: !!m && (live ? !out : true), isOut: live ? !!out : false,
+      orderNote: mode === 'paused'
+        ? 'Not on sale yet. We are finalising the manufacturer, and the waitlist hears first - with the real price - before anyone else.'
+        : mode === 'preorder'
+          ? `Pre-order with ${inv.DEPOSIT_PCT}% now (${inv.formatPrice(inv.depositOn(m ? m.price : 0))}) and the rest when we dispatch. We confirm everything on WhatsApp before you pay anything.`
+          : (out ? 'Sold out. We will message you on WhatsApp if it comes back.' : 'Tapping the button opens WhatsApp with this watch and its price filled in. We confirm payment and delivery there.'),
       toggle: () => m && inv.toggleInList(m.ref),
       askHref: m ? inv.waLink(`Hi Meravs — I have a question about ${m.name} (${inv.describe(m)}).`) : '#',
       others: inv ? inv.MODELS.map(o => ({

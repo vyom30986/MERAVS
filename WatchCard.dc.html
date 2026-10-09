@@ -27,7 +27,7 @@
   <p style="margin:-6px 0 0;font-size:15px;line-height:1.5;color:var(--mute)">{{ desc }}</p>
   <sc-if value="{{ showNotify }}" hint-placeholder-val="{{ true }}">
     <sc-if value="{{ canOrder }}" hint-placeholder-val="{{ true }}">
-      <a href="{{ orderHref }}" target="_blank" rel="noopener" style="align-self:flex-start;display:flex;align-items:center;gap:10px;height:44px;padding:0 16px;background:var(--btn-bg);color:var(--btn-fg);border:1px solid;border-image:linear-gradient(var(--lang),var(--brass-lit),var(--brass) 45%,transparent 90%) 1;font-family:var(--body);font-weight:500;font-size:14px;letter-spacing:.005em;text-decoration:none;white-space:nowrap" style-hover="color:var(--btn-fg);filter:brightness(1.12)">Order on WhatsApp<span aria-hidden="true">→</span></a>
+      <a href="{{ ctaHref }}" target="{{ ctaTarget }}" rel="noopener" style="align-self:flex-start;display:flex;align-items:center;gap:10px;height:44px;padding:0 16px;background:var(--btn-bg);color:var(--btn-fg);border:1px solid;border-image:linear-gradient(var(--lang),var(--brass-lit),var(--brass) 45%,transparent 90%) 1;font-family:var(--body);font-weight:500;font-size:14px;letter-spacing:.005em;text-decoration:none;white-space:nowrap" style-hover="color:var(--btn-fg);filter:brightness(1.12)">{{ ctaLabel }}<span aria-hidden="true">→</span></a>
     </sc-if>
     <sc-if value="{{ isOut }}" hint-placeholder-val="{{ false }}">
     <button onClick="{{ toggle }}" aria-pressed="{{ onList }}" style="align-self:flex-start;display:flex;align-items:center;gap:10px;height:44px;padding:0 16px;background:{{ btnBg }};color:{{ btnFg }};border:1px solid;border-image:linear-gradient(var(--lang),var(--brass-lit),var(--line) 55%) 1;font-family:var(--label);font-size:12.5px;letter-spacing:.045em;cursor:pointer;white-space:nowrap">{{ notifyLabel }}</button>
@@ -48,18 +48,26 @@ class Component extends DCLogic {
   componentWillUnmount() { this.dead = true; this.off && this.off(); }
   renderVals() {
     const m = this.props.model || {}, inv = this.state.inv;
+    const live = inv ? inv.salesLive() : false;
+    // One call decides the button: waitlist, pre-order deposit, or WhatsApp order.
+    const c = inv && m.ref ? inv.cta(m) : { label: 'Join the waitlist', href: undefined, external: true };
     const onList = this.state.list.includes(m.ref);
     const out = m.status === 'out';
     return {
       model: m, name: m.name, refNo: m.ref, href: `Watch.dc.html?ref=${m.ref}`,
-      price: inv && m.price ? inv.formatPrice(m.price) : '',
+      // While sales are paused there is no confirmed manufacturer, so a price
+      // would be a promise we cannot keep. Show the status instead.
+      price: live && inv && m.price ? inv.formatPrice(m.price) : (inv ? 'Coming soon' : ''),
+      ctaLabel: c.label, ctaHref: c.href, ctaTarget: c.external ? '_blank' : '_self',
       desc: inv && m.ref ? inv.describe(m) : '',
-      statusLabel: out ? 'Sold out' : 'In stock',
+      statusLabel: live ? (out ? 'Sold out' : 'In stock') : 'Pre-launch',
       statusCol: out ? 'var(--mute)' : 'var(--brass)',
       showNotify: this.props.notify ?? true,
       onList,
       notifyLabel: onList ? 'On your list' : 'NOTIFY IF IT RETURNS',
-      canOrder: !out, isOut: out, orderHref: inv && m.ref ? inv.orderLink(m) : undefined,
+      // Paused: everything routes to the waitlist, nothing routes to a sale.
+      canOrder: live ? !out : true,
+      isOut: live ? out : false,
       btnBg: onList ? 'var(--btn-bg)' : 'transparent',
       btnFg: onList ? 'var(--btn-fg)' : 'var(--ink)',
       toggle: () => inv && inv.toggleInList(m.ref),

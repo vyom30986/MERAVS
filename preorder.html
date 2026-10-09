@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pre-order · Meravs</title>
+<meta name="description" content="Reserve a Meravs watch with a deposit. The balance is due when we dispatch.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Marcellus+SC&family=Literata:ital,opsz,wght@0,7..72,400..600;1,7..72,400..500&family=JetBrains+Mono:wght@400&display=swap">
+<script>try{var t=localStorage.getItem('meravs-theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+<style>
+/* ---- design tokens, copied from the site's pages so the colour is identical
+        in all three themes. If you change the palette on the .dc.html pages,
+        change it here too. ---- */
+:root{--ground:#E9ECF0;--ink:#101C2B;--mute:#546274;--brass:#7A6019;--brass-lit:#A8842B;--line:#C6CED8;--btn-bg:#101C2B;--btn-fg:#E9ECF0;--glow:#F7F8FA;--shade:#D5DBE3;--good:#2F6B4F;--bad:#B4402F;color-scheme:light;
+--display:'Marcellus',Georgia,serif;--label:'Marcellus SC',Georgia,serif;--body:'Literata',Georgia,serif;--mono:'JetBrains Mono',ui-monospace,monospace;
+--lang:146deg;--pad:clamp(20px,5.2vw,72px);}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ground:#15070B;--ink:#F2E8DA;--mute:#B89C94;--brass:#C9A55C;--brass-lit:#E6C98E;--line:#3A1A21;--btn-bg:#C9A55C;--btn-fg:#15070B;--glow:#34111A;--shade:#060203;--good:#7FBE9C;--bad:#E2846F;color-scheme:dark;}}
+:root[data-theme="navy"]{--ground:#080F1A;--ink:#E8E9EC;--mute:#8595A8;--brass:#C9A55C;--brass-lit:#E0C288;--line:#1E2C3D;--btn-bg:#C9A55C;--btn-fg:#080F1A;--glow:#12203A;--shade:#03070D;--good:#7FBE9C;--bad:#E2846F;color-scheme:dark;}
+:root[data-theme="dark"]{--ground:#15070B;--ink:#F2E8DA;--mute:#B89C94;--brass:#C9A55C;--brass-lit:#E6C98E;--line:#3A1A21;--btn-bg:#C9A55C;--btn-fg:#15070B;--glow:#34111A;--shade:#060203;--good:#7FBE9C;--bad:#E2846F;color-scheme:dark;}
+
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;background:var(--ground);color:var(--ink)}
+body{font-family:var(--body);-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%;min-height:100svh}
+a{color:var(--ink)}a:hover{color:var(--brass)}
+::selection{background:var(--brass);color:var(--ground)}
+
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(120vmax 90vmax at 30% 20%,var(--glow) 0%,transparent 55%),linear-gradient(180deg,transparent 40%,var(--shade) 160%)}
+header{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:16px;
+  height:72px;padding:0 var(--pad);border-bottom:1px solid var(--line)}
+header .wm{font-family:var(--display);font-size:21px;letter-spacing:.18em;text-decoration:none;color:var(--ink)}
+header a.back{font-family:var(--label);font-size:12.5px;letter-spacing:.045em;color:var(--mute);text-decoration:none}
+header a.back:hover{color:var(--brass)}
+
+main{position:relative;z-index:1;padding:clamp(32px,6vw,72px) var(--pad) clamp(64px,9vw,120px);max-width:1120px;margin:0 auto}
+.eyebrow{display:flex;align-items:center;gap:14px;font-family:var(--label);font-size:13px;letter-spacing:.045em;color:var(--brass)}
+.eyebrow i{width:28px;height:1px;background:var(--brass);flex:none}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(36px,4.6vw,62px);line-height:1.05;margin:18px 0 0;max-width:20ch}
+.lede{margin:16px 0 0;font-size:17px;line-height:1.6;color:var(--mute);max-width:56ch;text-wrap:pretty}
+
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:clamp(28px,4vw,56px);margin-top:clamp(36px,5vw,64px);align-items:start}
+.panel{border:1px solid;border-image:linear-gradient(var(--lang),var(--brass-lit),var(--line) 45%) 1;padding:clamp(22px,3vw,32px)}
+.panel h2{font-family:var(--display);font-weight:400;font-size:clamp(22px,2.2vw,28px);line-height:1.2;margin:0 0 6px}
+.kicker{font-family:var(--label);font-size:12.5px;letter-spacing:.045em;color:var(--brass);margin-bottom:12px}
+
+figure{margin:0 0 20px}
+figure img{display:block;width:100%;max-width:300px;border:1px solid var(--line)}
+
+dl.sum{display:grid;grid-template-columns:1fr auto;gap:10px 20px;margin:0;font-size:15.5px}
+dl.sum dt{font-family:var(--label);font-size:12.5px;letter-spacing:.045em;color:var(--mute);align-self:center}
+dl.sum dd{margin:0;text-align:right;font-variant-numeric:tabular-nums}
+dl.sum .rule{grid-column:1/-1;height:1px;background:var(--line);margin:4px 0}
+dl.sum .big{font-family:var(--label);font-size:19px;letter-spacing:.03em;color:var(--ink)}
+
+label{display:block;margin-bottom:16px}
+label>span{display:block;font-family:var(--label);font-size:12px;letter-spacing:.045em;color:var(--mute);margin-bottom:7px}
+input,textarea,select{width:100%;font-family:var(--body);font-size:16px;color:var(--ink);background:transparent;
+  border:1px solid var(--line);padding:12px 13px;border-radius:0}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--brass)}
+textarea{min-height:84px;resize:vertical}
+select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--mute) 50%),linear-gradient(135deg,var(--mute) 50%,transparent 50%);
+  background-position:calc(100% - 18px) 21px,calc(100% - 12px) 21px;background-size:6px 6px;background-repeat:no-repeat}
+.err{display:block;margin-top:6px;font-size:13.5px;font-style:italic;color:var(--bad)}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,160px),1fr));gap:0 18px}
+
+button.go{display:inline-flex;align-items:center;gap:12px;min-height:54px;padding:0 24px;cursor:pointer;
+  background:var(--btn-bg);color:var(--btn-fg);border:1px solid;border-image:linear-gradient(var(--lang),var(--brass-lit),var(--brass) 45%,transparent 90%) 1;
+  font-family:var(--body);font-weight:600;font-size:16px}
+button.go:hover{filter:brightness(1.12)}
+button.go[disabled]{opacity:.5;cursor:not-allowed;filter:none}
+a.go{display:inline-flex;align-items:center;gap:12px;min-height:54px;padding:0 24px;text-decoration:none;
+  background:var(--btn-bg);color:var(--btn-fg);border:1px solid;border-image:linear-gradient(var(--lang),var(--brass-lit),var(--brass) 45%,transparent 90%) 1;
+  font-weight:600;font-size:16px}
+a.go:hover{color:var(--btn-fg);filter:brightness(1.12)}
+a.ghost{display:inline-flex;align-items:center;min-height:54px;padding:0 22px;text-decoration:none;color:var(--ink);
+  border:1px solid;border-image:linear-gradient(var(--lang),var(--brass-lit),var(--line) 55%) 1;font-weight:500;font-size:16px}
+
+.fine{margin:18px 0 0;font-size:14px;line-height:1.6;color:var(--mute);text-wrap:pretty}
+.fine b{color:var(--ink);font-weight:600}
+.terms{margin-top:clamp(36px,5vw,56px);padding-top:28px;border-top:1px solid var(--line)}
+.terms ul{margin:14px 0 0;padding-left:20px;font-size:15px;line-height:1.7;color:var(--mute);max-width:70ch}
+.terms li{margin-bottom:8px}
+.code{font-family:var(--mono);font-size:clamp(26px,3.4vw,38px);letter-spacing:.1em;color:var(--brass);margin:10px 0 0}
+.msg{min-height:20px;margin:12px 0 0;font-size:14.5px;font-style:italic}
+.msg.bad{color:var(--bad);font-style:normal}
+.msg.ok{color:var(--good);font-style:normal}
+footer{position:relative;z-index:1;padding:28px var(--pad) 44px;border-top:1px solid var(--line);
+  font-family:var(--label);font-size:12px;letter-spacing:.045em;color:var(--mute)}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="bg" aria-hidden="true"></div>
+
+<header>
+  <a class="wm" href="/">MERAVS</a>
+  <a class="back" href="Collection.dc.html">&larr; Back to the collection</a>
+</header>
+
+<main>
+  <!-- state: loading -->
+  <div id="loading">
+    <div class="eyebrow"><i></i><span>Pre-order</span></div>
+    <h1>One moment.</h1>
+    <p class="lede">Checking what is open.</p>
+  </div>
+
+  <!-- state: pre-orders not open -->
+  <div id="closed" hidden>
+    <div class="eyebrow"><i></i><span>Not open yet</span></div>
+    <h1>We are not taking deposits yet.</h1>
+    <p class="lede">We are changing manufacturer, because the first samples did not survive a week on the wrist
+      and we are not going to sell you something we would not wear. When the replacement passes, the waitlist
+      hears the real prices and the order date before anyone else.</p>
+    <p style="margin-top:32px;display:flex;flex-wrap:wrap;gap:12px">
+      <a class="go" id="closedWa" href="#" target="_blank" rel="noopener">Join the waitlist<span aria-hidden="true">&rarr;</span></a>
+      <a class="ghost" href="Collection.dc.html">See the collection</a>
+    </p>
+  </div>
+
+  <!-- state: the form -->
+  <div id="form" hidden>
+    <div class="eyebrow"><i></i><span>Pre-order</span></div>
+    <h1 id="title">Reserve this watch.</h1>
+    <p class="lede" id="lede">&nbsp;</p>
+
+    <div class="cols">
+      <section class="panel">
+        <div class="kicker">What you are reserving</div>
+        <figure id="fig" hidden><img id="photo" src="" alt=""></figure>
+        <h2 id="mName">—</h2>
+        <p style="margin:0 0 20px;color:var(--mute);font-size:15.5px" id="mDesc">—</p>
+        <dl class="sum">
+          <dt id="unitLabel">Price each</dt><dd id="unit">—</dd>
+          <dt>Quantity</dt><dd id="qtyOut">1</dd>
+          <div class="rule"></div>
+          <dt>Total</dt><dd id="total">—</dd>
+          <dt id="depLabel">Deposit now</dt><dd class="big" id="deposit">—</dd>
+          <dt>Balance on dispatch</dt><dd id="balance">—</dd>
+        </dl>
+        <p class="fine">No money is taken on this page. You send the deposit over UPI once we have
+          confirmed your pre-order on WhatsApp, and the balance only when the watch is ready to ship.</p>
+      </section>
+
+      <section class="panel">
+        <div class="kicker">Who we are reserving it for</div>
+        <form id="f" novalidate>
+          <label><span>Your name</span><input name="name" autocomplete="name" maxlength="80" required><em class="err" id="e-name" hidden></em></label>
+          <label><span>Email</span><input name="email" type="email" autocomplete="email" inputmode="email" maxlength="160" required><em class="err" id="e-email" hidden></em></label>
+          <div class="row">
+            <label><span>Mobile (WhatsApp)</span><input name="phone" type="tel" autocomplete="tel" inputmode="numeric" maxlength="20" placeholder="10 digits" required><em class="err" id="e-phone" hidden></em></label>
+            <label><span>Quantity</span><select name="qty"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+          </div>
+          <label><span>Anything we should know <span style="text-transform:none;letter-spacing:0;font-family:var(--body);font-style:italic">(optional)</span></span><textarea name="notes" maxlength="500"></textarea></label>
+          <button class="go" type="submit" id="submit">Reserve it<span aria-hidden="true">&rarr;</span></button>
+          <p class="msg" id="msg"></p>
+        </form>
+      </section>
+    </div>
+
+    <section class="terms">
+      <div class="kicker">The deal, in plain words</div>
+      <ul>
+        <li>A pre-order reserves one watch for you at the price shown. That price does not move afterwards.</li>
+        <li>The deposit is part of the price, not a fee. The balance is due only when we are ready to dispatch.</li>
+        <li><b>If we cancel, or we miss the dispatch window we give you, your deposit is refunded in full.</b></li>
+        <li>You can cancel for a full refund any time before we dispatch. Email <span id="mailto1">us</span>
+          or message us on WhatsApp with your pre-order code.</li>
+        <li>Delivery is India-wide by courier. We confirm the address and the window on WhatsApp before you pay.</li>
+      </ul>
+    </section>
+  </div>
+
+  <!-- state: done -->
+  <div id="done" hidden>
+    <div class="eyebrow"><i></i><span>Reserved</span></div>
+    <h1>That watch is yours to claim.</h1>
+    <p class="lede">Keep this code. It is how we find your pre-order.</p>
+    <p class="code" id="doneCode">—</p>
+    <div class="cols" style="margin-top:36px">
+      <section class="panel">
+        <div class="kicker">What happens now</div>
+        <dl class="sum">
+          <dt>Watch</dt><dd id="dWatch">—</dd>
+          <dt>Total</dt><dd id="dTotal">—</dd>
+          <dt>Deposit to send</dt><dd class="big" id="dDeposit">—</dd>
+          <dt>Balance on dispatch</dt><dd id="dBalance">—</dd>
+        </dl>
+        <p class="fine">Message us on WhatsApp and we will send the UPI details and confirm the dispatch window.
+          Nothing is charged automatically and we will never ask you for card details.</p>
+        <p style="margin-top:22px;display:flex;flex-wrap:wrap;gap:12px">
+          <a class="go" id="doneWa" href="#" target="_blank" rel="noopener">Send the deposit on WhatsApp<span aria-hidden="true">&rarr;</span></a>
+          <a class="ghost" href="Collection.dc.html">Back to the collection</a>
+        </p>
+      </section>
+    </div>
+  </div>
+
+  <!-- state: something is wrong -->
+  <div id="oops" hidden>
+    <div class="eyebrow"><i></i><span>Pre-order</span></div>
+    <h1 id="oopsTitle">We could not load that.</h1>
+    <p class="lede" id="oopsBody">Try again in a moment, or message us and we will sort it out by hand.</p>
+    <p style="margin-top:32px;display:flex;flex-wrap:wrap;gap:12px">
+      <a class="ghost" href="Collection.dc.html">Back to the collection</a>
+    </p>
+  </div>
+</main>
+
+<footer>Meravs · Gurugram · pre-orders are confirmed on WhatsApp before any money moves</footer>
+
+<script type="module">
+const $ = s => document.querySelector(s);
+const show = id => ['loading','closed','form','done','oops'].forEach(k => { $('#' + k).hidden = k !== id; });
+const inr = n => '₹' + Number(n || 0).toLocaleString('en-IN');
+
+let MODEL = null, SITE = {}, DEPOSIT_PCT = 50, MODE = 'paused';
+
+const ref = new URLSearchParams(location.search).get('ref') || '';
+
+function oops(title, body) { $('#oopsTitle').textContent = title; $('#oopsBody').textContent = body; show('oops'); }
+
+// The prices shown here are only for the customer to read. Every number that
+// matters is recalculated on the server from the database when the pre-order is
+// created, so editing this page changes nothing but what you see.
+function paint() {
+  const qty = Number($('#f').qty.value) || 1;
+  const total = MODEL.price * qty;
+  const deposit = Math.round(total * DEPOSIT_PCT / 100);
+  $('#qtyOut').textContent = String(qty);
+  $('#total').textContent = inr(total);
+  $('#deposit').textContent = inr(deposit);
+  $('#balance').textContent = inr(total - deposit);
+}
+
+async function boot() {
+  let d;
+  try {
+    const r = await fetch('/api/inventory', { headers: { accept: 'application/json' } });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    d = await r.json();
+  } catch (e) {
+    oops('We could not reach our catalogue.', 'That is on us, not you. Try again in a moment.');
+    return;
+  }
+
+  SITE = d.site || {};
+  MODE = d.salesMode || 'paused';
+  if (Number(d.depositPct) > 0) DEPOSIT_PCT = Math.round(Number(d.depositPct));
+
+  const wa = SITE.whatsapp || '';
+  $('#closedWa').href = wa
+    ? 'https://wa.me/' + wa + '?text=' + encodeURIComponent('Hi Meravs - add me to the launch list')
+    : 'Collection.dc.html';
+  if (SITE.email) $('#mailto1').innerHTML = '<a href="mailto:' + SITE.email + '">' + SITE.email + '</a>';
+
+  if (MODE === 'paused') { show('closed'); return; }
+
+  MODEL = (d.models || []).find(m => m.ref === ref);
+  if (!MODEL) {
+    oops('We cannot find that watch.', 'The link may be out of date. The collection has everything we are taking pre-orders on.');
+    return;
+  }
+  if (!MODEL.price) {
+    oops('That watch has no price yet.', 'We will not take a deposit against a price we have not set. Message us and we will tell you where it stands.');
+    return;
+  }
+
+  document.title = 'Pre-order ' + MODEL.name + ' · Meravs';
+  $('#title').textContent = 'Reserve the ' + MODEL.name + '.';
+  $('#lede').textContent = DEPOSIT_PCT + '% now reserves it at this price. The rest is due only when we dispatch, '
+    + 'and if we cancel or run late you get the deposit back in full.';
+  $('#mName').textContent = MODEL.name;
+  $('#mDesc').textContent = [MODEL.dialName, MODEL.tone, MODEL.note, MODEL.size ? MODEL.size + 'mm' : '']
+    .filter(Boolean).join(' · ');
+  $('#unit').textContent = inr(MODEL.price);
+  $('#depLabel').textContent = 'Deposit now (' + DEPOSIT_PCT + '%)';
+  if (MODEL.photo) { $('#photo').src = MODEL.photo; $('#photo').alt = 'Photograph of ' + MODEL.name; $('#fig').hidden = false; }
+
+  $('#f').qty.onchange = paint;
+  paint();
+  show('form');
+}
+
+const FIELDS = ['name', 'email', 'phone'];
+function clearErrors() { FIELDS.forEach(k => { const e = $('#e-' + k); e.hidden = true; e.textContent = ''; }); }
+function setError(k, text) { const e = $('#e-' + k); if (!e) return; e.textContent = text; e.hidden = false; }
+
+$('#f').onsubmit = async ev => {
+  ev.preventDefault();
+  clearErrors();
+  const f = ev.target, btn = $('#submit'), msg = $('#msg');
+  msg.className = 'msg'; msg.textContent = 'Reserving…';
+  btn.disabled = true;
+
+  try {
+    const r = await fetch('/api/preorders', {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        ref: MODEL.ref, name: f.name.value, email: f.email.value,
+        phone: f.phone.value, qty: Number(f.qty.value) || 1, notes: f.notes.value,
+      }),
+    });
+    const d = await r.json().catch(() => ({}));
+
+    if (!r.ok) {
+      btn.disabled = false;
+      if (d.fields) {
+        Object.entries(d.fields).forEach(([k, v]) => setError(k, v));
+        msg.className = 'msg bad'; msg.textContent = 'Check the fields above.';
+        const first = FIELDS.find(k => d.fields[k]);
+        if (first) f[first].focus();
+        return;
+      }
+      msg.className = 'msg bad';
+      msg.textContent = d.message || d.error || ('Something went wrong (HTTP ' + r.status + ').');
+      return;
+    }
+
+    $('#doneCode').textContent = d.code;
+    $('#dWatch').textContent = d.modelName + (d.qty > 1 ? ' × ' + d.qty : '');
+    $('#dTotal').textContent = inr(d.total);
+    $('#dDeposit').textContent = inr(d.depositDue);
+    $('#dBalance').textContent = inr(d.balanceDue);
+    if (d.whatsapp) $('#doneWa').href = d.whatsapp;
+    else $('#doneWa').hidden = true;
+    show('done');
+    window.scrollTo({ top: 0 });
+  } catch (e) {
+    btn.disabled = false;
+    msg.className = 'msg bad'; msg.textContent = 'Your connection dropped. Nothing was saved — try again.';
+  }
+};
+
+boot();
+</script>
+</body>
+</html>
