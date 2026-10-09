@@ -113,6 +113,8 @@ export async function adminConfig(env) {
     // database rather than in code so it can be switched back with one SQL
     // statement the moment Google sign-in is wired up.
     authMode: 'locked',
+    googleClientId: env.GOOGLE_CLIENT_ID || null,
+    allowedEmails: [],
     source: 'env',
   };
 
@@ -123,6 +125,9 @@ export async function adminConfig(env) {
       out.username = out.username || m.username || null;
       out.passwordHash = out.passwordHash || m.password_hash || null;
       out.sessionSecret = out.sessionSecret || m.session_secret || null;
+      out.googleClientId = out.googleClientId || m.google_client_id || null;
+      out.allowedEmails = String(m.allowed_emails || '')
+        .split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
       if (m.auth_mode === 'open') out.authMode = 'open';
       out.source = 'db';
     } catch (_) { /* table missing - stay locked */ }
@@ -220,6 +225,56 @@ export async function verifyAccess(request, env) {
   } catch (_) {
     return null;
   }
+}
+
+/* ---------- Google Identity Services ----------
+   The browser gets an ID token straight from Google and posts it here. We
+   verify the signature against Google's published keys, then check the email
+   against an allowlist. No client secret is involved anywhere in this flow -
+   the Client ID is public by design and ships in the page source.          */
+
+let googleKeysCache = null;
+
+async function googleKeys() {
+  if (googleKeysCache && Date.now() - googleKeysCache.at < 3600_000) return googleKeysCache.keys;
+  const r = await fetch('https://www.googleapis.com/oauth2/v3/certs');
+  if (!r.ok) return null;
+  const { keys } = await r.json();
+  googleKeysCache = { at: Date.now(), keys };
+  return keys;
+}
+
+const GOOGLE_ISS = ['accounts.google.com', 'https://accounts.google.com'];
+
+// Returns the verified email, or null. Throws only on a crypto fault, which
+// the caller reports as a server error rather than a failed sign-in.
+export async function verifyGoogleToken(credential, clientId) {
+  if (!credential || !clientId) return null;
+  const [h, p, s] = String(credential).split('.');
+  if (!h || !p || !s) return null;
+
+  let header, payload;
+  try { header = b64urlToJSON(h); payload = b64urlToJSON(p); } catch (_) { return null; }
+
+  if (!GOOGLE_ISS.includes(payload.iss)) return null;
+  if (payload.aud !== clientId) return null;
+  if (!payload.exp || payload.exp * 1000 < Date.now()) return null;
+  // A Google account can carry an unverified email; treating one as proof of
+  // identity would let anyone claim an address they do not control.
+  if (payload.email_verified !== true && payload.email_verified !== 'true') return null;
+  if (!payload.email) return null;
+
+  const keys = await googleKeys();
+  const jwk = keys && keys.find(k => k.kid === header.kid);
+  if (!jwk) return null;
+
+  const key = await crypto.subtle.importKey(
+    'jwk', jwk, { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' }, false, ['verify']
+  );
+  const ok = await crypto.subtle.verify(
+    'RSASSA-PKCS1-v1_5', key, b64urlToBytes(s), enc.encode(`${h}.${p}`)
+  );
+  return ok ? String(payload.email).toLowerCase() : null;
 }
 
 /* ---------- the one check every privileged route uses ---------- */

@@ -8,7 +8,7 @@
 
 import {
   json, verifyPassword, safeEqualString, verifyAdmin, verifyAccess, verifySession,
-  makeSession, sessionCookie, adminConfig,
+  makeSession, sessionCookie, adminConfig, verifyGoogleToken,
 } from '../_lib.js';
 
 const WINDOW_MIN = 15;     // throttle window
@@ -36,12 +36,53 @@ export async function onRequestGet({ request, env }) {
     // Tell the panel which login routes are actually usable, so it can show
     // the right thing instead of a form that cannot possibly work.
     passwordLoginAvailable: Boolean(cfg.username && cfg.passwordHash && cfg.sessionSecret),
+    googleClientId: cfg.googleClientId || null,
     accessConfigured: Boolean(env.ACCESS_TEAM_DOMAIN && env.ACCESS_AUD),
   });
 }
 
 export async function onRequestPost({ request, env }) {
   const cfg = await adminConfig(env);
+
+  // --- Google sign-in -------------------------------------------------
+  // The page posts the ID token Google handed it. Peek at the body first so
+  // a Google sign-in does not need a username or a password hash to exist.
+  let peek = null;
+  try { peek = await request.clone().json(); } catch (_) {}
+
+  if (peek && peek.credential) {
+    if (!cfg.googleClientId || !cfg.sessionSecret) {
+      return json({ error: 'google_not_configured' }, 503);
+    }
+    let email;
+    try {
+      email = await verifyGoogleToken(peek.credential, cfg.googleClientId);
+    } catch (e) {
+      return json({ error: 'verify_failed', detail: String(e).slice(0, 200) }, 500);
+    }
+    if (!email) return json({ error: 'invalid_google_token' }, 401);
+
+    // Verified by Google is not the same as allowed in here. Anyone with a
+    // Google account can produce a valid token; only these addresses pass.
+    if (!cfg.allowedEmails.includes(email)) {
+      if (env.DB) {
+        try {
+          await env.DB.prepare(
+            `INSERT INTO login_attempts (created_at, ip, ok) VALUES (datetime('now'), ?, 0)`
+          ).bind(ipOf(request)).run();
+        } catch (_) {}
+      }
+      return json({ error: 'not_allowed', email }, 403);
+    }
+
+    const tok = await makeSession(env, email, TTL);
+    if (!tok) return json({ error: 'google_not_configured' }, 503);
+    return json({ ok: true, via: 'google', who: email }, 200, 'no-store', {
+      'set-cookie': sessionCookie(tok, TTL),
+    });
+  }
+
+  // --- password sign-in (kept as the fallback) ------------------------
   if (!cfg.username || !cfg.passwordHash || !cfg.sessionSecret) {
     return json({ error: 'login_not_configured' }, 503);
   }

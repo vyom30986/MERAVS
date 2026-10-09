@@ -141,6 +141,15 @@
     <p class="mark">MERAVS</p>
     <p class="sub">Administration</p>
     <div class="note" id="gateNote" hidden></div>
+
+    <div id="gWrap" hidden style="margin-bottom:22px">
+      <div id="gBtn"></div>
+      <p class="hint" style="margin:12px 0 0">Only the Meravs account can get in. Any other Google account is refused.</p>
+      <div style="display:flex;align-items:center;gap:12px;margin:22px 0 4px;color:var(--dim);font-size:12px">
+        <span style="flex:1;height:1px;background:var(--line)"></span>or use a password<span style="flex:1;height:1px;background:var(--line)"></span>
+      </div>
+    </div>
+
     <form id="loginForm">
       <div style="display:flex;flex-direction:column;gap:14px">
         <label>Admin ID<input type="text" id="uid" autocomplete="username" autocapitalize="none" spellcheck="false" required></label>
@@ -308,6 +317,7 @@ async function boot() {
 
   if (!d.admin) {
     $('#gate').hidden = false;
+    if (d.googleClientId) mountGoogle(d.googleClientId);
     if (!d.passwordLoginAvailable) {
       note('#gateNote', 'bad', '<b>The server has no password set, so nothing you type here can work.</b> This is not a wrong password — there is nothing to compare against. Add <code>ADMIN_USERNAME</code>, <code>ADMIN_PASSWORD_HASH</code> and <code>SESSION_SECRET</code> as Secrets on the Pages project. <b>Then redeploy</b> — secrets only take effect on a new deployment, which is the usual reason this message is still showing after you have added them.');
       $('#loginBtn').disabled = true;
@@ -327,6 +337,47 @@ async function boot() {
 }
 
 function note(sel, kind, html) { const n = $(sel); n.hidden = false; n.className = 'note ' + kind; n.innerHTML = html; }
+
+/* ---- Sign in with Google ----
+   Google hands the browser a signed ID token; the server verifies it against
+   Google's published keys and checks the email against the allowlist. No
+   client secret exists in this flow - the Client ID is public by design. */
+function mountGoogle(clientId) {
+  $('#gWrap').hidden = false;
+  const s = document.createElement('script');
+  s.src = 'https://accounts.google.com/gsi/client';
+  s.async = true;
+  s.onload = () => {
+    try {
+      google.accounts.id.initialize({ client_id: clientId, callback: onGoogle });
+      google.accounts.id.renderButton($('#gBtn'),
+        { theme: 'filled_black', size: 'large', shape: 'rectangular', text: 'signin_with', width: 340 });
+    } catch (e) {
+      note('#gateNote', 'bad', '<b>Google sign-in could not start.</b> ' + esc(e.message));
+    }
+  };
+  s.onerror = () => note('#gateNote', 'bad', '<b>Could not load Google sign-in.</b> Use the password below.');
+  document.head.appendChild(s);
+}
+
+async function onGoogle(resp) {
+  const msg = $('#loginMsg');
+  msg.className = 'msg'; msg.textContent = 'checking with Google…';
+  try {
+    const r = await fetch('/api/login', {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ credential: resp.credential }),
+    });
+    const d = await r.json();
+    if (r.ok) { location.reload(); return; }
+    msg.className = 'msg bad';
+    msg.textContent =
+      d.error === 'not_allowed' ? `${d.email} is not on the allowlist for this panel.`
+      : d.error === 'google_not_configured' ? 'Google sign-in is not configured on the server.'
+      : d.error === 'invalid_google_token' ? 'Google token rejected. Try again.'
+      : (d.error || 'HTTP ' + r.status);
+  } catch (e) { msg.className = 'msg bad'; msg.textContent = e.message; }
+}
 
 // A banner on every view, not one easy-to-miss line, because the panel being
 // open to anyone is a temporary state that must not quietly become permanent.
