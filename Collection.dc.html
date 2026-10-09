@@ -9,7 +9,7 @@
 <x-dc>
 <helmet>
 <title>The first collection - Meravs</title>
-<meta name="description" content="Six references. Order any watch on WhatsApp.">
+<meta name="description" content="Five references from Meravs, a new watch label out of Gurugram.">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
@@ -47,7 +47,7 @@ a{color:var(--ink)}a:hover{color:var(--brass)}
     </div>
     <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:24px 48px;margin:20px 0 clamp(32px,4vw,48px)">
       <h1 style="font-family:var(--display);font-weight:400;font-size:clamp(38px,5vw,72px);line-height:1.04;margin:0;max-width:14ch;text-wrap:balance">The first collection</h1>
-      <p style="margin:0;max-width:40ch;font-size:16.5px;line-height:1.6;color:var(--mute);text-wrap:pretty">Order any watch on WhatsApp. We confirm the price, payment and delivery with you there.</p>
+      <p style="margin:0;max-width:40ch;font-size:16.5px;line-height:1.6;color:var(--mute);text-wrap:pretty">{{ blurb }}</p>
     </div>
     <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:16px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:clamp(32px,4vw,48px)">
       <span style="font-family:var(--label);font-size:12.5px;letter-spacing:.045em;color:var(--mute);margin-right:6px">For</span>
@@ -60,9 +60,11 @@ a{color:var(--ink)}a:hover{color:var(--brass)}
       <sc-for list="{{ sizes }}" as="sz" hint-placeholder-count="4">
         <button onClick="{{ sz.pick }}" style="height:36px;padding:0 14px;background:{{ sz.bg }};color:{{ sz.fg }};border:1px solid var(--line);font-family:var(--label);font-size:12.5px;letter-spacing:.045em;cursor:pointer">{{ sz.label }}</button>
       </sc-for>
+      <sc-if value="{{ live }}" hint-placeholder-val="{{ true }}">
       <button onClick="{{ toggleStock }}" aria-pressed="{{ stockOnly }}" style="margin-left:auto;flex:none;white-space:nowrap;display:flex;align-items:center;gap:10px;height:36px;padding:0 14px;background:transparent;color:var(--ink);border:1px solid var(--line);font-family:var(--label);font-size:12.5px;letter-spacing:.045em;cursor:pointer">
         <span style="width:12px;height:12px;border:1px solid var(--brass);background:{{ stockBox }}"></span>In stock only
       </button>
+      </sc-if>
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));gap:clamp(40px,4vw,56px) clamp(20px,3vw,40px)">
       <sc-for list="{{ models }}" as="m" hint-placeholder-count="6">
@@ -78,15 +80,21 @@ a{color:var(--ink)}a:hover{color:var(--brass)}
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
-  state = { all: [], size: 0, stockOnly: false, gender: '' };
-  componentDidMount() { import('./inventory.js').then(inv => this.setState({ all: inv.MODELS })); }
+  state = { all: [], size: 0, stockOnly: false, gender: '', mode: 'paused' };
+  componentDidMount() { import('./inventory.js').then(inv => this.setState({ all: inv.MODELS, mode: inv.salesMode() })); }
   renderVals() {
-    const { all, size, stockOnly, gender } = this.state;
+    const { all, size, stockOnly, gender, mode } = this.state;
+    const live = mode !== 'paused';
     const models = all.filter(m => (!size || m.size === size) && (!stockOnly || m.status === 'in') && (!gender || m.gender === gender));
     const on = v => size === v;
     const bg = v => on(v) ? 'var(--btn-bg)' : 'transparent', fg = v => on(v) ? 'var(--btn-fg)' : 'var(--ink)';
     return {
-      models, empty: all.length > 0 && models.length === 0,
+      models, empty: all.length > 0 && models.length === 0, live,
+      blurb: mode === 'paused'
+        ? 'These are the designs. Nothing is on sale yet — we are changing manufacturer, and the waitlist hears the prices and the date first.'
+        : mode === 'preorder'
+          ? 'Reserve any watch with a deposit. You pay the rest only when we dispatch, and you get the deposit back in full if we cancel or run late.'
+          : 'Order any watch on WhatsApp. We confirm the price, payment and delivery with you there.',
       countLabel: String(all.length || 5).padStart(2, '0'),
       genders: [['', 'All'], ['men', 'Men'], ['women', 'Women']].map(([v, l]) => ({ label: l, bg: gender === v ? 'var(--btn-bg)' : 'transparent', fg: gender === v ? 'var(--btn-fg)' : 'var(--ink)', pick: () => this.setState({ gender: v }) })),
       setAll: () => this.setState({ size: 0 }), allBg: bg(0), allFg: fg(0),
