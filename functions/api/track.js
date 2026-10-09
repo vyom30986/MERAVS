@@ -8,7 +8,7 @@
 // lands, read the verified email off the signed session cookie HERE - never
 // from the request body, which the client controls.
 
-import { json } from '../_lib.js';
+import { json, sessionIdentity } from '../_lib.js';
 
 const KINDS = new Set(['waitlist', 'order', 'ask', 'view']);
 
@@ -30,12 +30,18 @@ export async function onRequestPost(context) {
   const clip = (v, n) => (typeof v === 'string' && v ? v.slice(0, n) : null);
   const cf = request.cf || {};
 
+  // Identity comes off the signed session cookie, never off the request body.
+  // The client controls the body and could otherwise claim any address.
+  let who = null;
+  try { const id = await sessionIdentity(request, env); who = id && id.email; } catch (_) {}
+
   const write = env.DB.prepare(
     `INSERT INTO events (created_at, kind, ref, email, country, city, referrer, path, user_agent)
-     VALUES (datetime('now'), ?, ?, NULL, ?, ?, ?, ?, ?)`
+     VALUES (datetime('now'), ?, ?, ?, ?, ?, ?, ?, ?)`
   ).bind(
     kind,
     clip(body.ref, 16),
+    who,
     clip(cf.country, 8),
     clip(cf.city, 64),
     clip(request.headers.get('referer'), 300),

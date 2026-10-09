@@ -279,11 +279,31 @@ export async function verifyGoogleToken(credential, clientId) {
 
 /* ---------- the one check every privileged route uses ---------- */
 
+export const isAllowed = (email, cfg) =>
+  Boolean(email) && (cfg.allowedEmails || []).includes(String(email).toLowerCase());
+
+// Who is signed in, admin or not. Customers get a session too, so this must
+// never be used to authorise anything - use verifyAdmin for that.
+export async function sessionIdentity(request, env) {
+  const email = await verifySession(request, env);
+  if (!email) return null;
+  const cfg = await adminConfig(env);
+  return { email, isAdmin: email === 'admin' || isAllowed(email, cfg) };
+}
+
 export async function verifyAdmin(request, env) {
   const cfg = await adminConfig(env);
-  // Open mode: the panel is deliberately unauthenticated while Google sign-in
-  // is pending. Every write is still attributed and logged, so there is a
-  // trail even though there is no gate.
+  // Open mode: deliberately unauthenticated. Writes are still audited.
   if (cfg.authMode === 'open') return 'open';
-  return (await verifyAccess(request, env)) || (await verifySession(request, env)) || null;
+
+  const viaAccess = await verifyAccess(request, env);
+  if (viaAccess && isAllowed(viaAccess, cfg)) return viaAccess;
+
+  const email = await verifySession(request, env);
+  if (!email) return null;
+  // 'admin' is the legacy password session, which predates the allowlist.
+  if (email === 'admin') return email;
+  // Everyone else holds an ordinary customer session. Being signed in is not
+  // being an admin - the allowlist is the only thing that grants that.
+  return isAllowed(email, cfg) ? email : null;
 }

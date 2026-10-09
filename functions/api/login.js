@@ -8,7 +8,7 @@
 
 import {
   json, verifyPassword, safeEqualString, verifyAdmin, verifyAccess, verifySession,
-  makeSession, sessionCookie, adminConfig, verifyGoogleToken,
+  makeSession, sessionCookie, adminConfig, verifyGoogleToken, sessionIdentity,
 } from '../_lib.js';
 
 const WINDOW_MIN = 15;     // throttle window
@@ -23,15 +23,25 @@ const ipOf = request =>
 export async function onRequestGet({ request, env }) {
   const cfgEarly = await adminConfig(env);
   if (cfgEarly.authMode === 'open') {
-    return json({ admin: true, via: 'open', who: 'open access', openMode: true });
+    return json({ admin: true, signedIn: true, via: 'open', who: 'open access', openMode: true });
   }
   const viaAccess = await verifyAccess(request, env);
-  if (viaAccess) return json({ admin: true, via: 'access', who: viaAccess });
-  const viaSession = await verifySession(request, env);
-  if (viaSession) return json({ admin: true, via: 'session', who: viaSession });
+  if (viaAccess) return json({ admin: true, signedIn: true, via: 'access', who: viaAccess });
+
+  // A customer session and an admin session look the same here except for
+  // one flag. The site header reads `admin` to decide whether to show the
+  // Admin link; nothing is authorised on the strength of this response.
+  const id = await sessionIdentity(request, env);
+  if (id) {
+    return json({
+      admin: id.isAdmin, signedIn: true, via: 'session', who: id.email,
+      googleClientId: cfgEarly.googleClientId || null,
+    });
+  }
   const cfg = await adminConfig(env);
   return json({
     admin: false,
+    signedIn: false,
     via: null,
     // Tell the panel which login routes are actually usable, so it can show
     // the right thing instead of a form that cannot possibly work.
@@ -62,22 +72,14 @@ export async function onRequestPost({ request, env }) {
     }
     if (!email) return json({ error: 'invalid_google_token' }, 401);
 
-    // Verified by Google is not the same as allowed in here. Anyone with a
-    // Google account can produce a valid token; only these addresses pass.
-    if (!cfg.allowedEmails.includes(email)) {
-      if (env.DB) {
-        try {
-          await env.DB.prepare(
-            `INSERT INTO login_attempts (created_at, ip, ok) VALUES (datetime('now'), ?, 0)`
-          ).bind(ipOf(request)).run();
-        } catch (_) {}
-      }
-      return json({ error: 'not_allowed', email }, 403);
-    }
-
+    // Anyone with a verified Google account may sign in to the SITE. That is
+    // how customers get identified on a waitlist or order tap. Being signed
+    // in grants nothing beyond that: the allowlist, checked separately in
+    // verifyAdmin, is the only thing that makes an account an admin.
+    const admin = cfg.allowedEmails.includes(email);
     const tok = await makeSession(env, email, TTL);
     if (!tok) return json({ error: 'google_not_configured' }, 503);
-    return json({ ok: true, via: 'google', who: email }, 200, 'no-store', {
+    return json({ ok: true, via: 'google', who: email, isAdmin: admin }, 200, 'no-store', {
       'set-cookie': sessionCookie(tok, TTL),
     });
   }
