@@ -46,8 +46,11 @@ h1{font-family:var(--display);font-weight:400;font-size:clamp(36px,4.6vw,62px);l
 .panel h2{font-family:var(--display);font-weight:400;font-size:clamp(22px,2.2vw,28px);line-height:1.2;margin:0 0 6px}
 .kicker{font-family:var(--label);font-size:12.5px;letter-spacing:.045em;color:var(--brass);margin-bottom:12px}
 
-figure{margin:0 0 20px}
-figure img{display:block;width:100%;max-width:300px;border:1px solid var(--line)}
+/* The product shots are tall portraits. Capping the width alone gives an
+   880px-high thumbnail that pushes the summary off the screen, so cap the
+   height and let the width follow. */
+figure{margin:0 0 22px}
+figure img{display:block;width:auto;max-width:100%;max-height:200px;border:1px solid var(--line)}
 
 dl.sum{display:grid;grid-template-columns:1fr auto;gap:10px 20px;margin:0;font-size:15.5px}
 dl.sum dt{font-family:var(--label);font-size:12.5px;letter-spacing:.045em;color:var(--mute);align-self:center}

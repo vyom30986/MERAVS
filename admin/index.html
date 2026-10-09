@@ -551,7 +551,7 @@ function renderOverview() {
   $('#ovStats').innerHTML = [
     [t.count || 0, 'Pre-orders'], [inr(held), 'Deposits held'],
     [inr(t.balanceDue || 0), 'Balance to come'], [inr(spent), 'Spent so far'],
-    [inr(held - spent), held - spent < 0 ? 'Out of pocket' : 'Net position'],
+    [inr(Math.abs(held - spent)), held < spent ? 'Out of pocket' : 'Net position'],
     [kinds.waitlist || 0, 'Waitlist taps'], [kinds.order || 0, 'Order taps'],
     [inStock, 'In stock'],
   ].map(([n, k]) => `<div class="stat"><div class="n">${n}</div><div class="k">${k}</div></div>`).join('');
@@ -857,7 +857,7 @@ function renderCosts() {
   const held = ((STATE.pre && STATE.pre.totals) || {}).depositPaid || 0;
   $('#coStats').innerHTML = [
     [inr(d.total), 'Spent so far'], [inr(held), 'Deposits held'],
-    [inr(held - d.total), held - d.total < 0 ? 'Out of pocket' : 'Covered by deposits'],
+    [inr(Math.abs(held - d.total)), held < d.total ? 'Out of pocket' : 'Covered by deposits'],
     ...(d.byCategory || []).slice(0, 3).map(c => [inr(c.total), c.category]),
   ].map(([n, k]) => `<div class="stat"><div class="n">${n}</div><div class="k">${k}</div></div>`).join('');
 
